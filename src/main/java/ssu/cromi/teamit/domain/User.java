@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.auditing.CurrentDateTimeProvider;
 
 
 import java.time.LocalDateTime;
@@ -38,6 +39,8 @@ public class User {
     private Double myScore;
     @Column(name = "roles", length = 50, nullable = false)
     private String roles = "ROLE_USER";
+    @Column(name = "updated_at", nullable = false)
+    private LocalDateTime updatedAt;
 
 
     // 관계 매핑
