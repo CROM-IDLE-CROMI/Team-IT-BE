@@ -16,18 +16,18 @@ import java.util.Set;
 @Table(name = "users")
 public class User {
     @Id
-    @Column(length = 50, nullable = false, updatable = false)
-    private String UID;
+    @Column(name = "uid", length = 50, nullable = false, updatable = false)
+    private String uid;
     @Column(name = "pw", length = 255, nullable = false)
     private String password;
     @Column(name = "nick_name", length = 100, nullable = false)
-    private String Nick_Name;
+    private String nickName;
     @Column(name = "email", length = 255, nullable = false)
-    private String Email;
+    private String email;
     @Column(name = "email_verified", length = 1, nullable = false)
-    private Boolean Email_verified = false;
+    private Boolean emailVerified = false;
     @Column(nullable = false)
-    private Integer Birthday;
+    private Integer birthday;
     @Column(nullable = false)
     private Long point;
     @Column(name = "profile_img", length = 2083)
@@ -67,12 +67,12 @@ public class User {
 
     protected User() {}
 
-    public User(String uid, String password, String nickname, String email, Integer birthday) {
-        this.UID = UID;
+    public User(String uid, String password, String nickName, String email, Integer birthday) {
+        this.uid = uid;
         this.password = password;
-        this.Nick_Name = nickname;
-        this.Email = email;
-        this.Birthday = birthday;
+        this.nickName = nickName;
+        this.email = email;
+        this.birthday = birthday;
         this.createdAt = LocalDateTime.now();
     }
     public enum RoleEnum {
