@@ -1,10 +1,7 @@
 package ssu.cromi.teamit.domain;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.data.auditing.CurrentDateTimeProvider;
+import lombok.*;
 
 
 import java.time.LocalDateTime;
@@ -12,6 +9,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 //유저테이블 도메인
+@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)  // JPA 용
+@AllArgsConstructor
 @Data // @Getter + @Setter + @ToString + @EqualsAndHashCode + @RequiredArgsConstructor
 @Entity
 @Table(name = "users")
@@ -58,7 +58,7 @@ public class User {
             joinColumns = @JoinColumn(name = "uid"),
             inverseJoinColumns = @JoinColumn(name = "stack_id")
     )
-    private Set<Stack> Stacks = new HashSet<>();
+    private Set<Stack> stacks = new HashSet<>();
 
     @ManyToMany
     @JoinTable(
@@ -68,16 +68,15 @@ public class User {
     )
     private Set<Position> positions = new HashSet<>();
 
-    protected User() {}
-
     public User(String uid, String password, String nickName, String email, Integer birthday) {
         this.uid = uid;
         this.password = password;
         this.nickName = nickName;
         this.email = email;
         this.birthday = birthday;
-        this.createdAt = LocalDateTime.now();
     }
+
+    @ToString
     public enum RoleEnum {
         ROLE_USER,
         ROLE_ADMIN

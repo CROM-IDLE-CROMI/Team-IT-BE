@@ -27,7 +27,6 @@ public class UserUpdate {
     private LocalDateTime updatedAt;
 
     @NotNull(message = "생년월일 누락됨")
-    @Size(min = 19000101,max = 20250101, message = "유효하지 않은 생년월일")// 생년월일 검증하기
     @Getter
     @Setter
     private Integer birthday;
