@@ -35,10 +35,10 @@ public class UserProfile {
     private boolean emailVerified;
 
     @NotNull(message = "생년월일 누락됨")
-    @Size(min = 19000101,max = 20250101, message = "유효하지 않은 생년월일")// 생년월일 검증하기
     @Getter
     private Integer birthday;
 
+    /*
     @NotNull(message = "생성날짜 누락됨")
     @Getter
     private LocalDateTime createdAt;
@@ -47,7 +47,7 @@ public class UserProfile {
     @Getter
 
     private LocalDateTime updatedAt;
-
+    */
 
     @Getter
     @PositiveOrZero(message = "정의되지 않은 포인트")
