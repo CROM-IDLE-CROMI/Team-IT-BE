@@ -4,5 +4,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import ssu.cromi.teamit.entity.Project;
 
 public interface TeamRepository extends JpaRepository<Project, Long> {
-    // 기본 CRUD 제공됨
+    // 기본 CRUD 제공
 }
