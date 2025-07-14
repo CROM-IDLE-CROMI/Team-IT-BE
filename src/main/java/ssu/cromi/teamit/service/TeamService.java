@@ -21,11 +21,13 @@ public class TeamService {
         // Dto → Entity
         Project project = Project.builder()
                 .createrId(requestDto.getCreaterId())
+                .ownerId(requestDto.getCreaterId())
                 .memberNum(requestDto.getMemberNum())
                 .memberPosition(requestDto.getMemberPosition())
                 .requireStack(requestDto.getRequireStack())
                 .validFrom(requestDto.getValidFrom())
                 .validTo(requestDto.getValidTo())
+                .status(ProjectStatus.valueOf(requestDto.getProjectStatus()))
                 .platform(Platform.valueOf(requestDto.getPlatform()))
                 .category(Category.valueOf(requestDto.getCategory()))
                 .startDate(requestDto.getStartDate())
@@ -35,7 +37,7 @@ public class TeamService {
                 .ideaExplain(requestDto.getIdeaExplain())
                 .projectName(requestDto.getProjectName())
                 .meetingApproach(MeetingApproach.valueOf(requestDto.getMeetingApproach()))
-                // ** .location(requestDto.getLocation())
+                .location(requestDto.getLocation())
                 .minRequest(requestDto.getMinRequest())
                 .questions(requestDto.getQuestions())
                 .build();

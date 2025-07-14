@@ -59,7 +59,8 @@ public class Project {
     @Column(nullable = false)
     private MeetingApproach meetingApproach; // 회의 방법
 
-    // ** private String location;
+    @Column(nullable = false)
+    private String location;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
