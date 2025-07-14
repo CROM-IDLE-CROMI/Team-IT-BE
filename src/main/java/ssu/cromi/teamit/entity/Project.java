@@ -26,6 +26,9 @@ public class Project {
     @Column(nullable = false)
     private int memberNum; // 프로젝트 멤버 수
 
+    @Column(nullable = false)
+    private String memberPosition; // 작성자의 역할
+
     @ElementCollection
     private List<String> memberId;
 

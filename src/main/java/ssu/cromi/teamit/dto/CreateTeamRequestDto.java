@@ -11,7 +11,7 @@ import java.util.List;
 
 public class CreateTeamRequestDto {
     private String createrId;
-    private String member_position;
+    private String memberPosition;
     private int memberNum;
     private List<String> requireStack;
     private LocalDateTime validFrom;
