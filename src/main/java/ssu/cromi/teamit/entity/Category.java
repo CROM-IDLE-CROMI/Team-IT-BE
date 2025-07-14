@@ -1,10 +1,10 @@
 package ssu.cromi.teamit.entity;
 
 public enum Category {
-    공모전("공모전"),
-    대회("대회"),
-    사이드_프로젝트("사이드 프로젝트"),
-    토이_프로젝트("토이 프로젝트");
+    CONTEST("공모전"),
+    COMPETITION("대회"),
+    SIDE_PROJECT("사이드 프로젝트"),
+    TOY_PROJECT("토이 프로젝트");
 
     private final String displayName;
 
