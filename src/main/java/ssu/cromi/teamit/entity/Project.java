@@ -15,58 +15,73 @@ public class Project {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id; // 프로젝트 고유 아이디
 
-    private String createrId;
-    private String owner;
+    @Column(nullable = false, length = 50)
+    private String createrId; // 작성자 아이디
 
-    private int memberNum;
+    @Column(nullable = false, length = 50)
+    private String ownerId; // 팀장 아이디
+
+    @Column(nullable = false)
+    private int memberNum; // 프로젝트 멤버 수
 
     @ElementCollection
     private List<String> memberId;
 
     @ElementCollection
     private List<String> requireStack;
-    /*
-    @Enumerated(EnumType.STRING)
-    private Platform platform;
 
     @Enumerated(EnumType.STRING)
-    private Category category;
-
-    private String categoryDetail;
-
-    private LocalDateTime startDate;
-    private LocalDateTime endDate;
-
-    private LocalDateTime validFrom;
-    private LocalDateTime validTo;
-
-    private Boolean premeeting;
-    private LocalDateTime premeetingDate;
+    @Column(nullable = false)
+    private Platform platform; // 프로젝트 종류
 
     @Enumerated(EnumType.STRING)
-    private MeetingApproach meetingApproach;
+    @Column(nullable = false)
+    private Category category; // 모집 카테고리
 
-    private String location;
+    private String categoryDetail; // 카테고리 기타 작성란
+
+    @Column(nullable = false)
+    private LocalDateTime startDate; // 프로젝트 시작일
+    @Column(nullable = false)
+    private LocalDateTime endDate; // 프로젝트 종료일
+
+    @Column(nullable = false)
+    private LocalDateTime validFrom; // 모집 시작기간
+    @Column(nullable = false)
+    private LocalDateTime validTo; // 모집 종료기간
 
     @Enumerated(EnumType.STRING)
-    private ProjectStatus projectStatus;
+    @Column(nullable = false)
+    private MeetingApproach meetingApproach; // 회의 방법
 
-    private String statusDetail;
-    private String projectName;
-    private String title;
+    // ** private String location;
 
-    @Column(columnDefinition = "TEXT")
-    private String ideaExplain;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private ProjectStatus projectStatus; // 진행상황
 
-    @Column(columnDefinition = "TEXT")
-    private String minRequest;
+    private String statusDetail; // 진행상황 기타 작성란
 
-    @Column(columnDefinition = "TEXT")
-    private String questions;
+    @Column(nullable = false)
+    private String projectName; // 프로젝트 이름
 
-    private String status;
+    @Column(nullable = false)
+    private String title; // 모집글 제목
+
+    @Column(columnDefinition = "TEXT", nullable = false)
+    private String ideaExplain; // 아이디어 설명
+
+    @Column(columnDefinition = "TEXT", nullable = false)
+    private String minRequest; // 최소 요건
+
+    @Column(columnDefinition = "TEXT", nullable = false)
+    private String questions; // 지원자에게 질문
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private ProjectStatus status;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -79,5 +94,5 @@ public class Project {
     @PreUpdate
     protected void onUpdate() {
         this.updatedAt = LocalDateTime.now();
-    } */
+    }
 }
