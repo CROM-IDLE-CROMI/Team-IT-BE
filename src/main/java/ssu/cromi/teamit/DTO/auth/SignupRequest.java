@@ -1,11 +1,9 @@
 package ssu.cromi.teamit.DTO.auth;
 //회원가입 DTO
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.*;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
-import java.time.LocalDateTime;
 
 @Setter
 @Getter
@@ -39,23 +37,4 @@ public class SignupRequest {
 
     @JsonProperty("birthDay")
     private Integer birthDay;
-
-
-    /*
-    @NotNull
-    @JsonFormat(
-            shape    = JsonFormat.Shape.STRING,
-            pattern  = "yyyy-MM-dd'T'HH:mm:ss",
-            timezone = "Asia/Seoul"
-    )
-    private LocalDateTime createdAt;
-
-    @NotNull
-    @JsonFormat(
-            shape    = JsonFormat.Shape.STRING,
-            pattern  = "yyyy-MM-dd'T'HH:mm:ss",
-            timezone = "Asia/Seoul"
-    )
-    private LocalDateTime updatedAt;
-    */
 }
