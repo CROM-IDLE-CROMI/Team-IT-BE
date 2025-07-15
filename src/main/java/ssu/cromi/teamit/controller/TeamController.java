@@ -1,3 +1,6 @@
+// HTTP 요청 및 응답 처리
+// DTO 수신, 서비스 호출
+
 package ssu.cromi.teamit.controller;
 
 import jakarta.validation.Valid;
@@ -16,10 +19,12 @@ import ssu.cromi.teamit.service.TeamService;
 public class TeamController {
     private final TeamService teamService;
 
-    @PostMapping // HTTP POST 요청 처리
-    public ResponseEntity<Void> createTeam(@RequestBody @Valid CreateTeamRequestDto requestDto) {
-        teamService.createTeam(requestDto);
+    /* @PostMapping
+    public ResponseEntity<Void> createTeam(@Valid @RequestBody CreateTeamRequestDto requestDto,
+                                           @AuthenticationPrincipal CustomUserDetails userDetails) {
+        String userId = userDetails.getUserId();
+        teamService.createTeam(requestDto, userId);
         return ResponseEntity.status(HttpStatus.CREATED).build();
-        // 상태 코드만 반환, 응답 body는 생략
-    }
+    } */
+
 }
