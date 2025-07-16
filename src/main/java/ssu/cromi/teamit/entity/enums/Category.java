@@ -1,4 +1,4 @@
-package ssu.cromi.teamit.entity;
+package ssu.cromi.teamit.entity.enums;
 
 public enum Category {
     CONTEST("공모전"),

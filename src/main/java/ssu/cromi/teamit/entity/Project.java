@@ -1,102 +1,143 @@
+// DB에 저장될 project 클래스 작성
+
 package ssu.cromi.teamit.entity;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+
+import ssu.cromi.teamit.entity.enums.Platform;
+import ssu.cromi.teamit.entity.enums.Category;
+import ssu.cromi.teamit.entity.enums.MeetingApproach;
+import ssu.cromi.teamit.entity.enums.ProjectStatus;
+import ssu.cromi.teamit.entity.enums.WritingStatus;
+import ssu.cromi.teamit.entity.enums.Position;
+import ssu.cromi.teamit.entity.enums.Status;
+import ssu.cromi.teamit.entity.enums.MemberRole;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
+@Table(name = "project_table")
 public class Project {
+    // 프로젝트 모집 양식에는 없지만 필요한 내용
+    // project_table 내의 필드
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; // 프로젝트 고유 아이디
 
-    @Column(nullable = false, length = 50)
+    @Column(name = "creater_id", nullable = false, length = 50)
     private String createrId; // 작성자 아이디
 
-    @Column(nullable = false, length = 50)
+    @Column(name = "owner_id", nullable = false, length = 50)
     private String ownerId; // 팀장 아이디
 
-    @Column(nullable = false)
-    private int memberNum; // 프로젝트 멤버 수
+    // 작성중, 임시저장, 작성완료
+    @Builder.Default
+    @Enumerated(EnumType.STRING)
+    @Column(name = "writing_status", nullable = false)
+    private WritingStatus writingStatus = WritingStatus.IN_PROGRESS;
+
+    // 모집중, 모집완료 등
+    @Builder.Default
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private Status status = Status.RECRUITING;
+
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
+    @Builder.Default
+    @Column(name = "progress", nullable = false)
+    private int progress = 0; // 진행률 (프로젝트 진척도)
+
+    @PrePersist // 생성시각 자동으로 생성
+    protected void onCreate() {
+        this.createdAt = this.updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate // 수정시각 자동으로 생성
+    protected void onUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    // 실제 프로젝트 모집 양식에 있는 내용
+    // project_table 내의 필드
+
+    @Column(name = "member_num", nullable = false)
+    private int memberNum; // 모집 인원 (프로젝트 멤버)
+
+    @Column(name = "valid_from", nullable = false)
+    private LocalDateTime validFrom; // 모집기간 (시작)
+    @Column(name = "valid_to", nullable = false)
+    private LocalDateTime validTo; // 모집기간 (종료)
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "platform", nullable = false)
+    private Platform platform; // 플랫폼 (웹, 앱, 게임, 기타)
+
+    @Column(name = "platform_detail")
+    private String platformDetail; // 플랫폼 기타 작성란
+
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "recruit_positions", columnDefinition = "JSON", nullable = false)
+    private List<Position> recruitPositions; // 모집 직군 (프론트, 백, 디자인 등)
+
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "require_stack", columnDefinition = "JSON", nullable = false)
+    private List<String> requireStack; // 기술 스택 (검색 가능)
+
+    @Column(name = "project_name", nullable = false)
+    private String projectName; // 팀 이름
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "category", nullable = false)
+    private Category category; // 활동 종류
+
+    @Column(name = "category_detail")
+    private String categoryDetail; // 활동 종류 기타 작성란
+
+    @Column(name = "start_date", nullable = false)
+    private LocalDateTime startDate; // 진행 예상 기간 (시작)
+    @Column(name = "end_date", nullable = false)
+    private LocalDateTime endDate; // 진행 예상 기간 (종료)
+
+    @Column(name = "expected_start_date", nullable = false)
+    private LocalDateTime expectedStartDate; // 프로젝트 예상 시작일
 
     @Column(nullable = false)
-    private String memberPosition; // 작성자의 역할
-
-    @ElementCollection
-    private List<String> memberId;
-
-    @ElementCollection
-    private List<String> requireStack;
+    private String title; // 제목
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Platform platform; // 프로젝트 종류
+    private ProjectStatus projectStatus; // 프로젝트 진행 상황
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private Category category; // 모집 카테고리
+    private String statusDetail; // 진행상황 기타 작성란
 
-    private String categoryDetail; // 카테고리 기타 작성란
-
-    @Column(nullable = false)
-    private LocalDateTime startDate; // 프로젝트 시작일
-    @Column(nullable = false)
-    private LocalDateTime endDate; // 프로젝트 종료일
-
-    @Column(nullable = false)
-    private LocalDateTime validFrom; // 모집 시작기간
-    @Column(nullable = false)
-    private LocalDateTime validTo; // 모집 종료기간
+    @Column(columnDefinition = "TEXT", nullable = false)
+    private String ideaExplain; // 본문
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private MeetingApproach meetingApproach; // 회의 방법
 
-    @Column(nullable = false)
-    private String location;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private ProjectStatus projectStatus; // 진행상황
-
-    private String statusDetail; // 진행상황 기타 작성란
-
-    @Column(nullable = false)
-    private String projectName; // 프로젝트 이름
-
-    @Column(nullable = false)
-    private String title; // 모집글 제목
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "locations", columnDefinition = "JSON", nullable = false)
+    private List<String> locations; // 위치
 
     @Column(columnDefinition = "TEXT", nullable = false)
-    private String ideaExplain; // 아이디어 설명
+    private String minRequest; // 지원자 최소 요건
 
-    @Column(columnDefinition = "TEXT", nullable = false)
-    private String minRequest; // 최소 요건
-
-    @Column(columnDefinition = "TEXT", nullable = false)
-    private String questions; // 지원자에게 질문
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private ProjectStatus status;
-
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
-
-    @PrePersist
-    protected void onCreate() {
-        this.createdAt = this.updatedAt = LocalDateTime.now();
-    }
-
-    @PreUpdate
-    protected void onUpdate() {
-        this.updatedAt = LocalDateTime.now();
-    }
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "applicant_questions", columnDefinition = "JSON", nullable = false)
+    private List<String> applicantQuestions; // 지원자에게 질문하고 싶은 내용
 }

@@ -1,0 +1,40 @@
+package ssu.cromi.teamit.entity;
+
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.util.List;
+
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
+import ssu.cromi.teamit.entity.enums.MemberRole;
+import ssu.cromi.teamit.entity.enums.Position;
+
+@Entity
+@Table(name = "project_member")
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
+public class ProjectMember {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id; // PK (프로젝트 멤버 테이블 고유 PK)
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "project_id", nullable = false) // FK (project_table.id)
+    private Project project;
+
+    @Column(name = "user_id", nullable = false)
+    private String userId; // 작성자 포함 팀원 ID
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role", nullable = false)
+    private MemberRole role; // 팀장 or 팀원
+
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "positions", columnDefinition = "json", nullable = false)
+    private List<Position> positions; // 백엔드, 프론트엔드 등
+}
