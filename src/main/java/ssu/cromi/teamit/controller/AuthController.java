@@ -2,12 +2,14 @@ package ssu.cromi.teamit.controller;
 
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ssu.cromi.teamit.DTO.auth.JwtResponse;
+import ssu.cromi.teamit.DTO.auth.LoginRequest;
 import ssu.cromi.teamit.DTO.auth.SignupRequest;
 import ssu.cromi.teamit.DTO.common.ApiResponse;
 import ssu.cromi.teamit.DTO.common.UserResponse;
 import ssu.cromi.teamit.domain.User;
+import ssu.cromi.teamit.service.AuthService;
 import ssu.cromi.teamit.service.UserService;
 
 import java.time.ZoneId;
@@ -17,15 +19,16 @@ import java.time.format.DateTimeFormatter;
 @RequestMapping("/v1/auth")
 public class AuthController {
     private final UserService userService;
-    public AuthController(UserService userService){
-        this.userService = userService;
-    }
+    private final AuthService authService;
 
+    public AuthController(UserService userService, AuthService authservice){
+        this.userService = userService;
+        this.authService = authservice;
+    }
+    //회원가입
     @PostMapping("/users")
     @ResponseStatus(HttpStatus.CREATED)
-    public ApiResponse<UserResponse> signup(
-            @RequestBody @Valid SignupRequest dto
-    ){
+    public ApiResponse<UserResponse> signup(@RequestBody @Valid SignupRequest dto){
         User newUser = userService.register(dto);
         String createdAtStr = newUser.getCreatedAt()
                 .atZone(ZoneId.systemDefault())
@@ -37,7 +40,14 @@ public class AuthController {
                 createdAtStr,
                 newUser.getBirthday()
         );
-
         return ApiResponse.success(data, "201", "success");
     }
+
+    //로그인
+    @PostMapping("/login")
+    public ApiResponse<JwtResponse> login(@RequestBody @Valid LoginRequest dto){
+        JwtResponse token = authService.authenticateAndCreateToken(dto);
+        return ApiResponse.success(token, "200", "success");
+    }
+
 }
