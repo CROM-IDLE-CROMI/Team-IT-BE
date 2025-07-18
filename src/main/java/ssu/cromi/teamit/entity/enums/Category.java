@@ -4,7 +4,8 @@ public enum Category {
     CONTEST("공모전"),
     COMPETITION("대회"),
     SIDE_PROJECT("사이드 프로젝트"),
-    TOY_PROJECT("토이 프로젝트");
+    TOY_PROJECT("토이 프로젝트"),
+    ETC("기타");
 
     private final String displayName;
 

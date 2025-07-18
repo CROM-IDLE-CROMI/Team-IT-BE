@@ -12,7 +12,7 @@ import ssu.cromi.teamit.entity.enums.MemberRole;
 import ssu.cromi.teamit.entity.enums.Position;
 
 @Entity
-@Table(name = "project_member")
+@Table(name = "Project_Member")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
@@ -34,7 +34,7 @@ public class ProjectMember {
     @Column(name = "role", nullable = false)
     private MemberRole role; // 팀장 or 팀원
 
-    @JdbcTypeCode(SqlTypes.JSON)
-    @Column(name = "positions", columnDefinition = "json", nullable = false)
-    private List<Position> positions; // 백엔드, 프론트엔드 등
+    @Enumerated(EnumType.STRING)
+    @Column(name = "member_position", nullable = false)
+    private Position position;
 }

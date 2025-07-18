@@ -92,6 +92,9 @@ public class Project {
     @Column(name = "recruit_positions", columnDefinition = "JSON", nullable = false)
     private List<Position> recruitPositions; // 모집 직군 (프론트, 백, 디자인 등)
 
+    @Column(name = "recruit_detail")
+    private String recruitDetail; // 모집 직군 기타 작성란
+
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "require_stack", columnDefinition = "JSON", nullable = false)
     private List<String> requireStack; // 기술 스택 (검색 가능)
@@ -114,27 +117,28 @@ public class Project {
     @Column(name = "expected_start_date", nullable = false)
     private LocalDateTime expectedStartDate; // 프로젝트 예상 시작일
 
-    @Column(nullable = false)
+    @Column(name = "title", nullable = false)
     private String title; // 제목
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(name = "project_status", nullable = false)
     private ProjectStatus projectStatus; // 프로젝트 진행 상황
 
+    @Column(name = "status_detail")
     private String statusDetail; // 진행상황 기타 작성란
 
-    @Column(columnDefinition = "TEXT", nullable = false)
+    @Column(name = "explain", columnDefinition = "TEXT", nullable = false)
     private String ideaExplain; // 본문
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(name = "meeting_approach", nullable = false)
     private MeetingApproach meetingApproach; // 회의 방법
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "locations", columnDefinition = "JSON", nullable = false)
     private List<String> locations; // 위치
 
-    @Column(columnDefinition = "TEXT", nullable = false)
+    @Column(name = "min_request", columnDefinition = "TEXT", nullable = false)
     private String minRequest; // 지원자 최소 요건
 
     @JdbcTypeCode(SqlTypes.JSON)

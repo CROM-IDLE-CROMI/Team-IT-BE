@@ -6,7 +6,8 @@ public enum Position {
     BACKEND("백엔드"),
     DESIGNER("디자이너"),
     PLANNER("기획자"),
-    PM("PM");
+    PM("PM"),
+    ETC("기타");
 
     private final String displayName;
 
