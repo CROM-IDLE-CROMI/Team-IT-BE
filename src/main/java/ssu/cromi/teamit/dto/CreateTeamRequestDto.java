@@ -38,6 +38,8 @@ public class CreateTeamRequestDto {
     @NotEmpty(message = "모집 직군은 최소 하나 이상 입력해야 합니다.")
     private List<@NotBlank(message = "직군 값이 비어있습니다.") String> recruitPositions; // Enum(Position)
 
+    private String recruitDetail;
+
     @NotEmpty(message = "기술 스택은 최소 하나 이상 입력해야 합니다.")
     private List<@NotBlank(message = "스택 값이 비어있습니다.") String> requireStack;
 
@@ -58,8 +60,8 @@ public class CreateTeamRequestDto {
     @NotNull(message = "프로젝트 시작 예상일은 필수 항목입니다.")
     private LocalDateTime expectedStartDate;
 
-    @NotEmpty(message = "작성자의 세부 직군은 최소 하나 이상 입력해야 합니다.")
-    private List<@NotBlank(message = "작성자 포지션 값이 비어있습니다.") String> createrPositions;
+    @NotBlank(message = "작성자의 직군은 필수 항목입니다.")
+    private String createrPosition; // 단수형 String
 
     @NotBlank(message = "제목은 필수 항목입니다.")
     private String title;

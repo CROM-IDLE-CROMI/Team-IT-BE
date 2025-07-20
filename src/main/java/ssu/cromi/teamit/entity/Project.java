@@ -127,7 +127,7 @@ public class Project {
     @Column(name = "status_detail")
     private String statusDetail; // 진행상황 기타 작성란
 
-    @Column(name = "explain", columnDefinition = "TEXT", nullable = false)
+    @Column(name = "description", columnDefinition = "TEXT", nullable = false)
     private String ideaExplain; // 본문
 
     @Enumerated(EnumType.STRING)
