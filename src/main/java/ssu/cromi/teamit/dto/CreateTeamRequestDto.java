@@ -5,8 +5,11 @@
 package ssu.cromi.teamit.dto;
 
 import jakarta.validation.constraints.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,6 +21,8 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class CreateTeamRequestDto {
 
     @NotNull(message = "모집 인원 수는 필수 항목입니다.")
