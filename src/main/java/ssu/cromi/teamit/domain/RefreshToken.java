@@ -26,11 +26,11 @@ public class RefreshToken {
     @Column(nullable = false, unique = true)
     private String token;
 
-
+    @Setter
     @Column(name = "expiry_date", nullable = false)
     private Instant expiryDate;
 
-    protected RefreshToken(){}
+    public RefreshToken(){}
 
     public RefreshToken(User user, String token, Instant expiryDate){
         this.user = user;
