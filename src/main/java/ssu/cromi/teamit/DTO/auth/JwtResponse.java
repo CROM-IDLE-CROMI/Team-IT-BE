@@ -8,6 +8,7 @@ import lombok.*;
 @Builder
 @EqualsAndHashCode
 @ToString
+@NoArgsConstructor
 @AllArgsConstructor
 public class JwtResponse {
     @ToString.Exclude // accessToken은 toString, Equals 제외
@@ -21,4 +22,7 @@ public class JwtResponse {
     private String refreshToken;
 
     private String uid;
+
+    public JwtResponse(String newAccess, long jwtExpirationMs, String token) {
+    }
 }
