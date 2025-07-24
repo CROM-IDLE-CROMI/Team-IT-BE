@@ -1,5 +1,6 @@
 package ssu.cromi.teamit.service.impl;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ssu.cromi.teamit.domain.RefreshToken;
 import ssu.cromi.teamit.domain.User;
@@ -8,17 +9,21 @@ import ssu.cromi.teamit.repository.RefreshTokenRepository;
 import ssu.cromi.teamit.service.RefreshTokenService;
 
 import java.time.Instant;
+import java.util.Optional;
 import java.util.UUID;
 
+@Service
 public class RefreshTokenServiceImpl implements RefreshTokenService {
 
+    private final RefreshTokenService refreshTokenService;
     @Value("${jwt.expiration-refresh}")
     private long refreshTokenDurationMs;
 
     private final RefreshTokenRepository refreshTokenRepository;
 
-    public RefreshTokenServiceImpl(RefreshTokenRepository refreshTokenRepository){
+    public RefreshTokenServiceImpl(RefreshTokenRepository refreshTokenRepository, RefreshTokenService refreshTokenService){
         this.refreshTokenRepository = refreshTokenRepository;
+        this.refreshTokenService = refreshTokenService;
     }
 
     @Override
@@ -44,5 +49,10 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     @Override
     public void deleteByUser(User user){
         refreshTokenRepository.deleteByUser(user);
+    }
+
+    @Override
+    public Optional<RefreshToken> findByToken(String token){
+        return refreshTokenRepository.findByToken(token);
     }
 }

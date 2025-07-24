@@ -4,6 +4,8 @@ import ssu.cromi.teamit.domain.RefreshToken;
 import ssu.cromi.teamit.domain.User;
 import ssu.cromi.teamit.exceptions.TokenRefreshException;
 
+import java.util.Optional;
+
 public interface RefreshTokenService {
     /**
      * 지정된 유저용 Refresh token을 생성 및 지정함
@@ -25,4 +27,6 @@ public interface RefreshTokenService {
      * @param user 삭제 대상 User엔티티
      */
     void deleteByUser(User user);
+
+    Optional<RefreshToken> findByToken(String token);
 }
