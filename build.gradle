@@ -47,8 +47,6 @@ dependencies {
     runtimeOnly 'com.mysql:mysql-connector-j'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.9.2'
     testImplementation 'org.springframework.security:spring-security-test'
-
-develop
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
