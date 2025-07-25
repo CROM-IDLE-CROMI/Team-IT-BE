@@ -33,8 +33,8 @@ public class Project {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; // 프로젝트 고유 아이디
 
-    @Column(name = "creater_id", nullable = false, length = 50)
-    private String createrId; // 작성자 아이디
+    @Column(name = "creator_id", nullable = false, length = 50)
+    private String creatorId; // 작성자 아이디
 
     @Column(name = "owner_id", nullable = false, length = 50)
     private String ownerId; // 팀장 아이디

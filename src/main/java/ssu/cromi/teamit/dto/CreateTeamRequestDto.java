@@ -9,7 +9,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
-
+import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -30,9 +31,11 @@ public class CreateTeamRequestDto {
     private Integer memberNum;
 
     @NotNull(message = "모집 시작일은 필수 항목입니다.")
+    @FutureOrPresent(message = "모집 시작일은 현재 시각 이후여야 합니다.")
     private LocalDateTime validFrom;
 
     @NotNull(message = "모집 종료일은 필수 항목입니다.")
+    @FutureOrPresent(message = "모집 종료일은 현재 시각 이후여야 합니다.")
     private LocalDateTime validTo;
 
     @NotBlank(message = "플랫폼은 필수 항목입니다.")
@@ -66,7 +69,7 @@ public class CreateTeamRequestDto {
     private LocalDateTime expectedStartDate;
 
     @NotBlank(message = "작성자의 직군은 필수 항목입니다.")
-    private String createrPosition; // 단수형 String
+    private String creatorPosition; // 단수형 String
 
     @NotBlank(message = "제목은 필수 항목입니다.")
     private String title;

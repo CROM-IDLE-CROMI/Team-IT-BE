@@ -14,14 +14,14 @@ import ssu.cromi.teamit.entity.Project;
 import ssu.cromi.teamit.entity.ProjectMember;
 import ssu.cromi.teamit.entity.enums.*;
 import ssu.cromi.teamit.exception.InvalidEnumValueException;
-import ssu.cromi.teamit.repository.TeamRepository;
+import ssu.cromi.teamit.repository.ProjectRepository;
 import ssu.cromi.teamit.repository.ProjectMemberRepository;
 
 @Service
 @RequiredArgsConstructor
 public class TeamServiceImpl implements TeamService {
 
-    private final TeamRepository teamRepository;
+    private final ProjectRepository projectRepository;
     private final ProjectMemberRepository projectMemberRepository;
 
     /* <팀원 모집> 등록글 생성
@@ -60,7 +60,7 @@ public class TeamServiceImpl implements TeamService {
 
         // 3) Project 엔티티 빌드
         Project project = Project.builder()
-                .createrId(userId)
+                .creatorId(userId)
                 .ownerId(userId)
                 .memberNum(dto.getMemberNum())
                 .validFrom(dto.getValidFrom())
@@ -88,9 +88,9 @@ public class TeamServiceImpl implements TeamService {
                 .progress(0)
                 .build();
 
-        Project saved = teamRepository.save(project);
+        Project saved = projectRepository.save(project);
 
-        Position leaderPos = parseEnum(Position.class, dto.getCreaterPosition(), "createrPosition");
+        Position leaderPos = parseEnum(Position.class, dto.getCreatorPosition(), "createrPosition");
 
         ProjectMember leader = ProjectMember.builder()
                 .project(saved)

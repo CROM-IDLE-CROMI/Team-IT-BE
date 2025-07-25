@@ -9,7 +9,7 @@ import ssu.cromi.teamit.dto.CreateTeamRequestDto;
 import ssu.cromi.teamit.entity.Project;
 import ssu.cromi.teamit.entity.ProjectMember;
 import ssu.cromi.teamit.repository.ProjectMemberRepository;
-import ssu.cromi.teamit.repository.TeamRepository;
+import ssu.cromi.teamit.repository.ProjectRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -24,7 +24,7 @@ public class TeamServiceSqlTest {
     private TeamService teamService;
 
     @Autowired
-    private TeamRepository teamRepository;
+    private ProjectRepository projectRepository;
 
     @Autowired
     private ProjectMemberRepository projectMemberRepository;
@@ -61,7 +61,7 @@ public class TeamServiceSqlTest {
         Long savedId = teamService.createTeam(dto, userId);
 
         // then
-        Project savedProject = teamRepository.findById(savedId).orElse(null);
+        Project savedProject = projectRepository.findById(savedId).orElse(null);
         assertThat(savedProject).isNotNull();
         assertThat(savedProject.getCreaterId()).isEqualTo(userId);
         assertThat(savedProject.getProjectName()).isEqualTo("teamit");
