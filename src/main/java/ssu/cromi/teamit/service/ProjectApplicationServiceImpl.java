@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import ssu.cromi.teamit.exception.ProjectNotFoundException;
 import ssu.cromi.teamit.dto.ProjectApplicationRequestDto;
 import ssu.cromi.teamit.entity.Project;
 import ssu.cromi.teamit.entity.ProjectApplication;
@@ -23,8 +24,8 @@ public class ProjectApplicationServiceImpl implements ProjectApplicationService 
     @Transactional
     public void applyToProject(ProjectApplicationRequestDto dto, String applicantId, Long projectId) {
         // 1. 프로젝트 존재 여부 확인
-        Project project = ProjectRepository.findById(projectId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 프로젝트입니다."));
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new ProjectNotFoundException(projectId));
 
         // 2. 지원서 엔티티 생성
         ProjectApplication application = ProjectApplication.builder()
