@@ -48,7 +48,6 @@ public class ProjectDetailResponseDto {
     // 해당 DTO의 변수명은 추후에 마이페이지 작업에 따라 수정하면 됨
     private String creatorId; // 팀장 ID
     private String creatorNickname; // 팀장 닉네임
-    private String creatorIntro; // 자기소개
     private String creatorProfileImageUrl; // 프로필 이미지
     private List<String> creatorTechStack; // 기술 스택
 }
