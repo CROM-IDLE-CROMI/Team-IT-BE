@@ -4,6 +4,8 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,6 +21,7 @@ import java.io.IOException;
 
 @Component
 public class AuthTokenFilter extends OncePerRequestFilter {
+    private static final Logger logger = LoggerFactory.getLogger(AuthTokenFilter.class);
     private final JwtUtils jwtUtils;
     private final RefreshTokenService refreshTokenService;
     private final UserDetailsServiceImpl userDetailsService;
@@ -30,7 +33,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     }
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-        throws ServletException, IOException{
+            throws ServletException, IOException{
         try{
             String accessToken = parseJwt(request);
             // 1) Access Token 유효한 경우
@@ -38,20 +41,22 @@ public class AuthTokenFilter extends OncePerRequestFilter {
                 authenticateWithToken(accessToken, request);
             }
             // 2) 만료된 경우 → Refresh Token으로 재발행
-            else if(accessToken != null && jwtUtils.isTokenExpired(accessToken)){
+            else if(accessToken != null && jwtUtils.isTokenExpired(accessToken)) {
                 String refreshToken = parseRefreshToken(request);
-                RefreshToken stored = refreshTokenService.findByToken(refreshToken)
-                        .orElseThrow(() -> new TokenRefreshException(
-                                refreshToken, "RefreshToken이 없습니다"));
-                refreshTokenService.verifyExpiration(stored);
-                // 새 Access Token 발행
-                String newAccess = jwtUtils.refreshAccessToken(refreshToken);
+                if (refreshToken != null) {
+                    RefreshToken stored = refreshTokenService.findByToken(refreshToken)
+                            .orElseThrow(() -> new TokenRefreshException(
+                                    refreshToken, "RefreshToken이 없습니다"));
+                    refreshTokenService.verifyExpiration(stored);
+                    // 새 Access Token 발행
+                    String newAccess = jwtUtils.refreshAccessToken(refreshToken);
 
-                // 응답 헤더에 새 토큰 세팅
-                response.setHeader("Authorization", "Bearer " + newAccess);
+                    // 응답 헤더에 새 토큰 세팅
+                    response.setHeader("Authorization", "Bearer " + newAccess);
 
-                // 새 토큰으로 인증 컨텍스트 설정
-                authenticateWithToken(newAccess, request);
+                    // 새 토큰으로 인증 컨텍스트 설정
+                    authenticateWithToken(newAccess, request);
+                }
             }
         }
         catch (Exception e){
@@ -81,5 +86,9 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     private String parseRefreshToken(HttpServletRequest request) {
         String header = request.getHeader("Refresh-Token");
         return StringUtils.hasText(header) ? header : null;
+    }
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request){
+        return "/v1/auth/refresh".equals(request.getServletPath());
     }
 }
