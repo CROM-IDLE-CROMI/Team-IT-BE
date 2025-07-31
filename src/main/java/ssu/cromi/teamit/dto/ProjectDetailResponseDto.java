@@ -1,9 +1,8 @@
-package ssu.cromi.teamit.dto;
+package ssu.cromi.teamit.DTO;
 
 import lombok.Builder;
 import lombok.Getter;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -18,8 +17,8 @@ public class ProjectDetailResponseDto {
 
     private int memberNum;
 
-    private LocalDate validFrom;
-    private LocalDate validTo;
+    private LocalDateTime validFrom;
+    private LocalDateTime validTo;
 
     private String platform;
     private String platformDetail;
@@ -30,8 +29,8 @@ public class ProjectDetailResponseDto {
     private String category;
     private String categoryDetail;
 
-    private LocalDate startDate;
-    private LocalDate endDate;
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
     private LocalDateTime expectedStartDate;
 
     private String projectStatus;
@@ -45,9 +44,8 @@ public class ProjectDetailResponseDto {
     private List<String> applicantQuestions;
 
     // 작성자 프로필 (팀장 프로필 미리보기) DTO
-    // 해당 DTO의 변수명은 추후에 마이페이지 작업에 따라 수정하면 됨
+    // 해당 DTO 변수명은 추후에 마이페이지 작업에 따라 수정하면 됨
     private String creatorId; // 팀장 ID
     private String creatorNickname; // 팀장 닉네임
     private String creatorProfileImageUrl; // 프로필 이미지
-    private List<String> creatorTechStack; // 기술 스택
 }
