@@ -1,6 +1,6 @@
 package ssu.cromi.teamit.service;
 
-import ssu.cromi.teamit.dto.ProjectDetailResponseDto;
+import ssu.cromi.teamit.DTO.ProjectDetailResponseDto;
 
 public interface ProjectDetailService {
 

@@ -3,20 +3,21 @@ package ssu.cromi.teamit.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ssu.cromi.teamit.dto.ProjectDetailResponseDto;
+import ssu.cromi.teamit.DTO.ProjectDetailResponseDto;
 import ssu.cromi.teamit.entity.Project;
 import ssu.cromi.teamit.domain.User;
-import ssu.cromi.teamit.entity.enums.Position;
+import ssu.cromi.teamit.entity.enums.Category;
+import ssu.cromi.teamit.entity.enums.Platform;
+import ssu.cromi.teamit.entity.enums.Status;
 import ssu.cromi.teamit.exception.ProjectNotFoundException;
 import ssu.cromi.teamit.repository.ProjectRepository;
 import ssu.cromi.teamit.repository.UserRepository;
 
-import java.time.LocalDate;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class ProjectServiceImpl implements ProjectDetailService {
+public class ProjectDetailServiceImpl implements ProjectDetailService {
 
     private final ProjectRepository projectRepository;
     private final UserRepository userRepository;
@@ -40,30 +41,30 @@ public class ProjectServiceImpl implements ProjectDetailService {
                 .creatorId(project.getCreatorId())
                 .createdAt(project.getCreatedAt())
                 .memberNum(project.getMemberNum())
-                .validFrom(LocalDate.from(project.getValidFrom()))
-                .validTo(LocalDate.from(project.getValidTo()))
+                .validFrom(project.getValidFrom())
+                .validTo(project.getValidTo())
                 .platform(project.getPlatform().name())
-                .platformDetail(project.getPlatformDetail())
-                .recruitPositions(
-                        project.getRecruitPositions().stream()
-                                .map(Position::name)
-                                .collect(Collectors.toList())
-                )
+                .platformDetail(
+                        project.getPlatform() == Platform.ETC ? project.getPlatformDetail() : null)
+                .recruitPositions(project.getRecruitPositions())
                 .requireStack(project.getRequireStack())
                 .category(project.getCategory().name())
-                .categoryDetail(project.getCategoryDetail())
+                .categoryDetail(
+                        project.getCategory() == Category.ETC ? project.getCategoryDetail() : null)
                 .startDate(project.getStartDate())
                 .endDate(project.getEndDate())
                 .expectedStartDate(project.getExpectedStartDate())
-                .projectStatus(project.getProjectStatus().name())
-                .statusDetail(project.getStatusDetail())
+                .projectStatus(project.getStatus().name())
+                .statusDetail(
+                        project.getStatus() == Status.ETC ? project.getStatusDetail() : null)
                 .ideaExplain(project.getIdeaExplain())
                 .meetingApproach(project.getMeetingApproach().name())
                 .locations(project.getLocations())
                 .minRequest(project.getMinRequest())
                 .applicantQuestions(project.getApplicantQuestions())
-                .uid(user.getUid())
-                .nickName(user.getNickName())
+
+                .creatorId(project.getCreatorId())
+                .creatorNickname(user.getNickName())
                 .creatorProfileImageUrl(user.getProfileImg())
                 .build();
     }

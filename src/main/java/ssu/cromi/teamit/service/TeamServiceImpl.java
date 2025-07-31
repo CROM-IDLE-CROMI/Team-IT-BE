@@ -26,7 +26,7 @@ public class TeamServiceImpl implements TeamService {
 
     /* <팀원 모집> 등록글 생성
      * @param dto      >> 입력 받은 받은 모든 필드
-     * @param userId   로그인한 사용자 ID (createrId, ownerId 로 사용)
+     * @param userId   로그인한 사용자 ID (creatorId, ownerId 로 사용)
      * @return 생성된 프로젝트 ID
      */
 
@@ -93,7 +93,7 @@ public class TeamServiceImpl implements TeamService {
 
         Project saved = projectRepository.save(project);
 
-        Position leaderPos = parseEnum(Position.class, dto.getCreatorPosition(), "createrPosition");
+        Position leaderPos = parseEnum(Position.class, dto.getCreatorPosition(), "creatorPosition");
 
         ProjectMember leader = ProjectMember.builder()
                 .project(saved)
