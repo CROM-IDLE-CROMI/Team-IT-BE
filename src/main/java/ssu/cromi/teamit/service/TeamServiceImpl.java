@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static ssu.cromi.teamit.util.EnumValidator.parseEnum;
-import ssu.cromi.teamit.dto.CreateTeamRequestDto;
+import ssu.cromi.teamit.DTO.CreateTeamRequestDto;
 import ssu.cromi.teamit.entity.Project;
 import ssu.cromi.teamit.entity.ProjectMember;
 import ssu.cromi.teamit.entity.enums.*;
@@ -50,11 +50,14 @@ public class TeamServiceImpl implements TeamService {
             throw new InvalidEnumValueException("statusDetail", "기타 상태 상세 내용을 입력하세요.");
         }
 
-        List<Position> recruitPositions = dto.getRecruitPositions().stream()
-                .map(pos -> parseEnum(Position.class, pos, "recruitPositions"))
+        List<String> recruitPositions = dto.getRecruitPositions().stream()
+                .map(pos -> {
+                    Position parsed = parseEnum(Position.class, pos, "recruitPositions");
+                    return parsed.name(); // Enum → String recruitPositions List<STRING>로 처리
+                })
                 .collect(Collectors.toList());
 
-        if (recruitPositions.contains(Position.ETC) && StringUtils.isBlank(dto.getRecruitDetail())) {
+        if (recruitPositions.contains(Position.ETC.name()) && StringUtils.isBlank(dto.getRecruitDetail())) {
             throw new InvalidEnumValueException("recruitDetail", "기타 모집 직군 상세 내용을 입력하세요.");
         }
 
