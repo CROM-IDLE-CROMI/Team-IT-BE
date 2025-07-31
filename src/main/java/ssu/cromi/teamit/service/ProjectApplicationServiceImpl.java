@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import ssu.cromi.teamit.exception.ProjectNotFoundException;
-import ssu.cromi.teamit.dto.ProjectApplicationRequestDto;
+import ssu.cromi.teamit.DTO.ProjectApplicationRequestDto;
 import ssu.cromi.teamit.entity.Project;
 import ssu.cromi.teamit.entity.ProjectApplication;
 import ssu.cromi.teamit.repository.ProjectApplicationRepository;
@@ -25,7 +25,7 @@ public class ProjectApplicationServiceImpl implements ProjectApplicationService 
     public void applyToProject(ProjectApplicationRequestDto dto, String applicantId, Long projectId) {
         // 1. 프로젝트 존재 여부 확인
         Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new ProjectNotFoundException(projectId));
+                .orElseThrow(() -> new ProjectNotFoundException("해당하는 프로젝트를 찾을 수 없습니다."));
 
         // 2. 지원서 엔티티 생성
         ProjectApplication application = ProjectApplication.builder()

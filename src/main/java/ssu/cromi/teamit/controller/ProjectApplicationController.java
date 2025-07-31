@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
-import ssu.cromi.teamit.dto.ProjectApplicationRequestDto;
+import ssu.cromi.teamit.DTO.ProjectApplicationRequestDto;
 import ssu.cromi.teamit.security.UserDetailsImpl;
 import ssu.cromi.teamit.service.ProjectApplicationService;
 
@@ -25,7 +25,7 @@ public class ProjectApplicationController {
      * @param userDetails 로그인 사용자
      * @return 생성 완료 응답
      */
-    @PostMapping("/{projectid}/submission")
+    @PostMapping("/{projectId}/submission")
     public ResponseEntity<Void> applyToProject(
             @PathVariable Long projectId,
             @Valid @RequestBody ProjectApplicationRequestDto dto,
