@@ -1,7 +1,6 @@
 package ssu.cromi.teamit.DTO.common;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.Getter;
 
 @Getter
