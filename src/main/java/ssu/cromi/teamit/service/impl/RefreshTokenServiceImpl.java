@@ -15,25 +15,25 @@ import java.util.UUID;
 @Service
 public class RefreshTokenServiceImpl implements RefreshTokenService {
 
-    private final RefreshTokenService refreshTokenService;
     @Value("${jwt.expiration-refresh}")
     private long refreshTokenDurationMs;
 
     private final RefreshTokenRepository refreshTokenRepository;
 
-    public RefreshTokenServiceImpl(RefreshTokenRepository refreshTokenRepository, RefreshTokenService refreshTokenService){
+    public RefreshTokenServiceImpl(RefreshTokenRepository refreshTokenRepository){
         this.refreshTokenRepository = refreshTokenRepository;
-        this.refreshTokenService = refreshTokenService;
     }
 
     @Override
+    @Transactional
     public RefreshToken createRefreshToken(User user){
         refreshTokenRepository.deleteByUser(user);
 
-        RefreshToken token = new RefreshToken();
-        token.setUser(user);
-        token.setExpiryDate(Instant.now().plusMillis(refreshTokenDurationMs));
-        token.setToken(UUID.randomUUID().toString());
+        RefreshToken token = new RefreshToken(
+                user,
+                UUID.randomUUID().toString(),
+                Instant.now().plusMillis(refreshTokenDurationMs)
+        );
         return refreshTokenRepository.save(token);
     }
     @Override

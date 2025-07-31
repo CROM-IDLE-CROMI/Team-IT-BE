@@ -1,6 +1,8 @@
 package ssu.cromi.teamit.controller;
 
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,14 +27,15 @@ import java.time.format.DateTimeFormatter;
 public class AuthController {
     private final UserService userService;
     private final AuthService authService;
-    private final RefreshTokenService refreshTokenService;
     private final JwtUtils jwtUtils;
+    @Autowired @Lazy
+    private RefreshTokenService refreshTokenService;
 
-    public AuthController(UserService userService, AuthService authservice, RefreshTokenService refreshTokenService, JwtUtils jwtUtils){
+
+    public AuthController(UserService userService, AuthService authservice, JwtUtils jwtUtils){
         this.userService = userService;
         this.authService = authservice;
         this.jwtUtils = jwtUtils;
-        this.refreshTokenService = refreshTokenService;
     }
     //회원가입
     @PostMapping("/users")
@@ -61,18 +64,16 @@ public class AuthController {
 
     //Jwt 재발급
     @PostMapping("/refresh")
-    public ResponseEntity<JwtResponse> refreshToken(
-            @Valid @RequestBody RefreshTokenRequest request){
-        RefreshToken stored = refreshTokenService.findByToken(request.getRefreshToken())
-                .orElseThrow(()-> new TokenRefreshException(request.getRefreshToken(), "RefreshToken이 DB에 존재하지 않음"));
+    public ResponseEntity<JwtResponse> refresh(@Valid @RequestBody RefreshTokenRequest req){
+        RefreshToken stored = refreshTokenService.findByToken(req.getRefreshToken())
+                .orElseThrow(() -> new TokenRefreshException(req.getRefreshToken(), "DB에 존재하지 않음"));
         refreshTokenService.verifyExpiration(stored);
-        String newAccess = jwtUtils.refreshAccessToken(request.getRefreshToken());
+
+        //DB에서 얻은 사용자로 새 AccessToken 생성
+        String newAccess = jwtUtils.generateJwtToken(stored.getUser());
         RefreshToken newRefresh = refreshTokenService.createRefreshToken(stored.getUser());
-        JwtResponse response = new JwtResponse(
-                newAccess,
-                jwtUtils.getJwtExpirationMs(),
-                newRefresh.getToken()
-        );
-        return ResponseEntity.ok(response);
+
+        JwtResponse res = new JwtResponse(newAccess, "Bearer", jwtUtils.getJwtExpirationMs(),newRefresh.getToken(),stored.getUser().getUid());
+        return ResponseEntity.ok(res);
     }
 }
