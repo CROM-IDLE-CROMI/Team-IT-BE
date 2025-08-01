@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import ssu.cromi.teamit.dto.ProjectDetailResponseDto;
+import ssu.cromi.teamit.DTO.ProjectDetailResponseDto;
 import ssu.cromi.teamit.service.ProjectDetailService;
 
 @RestController

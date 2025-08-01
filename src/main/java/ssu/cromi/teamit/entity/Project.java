@@ -90,7 +90,7 @@ public class Project {
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "recruit_positions", columnDefinition = "JSON", nullable = false)
-    private List<Position> recruitPositions; // 모집 직군 (프론트, 백, 디자인 등)
+    private List<String> recruitPositions; // 모집 직군 (프론트, 백, 디자인 등)
 
     @Column(name = "recruit_detail")
     private String recruitDetail; // 모집 직군 기타 작성란

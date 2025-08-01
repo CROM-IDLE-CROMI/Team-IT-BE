@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static ssu.cromi.teamit.util.EnumValidator.parseEnum;
-import ssu.cromi.teamit.dto.CreateTeamRequestDto;
+import ssu.cromi.teamit.DTO.CreateTeamRequestDto;
 import ssu.cromi.teamit.entity.Project;
 import ssu.cromi.teamit.entity.ProjectMember;
 import ssu.cromi.teamit.entity.enums.*;
@@ -26,7 +26,7 @@ public class TeamServiceImpl implements TeamService {
 
     /* <팀원 모집> 등록글 생성
      * @param dto      >> 입력 받은 받은 모든 필드
-     * @param userId   로그인한 사용자 ID (createrId, ownerId 로 사용)
+     * @param userId   로그인한 사용자 ID (creatorId, ownerId 로 사용)
      * @return 생성된 프로젝트 ID
      */
 
@@ -50,11 +50,14 @@ public class TeamServiceImpl implements TeamService {
             throw new InvalidEnumValueException("statusDetail", "기타 상태 상세 내용을 입력하세요.");
         }
 
-        List<Position> recruitPositions = dto.getRecruitPositions().stream()
-                .map(pos -> parseEnum(Position.class, pos, "recruitPositions"))
+        List<String> recruitPositions = dto.getRecruitPositions().stream()
+                .map(pos -> {
+                    Position parsed = parseEnum(Position.class, pos, "recruitPositions");
+                    return parsed.name(); // Enum → String recruitPositions List<STRING>로 처리
+                })
                 .collect(Collectors.toList());
 
-        if (recruitPositions.contains(Position.ETC) && StringUtils.isBlank(dto.getRecruitDetail())) {
+        if (recruitPositions.contains(Position.ETC.name()) && StringUtils.isBlank(dto.getRecruitDetail())) {
             throw new InvalidEnumValueException("recruitDetail", "기타 모집 직군 상세 내용을 입력하세요.");
         }
 
@@ -90,7 +93,7 @@ public class TeamServiceImpl implements TeamService {
 
         Project saved = projectRepository.save(project);
 
-        Position leaderPos = parseEnum(Position.class, dto.getCreatorPosition(), "createrPosition");
+        Position leaderPos = parseEnum(Position.class, dto.getCreatorPosition(), "creatorPosition");
 
         ProjectMember leader = ProjectMember.builder()
                 .project(saved)

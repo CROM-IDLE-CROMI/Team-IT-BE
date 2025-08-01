@@ -6,7 +6,8 @@ public enum Status {
     CLOSED("모집 완료"),
     ONGOING("프로젝트 진행중"),
     FINISHED("프로젝트 종료"),
-    DELETED("삭제된 프로젝트");
+    DELETED("삭제된 프로젝트"),
+    ETC("기타");
 
     private final String displayName;
 
