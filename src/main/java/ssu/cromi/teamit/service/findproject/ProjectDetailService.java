@@ -1,4 +1,4 @@
-package ssu.cromi.teamit.service;
+package ssu.cromi.teamit.service.findproject;
 
 import ssu.cromi.teamit.DTO.ProjectDetailResponseDto;
 

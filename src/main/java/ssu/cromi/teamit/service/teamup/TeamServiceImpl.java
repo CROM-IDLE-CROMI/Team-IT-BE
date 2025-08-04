@@ -1,4 +1,4 @@
-package ssu.cromi.teamit.service;
+package ssu.cromi.teamit.service.teamup;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -10,12 +10,12 @@ import java.util.stream.Collectors;
 
 import static ssu.cromi.teamit.util.EnumValidator.parseEnum;
 import ssu.cromi.teamit.DTO.CreateTeamRequestDto;
-import ssu.cromi.teamit.entity.Project;
-import ssu.cromi.teamit.entity.ProjectMember;
+import ssu.cromi.teamit.entity.teamup.Project;
+import ssu.cromi.teamit.entity.teamup.ProjectMember;
 import ssu.cromi.teamit.entity.enums.*;
 import ssu.cromi.teamit.exception.InvalidEnumValueException;
-import ssu.cromi.teamit.repository.ProjectRepository;
-import ssu.cromi.teamit.repository.ProjectMemberRepository;
+import ssu.cromi.teamit.repository.teamup.ProjectRepository;
+import ssu.cromi.teamit.repository.teamup.ProjectMemberRepository;
 
 @Service
 @RequiredArgsConstructor

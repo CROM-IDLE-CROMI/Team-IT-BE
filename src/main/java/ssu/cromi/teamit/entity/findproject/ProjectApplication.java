@@ -1,4 +1,4 @@
-package ssu.cromi.teamit.entity;
+package ssu.cromi.teamit.entity.findproject;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -6,6 +6,7 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import ssu.cromi.teamit.converter.StringListToJsonConverter;
+import ssu.cromi.teamit.entity.teamup.Project;
 
 
 import java.time.LocalDateTime;

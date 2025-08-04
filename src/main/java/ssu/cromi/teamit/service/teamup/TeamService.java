@@ -1,4 +1,4 @@
-package ssu.cromi.teamit.service;
+package ssu.cromi.teamit.service.teamup;
 
 import ssu.cromi.teamit.DTO.CreateTeamRequestDto;
 

@@ -1,4 +1,4 @@
-package ssu.cromi.teamit.controller;
+package ssu.cromi.teamit.controller.findproject;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +9,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 import ssu.cromi.teamit.DTO.ProjectApplicationRequestDto;
 import ssu.cromi.teamit.security.UserDetailsImpl;
-import ssu.cromi.teamit.service.ProjectApplicationService;
+import ssu.cromi.teamit.service.findproject.ProjectApplicationService;
 
 @RestController
 @RequestMapping("/v1/projects")
