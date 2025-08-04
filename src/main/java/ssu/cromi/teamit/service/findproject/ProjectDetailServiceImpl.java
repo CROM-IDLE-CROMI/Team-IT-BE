@@ -3,7 +3,7 @@ package ssu.cromi.teamit.service.findproject;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ssu.cromi.teamit.DTO.ProjectDetailResponseDto;
+import ssu.cromi.teamit.DTO.findproject.ProjectDetailResponseDto;
 import ssu.cromi.teamit.entity.teamup.Project;
 import ssu.cromi.teamit.domain.User;
 import ssu.cromi.teamit.entity.enums.Category;

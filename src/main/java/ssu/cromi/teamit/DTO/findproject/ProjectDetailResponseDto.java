@@ -1,4 +1,4 @@
-package ssu.cromi.teamit.DTO;
+package ssu.cromi.teamit.DTO.findproject;
 
 import lombok.Builder;
 import lombok.Getter;
