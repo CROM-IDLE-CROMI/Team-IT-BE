@@ -14,6 +14,7 @@ public class ProjectDetailResponseDto {
     private String title;
     private String projectName;
     private LocalDateTime createdAt;
+    private long viewCount; // 조회수
 
     private int memberNum;
 
