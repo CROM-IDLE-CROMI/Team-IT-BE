@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import ssu.cromi.teamit.DTO.auth.JwtResponse;
 import ssu.cromi.teamit.DTO.auth.LoginRequest;
@@ -16,6 +17,7 @@ import ssu.cromi.teamit.domain.RefreshToken;
 import ssu.cromi.teamit.domain.User;
 import ssu.cromi.teamit.exceptions.TokenRefreshException;
 import ssu.cromi.teamit.security.JwtUtils;
+import ssu.cromi.teamit.security.UserDetailsImpl;
 import ssu.cromi.teamit.service.AuthService;
 import ssu.cromi.teamit.service.UserService;
 import ssu.cromi.teamit.service.RefreshTokenService;
@@ -75,5 +77,11 @@ public class AuthController {
 
         JwtResponse res = new JwtResponse(newAccess, "Bearer", jwtUtils.getJwtExpirationMs(),newRefresh.getToken(),stored.getUser().getUid());
         return ResponseEntity.ok(res);
+    }
+    @PostMapping("/logout")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void logout(@AuthenticationPrincipal UserDetailsImpl userDetails){
+        User user = userDetails.getUser();
+        refreshTokenService.deleteByUser(user);
     }
 }
