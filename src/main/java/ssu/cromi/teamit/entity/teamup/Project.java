@@ -1,6 +1,6 @@
 // DB에 저장될 project 클래스 작성
 
-package ssu.cromi.teamit.entity;
+package ssu.cromi.teamit.entity.teamup;
 
 import jakarta.persistence.*;
 import org.hibernate.annotations.JdbcTypeCode;
@@ -15,9 +15,7 @@ import ssu.cromi.teamit.entity.enums.Category;
 import ssu.cromi.teamit.entity.enums.MeetingApproach;
 import ssu.cromi.teamit.entity.enums.ProjectStatus;
 import ssu.cromi.teamit.entity.enums.WritingStatus;
-import ssu.cromi.teamit.entity.enums.Position;
 import ssu.cromi.teamit.entity.enums.Status;
-import ssu.cromi.teamit.entity.enums.MemberRole;
 
 @Entity
 @Getter

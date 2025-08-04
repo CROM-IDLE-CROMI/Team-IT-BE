@@ -1,19 +1,17 @@
-package ssu.cromi.teamit.service;
+package ssu.cromi.teamit.service.findproject;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ssu.cromi.teamit.DTO.ProjectDetailResponseDto;
-import ssu.cromi.teamit.entity.Project;
+import ssu.cromi.teamit.entity.teamup.Project;
 import ssu.cromi.teamit.domain.User;
 import ssu.cromi.teamit.entity.enums.Category;
 import ssu.cromi.teamit.entity.enums.Platform;
 import ssu.cromi.teamit.entity.enums.Status;
 import ssu.cromi.teamit.exception.ProjectNotFoundException;
-import ssu.cromi.teamit.repository.ProjectRepository;
+import ssu.cromi.teamit.repository.teamup.ProjectRepository;
 import ssu.cromi.teamit.repository.UserRepository;
-
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor

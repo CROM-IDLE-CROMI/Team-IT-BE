@@ -1,4 +1,4 @@
-package ssu.cromi.teamit.controller;
+package ssu.cromi.teamit.controller.teamup;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import ssu.cromi.teamit.DTO.CreateTeamRequestDto;
 import ssu.cromi.teamit.security.UserDetailsImpl;
-import ssu.cromi.teamit.service.TeamService;
+import ssu.cromi.teamit.service.teamup.TeamService;
 import ssu.cromi.teamit.response.ApiResponse;
 
 @RestController
