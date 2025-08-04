@@ -38,17 +38,6 @@ public class UserProfile {
     @Getter
     private Integer birthday;
 
-    /*
-    @NotNull(message = "생성날짜 누락됨")
-    @Getter
-    private LocalDateTime createdAt;
-
-    @NotNull(message = "업데이트 날짜 누락됨")
-    @Getter
-
-    private LocalDateTime updatedAt;
-    */
-
     @Getter
     @PositiveOrZero(message = "정의되지 않은 포인트")
     private Long point;
