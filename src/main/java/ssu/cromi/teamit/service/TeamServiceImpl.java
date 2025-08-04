@@ -87,7 +87,7 @@ public class TeamServiceImpl implements TeamService {
                 .locations(dto.getLocations())
                 .minRequest(dto.getMinRequest())
                 .applicantQuestions(dto.getApplicantQuestions())
-                .writingStatus(WritingStatus.IN_PROGRESS)
+                .writingStatus(WritingStatus.COMPLETED)
                 .progress(0)
                 .viewCount(0)
                 .build();
