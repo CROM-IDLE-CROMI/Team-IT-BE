@@ -70,6 +70,10 @@ public class Project {
         this.updatedAt = LocalDateTime.now();
     }
 
+    @Builder.Default
+    @Column(name = "view_count", nullable = false)
+    private long viewCount = 0L; // 조회수
+
     // 실제 프로젝트 모집 양식에 있는 내용
     // project_table 내의 필드
 

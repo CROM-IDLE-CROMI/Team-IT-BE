@@ -89,6 +89,7 @@ public class TeamServiceImpl implements TeamService {
                 .applicantQuestions(dto.getApplicantQuestions())
                 .writingStatus(WritingStatus.IN_PROGRESS)
                 .progress(0)
+                .viewCount(0)
                 .build();
 
         Project saved = projectRepository.save(project);
