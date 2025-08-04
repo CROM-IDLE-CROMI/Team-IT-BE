@@ -1,0 +1,71 @@
+package ssu.cromi.teamit.service;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import ssu.cromi.teamit.DTO.ProjectDetailResponseDto;
+import ssu.cromi.teamit.entity.Project;
+import ssu.cromi.teamit.domain.User;
+import ssu.cromi.teamit.entity.enums.Category;
+import ssu.cromi.teamit.entity.enums.Platform;
+import ssu.cromi.teamit.entity.enums.Status;
+import ssu.cromi.teamit.exception.ProjectNotFoundException;
+import ssu.cromi.teamit.repository.ProjectRepository;
+import ssu.cromi.teamit.repository.UserRepository;
+
+import java.util.stream.Collectors;
+
+@Service
+@RequiredArgsConstructor
+public class ProjectDetailServiceImpl implements ProjectDetailService {
+
+    private final ProjectRepository projectRepository;
+    private final UserRepository userRepository;
+
+    @Override
+    @Transactional(readOnly = true)
+    public ProjectDetailResponseDto getProjectDetail(Long projectId) {
+        // 1. 프로젝트 조회
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new ProjectNotFoundException("해당 프로젝트가 존재하지 않습니다."));
+
+        // 2. 작성자 정보 조회
+        User user = userRepository.findById(project.getCreatorId())
+                .orElseThrow(() -> new IllegalArgumentException("작성자 정보를 찾을 수 없습니다."));
+
+        // 3. 응답 DTO 조립
+        return ProjectDetailResponseDto.builder()
+                .projectId(project.getId())
+                .title(project.getTitle())
+                .projectName(project.getProjectName())
+                .creatorId(project.getCreatorId())
+                .createdAt(project.getCreatedAt())
+                .memberNum(project.getMemberNum())
+                .validFrom(project.getValidFrom())
+                .validTo(project.getValidTo())
+                .platform(project.getPlatform().name())
+                .platformDetail(
+                        project.getPlatform() == Platform.ETC ? project.getPlatformDetail() : null)
+                .recruitPositions(project.getRecruitPositions())
+                .requireStack(project.getRequireStack())
+                .category(project.getCategory().name())
+                .categoryDetail(
+                        project.getCategory() == Category.ETC ? project.getCategoryDetail() : null)
+                .startDate(project.getStartDate())
+                .endDate(project.getEndDate())
+                .expectedStartDate(project.getExpectedStartDate())
+                .projectStatus(project.getStatus().name())
+                .statusDetail(
+                        project.getStatus() == Status.ETC ? project.getStatusDetail() : null)
+                .ideaExplain(project.getIdeaExplain())
+                .meetingApproach(project.getMeetingApproach().name())
+                .locations(project.getLocations())
+                .minRequest(project.getMinRequest())
+                .applicantQuestions(project.getApplicantQuestions())
+
+                .creatorId(project.getCreatorId())
+                .creatorNickname(user.getNickName())
+                .creatorProfileImageUrl(user.getProfileImg())
+                .build();
+    }
+}
