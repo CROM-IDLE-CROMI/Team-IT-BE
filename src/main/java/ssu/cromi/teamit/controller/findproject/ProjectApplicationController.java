@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
-import ssu.cromi.teamit.DTO.ProjectApplicationRequestDto;
+import ssu.cromi.teamit.DTO.findproject.ProjectApplicationRequestDto;
 import ssu.cromi.teamit.security.UserDetailsImpl;
 import ssu.cromi.teamit.service.findproject.ProjectApplicationService;
 

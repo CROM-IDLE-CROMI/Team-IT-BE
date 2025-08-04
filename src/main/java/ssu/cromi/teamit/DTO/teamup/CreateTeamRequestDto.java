@@ -2,7 +2,7 @@
     프로젝트 생성 요청 DTO
     사용자가 작성한 팀 모집 정보를 서버로 전달할 때 이용
  */
-package ssu.cromi.teamit.DTO;
+package ssu.cromi.teamit.DTO.teamup;
 
 import jakarta.validation.constraints.*;
 import lombok.Builder;
