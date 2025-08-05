@@ -45,7 +45,7 @@ public class CreateTeamRequestDto {
 
     @NotEmpty(message = "모집 직군은 최소 하나 이상 입력해야 합니다.")
     private List<@NotBlank(message = "직군 값이 비어있습니다.") String> recruitPositions; // Enum(Position)
-    private String recruitDetail;
+    private List<String> recruitDetail;
 
     @NotEmpty(message = "기술 스택은 최소 하나 이상 입력해야 합니다.")
     private List<@NotBlank(message = "스택 값이 비어있습니다.") String> requireStack;

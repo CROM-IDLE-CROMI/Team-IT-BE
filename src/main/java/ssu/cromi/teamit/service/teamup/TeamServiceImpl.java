@@ -57,9 +57,11 @@ public class TeamServiceImpl implements TeamService {
                 })
                 .collect(Collectors.toList());
 
-        if (recruitPositions.contains(Position.ETC.name()) && StringUtils.isBlank(dto.getRecruitDetail())) {
+        if (recruitPositions.contains(Position.ETC.name())
+                && (dto.getRecruitDetail() == null || dto.getRecruitDetail().isEmpty())) {
             throw new InvalidEnumValueException("recruitDetail", "기타 모집 직군 상세 내용을 입력하세요.");
         }
+
 
         // 3) Project 엔티티 빌드
         Project project = Project.builder()
