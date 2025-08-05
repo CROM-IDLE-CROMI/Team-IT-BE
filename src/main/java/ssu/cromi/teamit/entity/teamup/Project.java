@@ -94,8 +94,9 @@ public class Project {
     @Column(name = "recruit_positions", columnDefinition = "JSON", nullable = false)
     private List<String> recruitPositions; // 모집 직군 (프론트, 백, 디자인 등)
 
+    @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "recruit_detail")
-    private String recruitDetail; // 모집 직군 기타 작성란
+    private List<String> recruitDetail; // 모집 직군 기타 작성란
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "require_stack", columnDefinition = "JSON", nullable = false)
