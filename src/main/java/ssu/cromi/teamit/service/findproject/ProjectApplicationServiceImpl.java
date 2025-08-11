@@ -35,6 +35,7 @@ public class ProjectApplicationServiceImpl implements ProjectApplicationService 
                 .position(dto.getPosition())
                 .motivation(dto.getMotivation())
                 .answers(dto.getAnswers())
+                .requirements(dto.getRequirements())
                 .createdAt(LocalDateTime.now())
                 .build();
         projectApplicationRepository.save(application);
