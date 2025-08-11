@@ -8,6 +8,7 @@ import java.util.List;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
+import ssu.cromi.teamit.domain.User;
 import ssu.cromi.teamit.entity.enums.MemberRole;
 import ssu.cromi.teamit.entity.enums.Position;
 
@@ -37,4 +38,8 @@ public class ProjectMember {
     @Enumerated(EnumType.STRING)
     @Column(name = "member_position", nullable = false)
     private Position position;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 }
