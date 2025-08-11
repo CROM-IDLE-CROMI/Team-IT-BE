@@ -18,14 +18,7 @@ public class ProjectApplicationController {
 
     private final ProjectApplicationService projectApplicationService;
 
-    /**
-     * 프로젝트 지원
-     * @param projectId 지원할 프로젝트 ID
-     * @param dto 지원서 요청 본문
-     * @param userDetails 로그인 사용자
-     * @return 생성 완료 응답
-     */
-    @PostMapping("/{projectId}/submission")
+    @PostMapping("/{projectId}/apply")
     public ResponseEntity<Void> applyToProject(
             @PathVariable Long projectId,
             @Valid @RequestBody ProjectApplicationRequestDto dto,
