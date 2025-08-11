@@ -25,6 +25,8 @@ public class ProjectDetailResponseDto {
     private String platformDetail;
 
     private List<String> recruitPositions;
+    private List<String> recruitDetail;
+
     private List<String> requireStack;
 
     private String category;
