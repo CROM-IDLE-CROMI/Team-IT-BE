@@ -1,4 +1,4 @@
-package ssu.cromi.teamit.DTO.auth;
+package ssu.cromi.teamit.dto.auth;
 
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;

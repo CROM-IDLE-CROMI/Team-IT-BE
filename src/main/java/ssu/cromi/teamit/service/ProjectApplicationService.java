@@ -1,6 +1,6 @@
 package ssu.cromi.teamit.service;
 
-import ssu.cromi.teamit.DTO.ProjectApplicationRequestDto;
+import ssu.cromi.teamit.dto.ProjectApplicationRequestDto;
 
 public interface ProjectApplicationService {
 

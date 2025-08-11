@@ -1,11 +1,10 @@
-package ssu.cromi.teamit.DTO.user;
+package ssu.cromi.teamit.dto.user;
 
 import jakarta.validation.constraints.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import org.hibernate.validator.constraints.Length;
-import java.time.LocalDateTime;
 
 @EqualsAndHashCode
 @ToString

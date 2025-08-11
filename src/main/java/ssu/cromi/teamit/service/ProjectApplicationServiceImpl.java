@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import ssu.cromi.teamit.exception.ProjectNotFoundException;
-import ssu.cromi.teamit.DTO.ProjectApplicationRequestDto;
+import ssu.cromi.teamit.dto.ProjectApplicationRequestDto;
 import ssu.cromi.teamit.entity.Project;
 import ssu.cromi.teamit.entity.ProjectApplication;
 import ssu.cromi.teamit.repository.ProjectApplicationRepository;

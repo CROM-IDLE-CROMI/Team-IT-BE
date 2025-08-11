@@ -3,7 +3,7 @@ package ssu.cromi.teamit.service.impl;
 import jakarta.transaction.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import ssu.cromi.teamit.DTO.auth.SignupRequest;
+import ssu.cromi.teamit.dto.auth.SignupRequest;
 import ssu.cromi.teamit.domain.User;
 import ssu.cromi.teamit.exceptions.DuplicateEmailException;
 import ssu.cromi.teamit.exceptions.DuplicateUsernameException;

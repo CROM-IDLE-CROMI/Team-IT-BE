@@ -1,4 +1,4 @@
-package ssu.cromi.teamit.DTO.common;
+package ssu.cromi.teamit.dto.common;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;

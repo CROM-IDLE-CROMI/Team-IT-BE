@@ -1,4 +1,4 @@
-package ssu.cromi.teamit.DTO.user;
+package ssu.cromi.teamit.dto.user;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

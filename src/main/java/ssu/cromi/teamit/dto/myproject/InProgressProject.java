@@ -1,4 +1,4 @@
-package ssu.cromi.teamit.DTO.myproject;
+package ssu.cromi.teamit.dto.myproject;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

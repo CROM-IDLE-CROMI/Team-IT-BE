@@ -1,9 +1,8 @@
-package ssu.cromi.teamit.DTO.user;
+package ssu.cromi.teamit.dto.user;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 

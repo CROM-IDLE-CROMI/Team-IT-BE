@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static ssu.cromi.teamit.util.EnumValidator.parseEnum;
-import ssu.cromi.teamit.DTO.CreateTeamRequestDto;
+import ssu.cromi.teamit.dto.CreateTeamRequestDto;
 import ssu.cromi.teamit.entity.Project;
 import ssu.cromi.teamit.entity.ProjectMember;
 import ssu.cromi.teamit.entity.enums.*;

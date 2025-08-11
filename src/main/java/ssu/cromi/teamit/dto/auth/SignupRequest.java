@@ -1,4 +1,4 @@
-package ssu.cromi.teamit.DTO.auth;
+package ssu.cromi.teamit.dto.auth;
 //회원가입 DTO
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.*;
