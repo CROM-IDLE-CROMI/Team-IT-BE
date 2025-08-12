@@ -70,6 +70,10 @@ public class Project {
         this.updatedAt = LocalDateTime.now();
     }
 
+    @Builder.Default
+    @Column(name = "view_count", nullable = false)
+    private long viewCount = 0L; // 조회수
+
     // 실제 프로젝트 모집 양식에 있는 내용
     // project_table 내의 필드
 
@@ -92,8 +96,9 @@ public class Project {
     @Column(name = "recruit_positions", columnDefinition = "JSON", nullable = false)
     private List<String> recruitPositions; // 모집 직군 (프론트, 백, 디자인 등)
 
+    @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "recruit_detail")
-    private String recruitDetail; // 모집 직군 기타 작성란
+    private List<String> recruitDetail; // 모집 직군 기타 작성란
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "require_stack", columnDefinition = "JSON", nullable = false)

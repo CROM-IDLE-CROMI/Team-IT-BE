@@ -14,6 +14,7 @@ public class ProjectDetailResponseDto {
     private String title;
     private String projectName;
     private LocalDateTime createdAt;
+    private long viewCount; // 조회수
 
     private int memberNum;
 
@@ -24,6 +25,8 @@ public class ProjectDetailResponseDto {
     private String platformDetail;
 
     private List<String> recruitPositions;
+    private List<String> recruitDetail;
+
     private List<String> requireStack;
 
     private String category;

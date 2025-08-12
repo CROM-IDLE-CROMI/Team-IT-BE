@@ -47,6 +47,10 @@ public class ProjectApplication {
     @Convert(converter = StringListToJsonConverter.class)
     private List<String> answers;
 
+    @Builder.Default
+    @Column(name = "requirements", nullable = false)
+    private Boolean requirements = false;
+
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 

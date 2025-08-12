@@ -1,4 +1,4 @@
-package ssu.cromi.teamit.controller;
+package ssu.cromi.teamit.controller.teamup;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

@@ -1,4 +1,4 @@
-package ssu.cromi.teamit.controller;
+package ssu.cromi.teamit.controller.findproject;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
