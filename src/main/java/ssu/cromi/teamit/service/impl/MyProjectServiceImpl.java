@@ -81,7 +81,6 @@ public class MyProjectServiceImpl implements MyProjectService{
     }
     private Position findMyPositionInProject(User user, Project project) {
         return project.getProjectMembers().stream()
-                // .getId() 대신 .getUid()를 사용하도록 수정합니다.
                 .filter(member -> member.getUser().getUid().equals(user.getUid()))
                 .findFirst()
                 .map(ProjectMember::getPosition)
