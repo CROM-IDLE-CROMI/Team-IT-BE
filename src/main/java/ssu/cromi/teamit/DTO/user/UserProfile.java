@@ -5,7 +5,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import org.hibernate.validator.constraints.Length;
-import java.time.LocalDateTime;
 
 @EqualsAndHashCode
 @ToString

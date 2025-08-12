@@ -1,0 +1,36 @@
+spring:
+  application:
+    name: Team-IT # 애플리케이션 이름
+
+  datasource:
+    # 실제 DB 연결 정보
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/teamit?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: root
+    password: natalie436767^^7!! # 실제 비밀번호
+
+  jpa:
+    # 개발 초기에는 create 또는 update, 배포 시에는 validate 또는 none 권장
+    hibernate:
+      ddl-auto: update
+    # 콘솔에 실행되는 SQL문 출력
+    show-sql: true
+    properties:
+      hibernate:
+        # SQL문을 보기 좋게 포맷팅
+        format_sql: true
+        # MySQL 8 버전에 최적화된 문법 사용
+        dialect: org.hibernate.dialect.MySQL8Dialect
+
+# JWT (JSON Web Token) 설정
+jwt:
+  secret: ThisIsSecretKeyLocationDoNotPutRealSecretKeyAndPushToGithub
+  expiration-access: 3600000      # Access Token 만료 시간 (1시간)
+  expiration-refresh: 604800000   # Refresh Token 만료 시간 (7일)
+
+# 로깅 레벨 설정
+logging:
+  level:
+    org.springframework: INFO
+    com.TeamIT: DEBUG
+    org.springframework.security: DEBUG
