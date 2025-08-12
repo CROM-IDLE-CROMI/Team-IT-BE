@@ -1,4 +1,4 @@
-package ssu.cromi.teamit.dto;
+package ssu.cromi.teamit.DTO;
 
 public class ProjectCommentRequestDto {
 }

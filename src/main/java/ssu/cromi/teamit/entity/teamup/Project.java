@@ -8,8 +8,10 @@ import org.hibernate.type.SqlTypes;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
+import ssu.cromi.teamit.domain.User;
 import ssu.cromi.teamit.entity.enums.Platform;
 import ssu.cromi.teamit.entity.enums.Category;
 import ssu.cromi.teamit.entity.enums.MeetingApproach;
@@ -147,4 +149,11 @@ public class Project {
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "applicant_questions", columnDefinition = "JSON", nullable = false)
     private List<String> applicantQuestions; // 지원자에게 질문하고 싶은 내용
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner_id")
+    private User owner;
+
+    @OneToMany(mappedBy = "project")
+    private List<ProjectMember> projectMembers = new ArrayList<>();
 }
