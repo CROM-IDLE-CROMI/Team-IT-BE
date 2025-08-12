@@ -1,12 +1,7 @@
-package ssu.cromi.teamit.entity;
+package ssu.cromi.teamit.entity.teamup;
 
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.util.List;
-
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
 
 import ssu.cromi.teamit.entity.enums.MemberRole;
 import ssu.cromi.teamit.entity.enums.Position;

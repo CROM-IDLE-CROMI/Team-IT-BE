@@ -1,6 +1,6 @@
 // DB에 저장될 project 클래스 작성
 
-package ssu.cromi.teamit.entity;
+package ssu.cromi.teamit.entity.teamup;
 
 import jakarta.persistence.*;
 import org.hibernate.annotations.JdbcTypeCode;
@@ -15,9 +15,7 @@ import ssu.cromi.teamit.entity.enums.Category;
 import ssu.cromi.teamit.entity.enums.MeetingApproach;
 import ssu.cromi.teamit.entity.enums.ProjectStatus;
 import ssu.cromi.teamit.entity.enums.WritingStatus;
-import ssu.cromi.teamit.entity.enums.Position;
 import ssu.cromi.teamit.entity.enums.Status;
-import ssu.cromi.teamit.entity.enums.MemberRole;
 
 @Entity
 @Getter
@@ -70,6 +68,10 @@ public class Project {
         this.updatedAt = LocalDateTime.now();
     }
 
+    @Builder.Default
+    @Column(name = "view_count", nullable = false)
+    private long viewCount = 0L; // 조회수
+
     // 실제 프로젝트 모집 양식에 있는 내용
     // project_table 내의 필드
 
@@ -92,8 +94,9 @@ public class Project {
     @Column(name = "recruit_positions", columnDefinition = "JSON", nullable = false)
     private List<String> recruitPositions; // 모집 직군 (프론트, 백, 디자인 등)
 
+    @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "recruit_detail")
-    private String recruitDetail; // 모집 직군 기타 작성란
+    private List<String> recruitDetail; // 모집 직군 기타 작성란
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "require_stack", columnDefinition = "JSON", nullable = false)

@@ -1,4 +1,4 @@
-package ssu.cromi.teamit.service;
+package ssu.cromi.teamit.service.teamup;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -9,13 +9,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static ssu.cromi.teamit.util.EnumValidator.parseEnum;
-import ssu.cromi.teamit.DTO.CreateTeamRequestDto;
-import ssu.cromi.teamit.entity.Project;
-import ssu.cromi.teamit.entity.ProjectMember;
+import ssu.cromi.teamit.DTO.teamup.CreateTeamRequestDto;
+import ssu.cromi.teamit.entity.teamup.Project;
+import ssu.cromi.teamit.entity.teamup.ProjectMember;
 import ssu.cromi.teamit.entity.enums.*;
 import ssu.cromi.teamit.exception.InvalidEnumValueException;
-import ssu.cromi.teamit.repository.ProjectRepository;
-import ssu.cromi.teamit.repository.ProjectMemberRepository;
+import ssu.cromi.teamit.repository.teamup.ProjectRepository;
+import ssu.cromi.teamit.repository.teamup.ProjectMemberRepository;
 
 @Service
 @RequiredArgsConstructor
@@ -57,9 +57,11 @@ public class TeamServiceImpl implements TeamService {
                 })
                 .collect(Collectors.toList());
 
-        if (recruitPositions.contains(Position.ETC.name()) && StringUtils.isBlank(dto.getRecruitDetail())) {
+        if (recruitPositions.contains(Position.ETC.name())
+                && (dto.getRecruitDetail() == null || dto.getRecruitDetail().isEmpty())) {
             throw new InvalidEnumValueException("recruitDetail", "기타 모집 직군 상세 내용을 입력하세요.");
         }
+
 
         // 3) Project 엔티티 빌드
         Project project = Project.builder()
@@ -87,8 +89,9 @@ public class TeamServiceImpl implements TeamService {
                 .locations(dto.getLocations())
                 .minRequest(dto.getMinRequest())
                 .applicantQuestions(dto.getApplicantQuestions())
-                .writingStatus(WritingStatus.IN_PROGRESS)
+                .writingStatus(WritingStatus.COMPLETED)
                 .progress(0)
+                .viewCount(0)
                 .build();
 
         Project saved = projectRepository.save(project);

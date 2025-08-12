@@ -1,4 +1,4 @@
-package ssu.cromi.teamit.entity;
+package ssu.cromi.teamit.entity.findproject;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -6,6 +6,7 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import ssu.cromi.teamit.converter.StringListToJsonConverter;
+import ssu.cromi.teamit.entity.teamup.Project;
 
 
 import java.time.LocalDateTime;
@@ -45,6 +46,10 @@ public class ProjectApplication {
     @Column(name = "answer", columnDefinition = "json", nullable = false)
     @Convert(converter = StringListToJsonConverter.class)
     private List<String> answers;
+
+    @Builder.Default
+    @Column(name = "requirements", nullable = false)
+    private Boolean requirements = false;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;

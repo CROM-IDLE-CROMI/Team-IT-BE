@@ -2,7 +2,7 @@
     프로젝트 생성 요청 DTO
     사용자가 작성한 팀 모집 정보를 서버로 전달할 때 이용
  */
-package ssu.cromi.teamit.DTO;
+package ssu.cromi.teamit.DTO.teamup;
 
 import jakarta.validation.constraints.*;
 import lombok.Builder;
@@ -45,7 +45,7 @@ public class CreateTeamRequestDto {
 
     @NotEmpty(message = "모집 직군은 최소 하나 이상 입력해야 합니다.")
     private List<@NotBlank(message = "직군 값이 비어있습니다.") String> recruitPositions; // Enum(Position)
-    private String recruitDetail;
+    private List<String> recruitDetail;
 
     @NotEmpty(message = "기술 스택은 최소 하나 이상 입력해야 합니다.")
     private List<@NotBlank(message = "스택 값이 비어있습니다.") String> requireStack;

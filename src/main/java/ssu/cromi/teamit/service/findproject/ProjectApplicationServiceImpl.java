@@ -1,15 +1,15 @@
-package ssu.cromi.teamit.service;
+package ssu.cromi.teamit.service.findproject;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import ssu.cromi.teamit.exception.ProjectNotFoundException;
-import ssu.cromi.teamit.DTO.ProjectApplicationRequestDto;
-import ssu.cromi.teamit.entity.Project;
-import ssu.cromi.teamit.entity.ProjectApplication;
-import ssu.cromi.teamit.repository.ProjectApplicationRepository;
-import ssu.cromi.teamit.repository.ProjectRepository;
+import ssu.cromi.teamit.DTO.findproject.ProjectApplicationRequestDto;
+import ssu.cromi.teamit.entity.teamup.Project;
+import ssu.cromi.teamit.entity.findproject.ProjectApplication;
+import ssu.cromi.teamit.repository.findproject.ProjectApplicationRepository;
+import ssu.cromi.teamit.repository.teamup.ProjectRepository;
 
 import java.time.LocalDateTime;
 
@@ -35,6 +35,7 @@ public class ProjectApplicationServiceImpl implements ProjectApplicationService 
                 .position(dto.getPosition())
                 .motivation(dto.getMotivation())
                 .answers(dto.getAnswers())
+                .requirements(dto.getRequirements())
                 .createdAt(LocalDateTime.now())
                 .build();
         projectApplicationRepository.save(application);
