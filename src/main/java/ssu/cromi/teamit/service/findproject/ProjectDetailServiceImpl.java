@@ -10,7 +10,7 @@ import ssu.cromi.teamit.entity.enums.Category;
 import ssu.cromi.teamit.entity.enums.Platform;
 import ssu.cromi.teamit.entity.enums.Status;
 import ssu.cromi.teamit.exception.ProjectNotFoundException;
-import ssu.cromi.teamit.repository.ProjectRepository;
+import ssu.cromi.teamit.repository.teamup.ProjectRepository;
 import ssu.cromi.teamit.repository.UserRepository;
 
 @Service

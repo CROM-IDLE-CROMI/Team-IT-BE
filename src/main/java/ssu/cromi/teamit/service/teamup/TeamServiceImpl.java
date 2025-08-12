@@ -14,8 +14,8 @@ import ssu.cromi.teamit.entity.teamup.Project;
 import ssu.cromi.teamit.entity.teamup.ProjectMember;
 import ssu.cromi.teamit.entity.enums.*;
 import ssu.cromi.teamit.exception.InvalidEnumValueException;
-import ssu.cromi.teamit.repository.ProjectRepository;
-import ssu.cromi.teamit.repository.ProjectMemberRepository;
+import ssu.cromi.teamit.repository.teamup.ProjectRepository;
+import ssu.cromi.teamit.repository.teamup.ProjectMemberRepository;
 
 @Service
 @RequiredArgsConstructor

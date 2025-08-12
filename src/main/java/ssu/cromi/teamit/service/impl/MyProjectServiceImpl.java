@@ -10,7 +10,7 @@ import ssu.cromi.teamit.domain.User;
 import ssu.cromi.teamit.entity.teamup.Project;
 import ssu.cromi.teamit.entity.teamup.ProjectMember;
 import ssu.cromi.teamit.entity.enums.Position;
-import ssu.cromi.teamit.repository.ProjectMemberRepository;
+import ssu.cromi.teamit.repository.teamup.ProjectMemberRepository;
 import ssu.cromi.teamit.repository.UserRepository;
 import ssu.cromi.teamit.service.MyProjectService;
 

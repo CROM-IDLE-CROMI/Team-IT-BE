@@ -1,4 +1,4 @@
-package ssu.cromi.teamit.repository;
+package ssu.cromi.teamit.repository.teamup;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import ssu.cromi.teamit.domain.User;

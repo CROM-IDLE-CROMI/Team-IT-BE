@@ -8,8 +8,8 @@ import ssu.cromi.teamit.exception.ProjectNotFoundException;
 import ssu.cromi.teamit.DTO.findproject.ProjectApplicationRequestDto;
 import ssu.cromi.teamit.entity.teamup.Project;
 import ssu.cromi.teamit.entity.findproject.ProjectApplication;
-import ssu.cromi.teamit.repository.ProjectApplicationRepository;
-import ssu.cromi.teamit.repository.ProjectRepository;
+import ssu.cromi.teamit.repository.findproject.ProjectApplicationRepository;
+import ssu.cromi.teamit.repository.teamup.ProjectRepository;
 
 import java.time.LocalDateTime;
 
