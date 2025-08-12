@@ -2,7 +2,7 @@ package ssu.cromi.teamit.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import ssu.cromi.teamit.domain.User;
-import ssu.cromi.teamit.entity.ProjectMember;
+import ssu.cromi.teamit.entity.teamup.ProjectMember;
 
 import java.util.List;
 

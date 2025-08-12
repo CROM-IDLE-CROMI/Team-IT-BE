@@ -1,8 +1,8 @@
 package ssu.cromi.teamit.service;
 
-import ssu.cromi.teamit.dto.myproject.CompletedProject;
-import ssu.cromi.teamit.dto.myproject.InProgressProject;
-import ssu.cromi.teamit.dto.myproject.MyProjectResponse;
+import ssu.cromi.teamit.DTO.myproject.CompletedProject;
+import ssu.cromi.teamit.DTO.myproject.InProgressProject;
+import ssu.cromi.teamit.DTO.myproject.MyProjectResponse;
 
 import java.util.List;
 

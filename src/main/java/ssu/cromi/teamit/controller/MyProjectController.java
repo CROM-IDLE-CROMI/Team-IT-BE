@@ -3,9 +3,9 @@ package ssu.cromi.teamit.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ssu.cromi.teamit.dto.myproject.CompletedProject;
-import ssu.cromi.teamit.dto.myproject.InProgressProject;
-import ssu.cromi.teamit.dto.myproject.MyProjectResponse;
+import ssu.cromi.teamit.DTO.myproject.CompletedProject;
+import ssu.cromi.teamit.DTO.myproject.InProgressProject;
+import ssu.cromi.teamit.DTO.myproject.MyProjectResponse;
 import ssu.cromi.teamit.service.MyProjectService;
 
 import java.util.List;

@@ -1,6 +1,6 @@
 package ssu.cromi.teamit.service;
 
-import ssu.cromi.teamit.dto.auth.SignupRequest;
+import ssu.cromi.teamit.DTO.auth.SignupRequest;
 import ssu.cromi.teamit.domain.User;
 
 public interface UserService {

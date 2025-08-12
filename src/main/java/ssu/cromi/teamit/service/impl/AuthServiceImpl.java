@@ -2,8 +2,8 @@ package ssu.cromi.teamit.service.impl;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import ssu.cromi.teamit.dto.auth.JwtResponse;
-import ssu.cromi.teamit.dto.auth.LoginRequest;
+import ssu.cromi.teamit.DTO.auth.JwtResponse;
+import ssu.cromi.teamit.DTO.auth.LoginRequest;
 import ssu.cromi.teamit.domain.RefreshToken;
 import ssu.cromi.teamit.domain.User;
 import ssu.cromi.teamit.repository.UserRepository;

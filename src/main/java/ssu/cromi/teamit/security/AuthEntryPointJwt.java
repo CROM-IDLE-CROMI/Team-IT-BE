@@ -12,7 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
-import ssu.cromi.teamit.dto.common.ApiResponse;
+import ssu.cromi.teamit.DTO.common.ApiResponse;
 
 @Component
 public class AuthEntryPointJwt implements AuthenticationEntryPoint {

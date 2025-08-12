@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import io.jsonwebtoken.JwtException;
-import ssu.cromi.teamit.dto.common.ApiResponse;
+import ssu.cromi.teamit.DTO.common.ApiResponse;
 
 import java.util.stream.Collectors;
 

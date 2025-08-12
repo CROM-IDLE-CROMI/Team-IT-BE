@@ -6,9 +6,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import ssu.cromi.teamit.dto.CreateTeamRequestDto;
+import ssu.cromi.teamit.DTO.teamup.CreateTeamRequestDto;
 import ssu.cromi.teamit.security.UserDetailsImpl;
-import ssu.cromi.teamit.service.TeamService;
+import ssu.cromi.teamit.service.teamup.TeamService;
 import ssu.cromi.teamit.response.ApiResponse;
 
 @RestController
