@@ -19,6 +19,7 @@ import ssu.cromi.teamit.entity.enums.ProjectStatus;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import org.springframework.test.annotation.Commit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -81,6 +82,7 @@ class ProjectDetailServiceIntegrationTest {
 
     @Test
     @DisplayName("프로젝트 상세 조회 시 DTO가 올바르게 반환되고 조회수가 1 증가한다")
+    @Commit
     void getProjectDetail_Success() {
         // given: setUp()에서 데이터가 이미 준비된 상태
         Long projectId = savedProject.getId();

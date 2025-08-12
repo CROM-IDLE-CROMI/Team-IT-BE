@@ -13,6 +13,7 @@ import ssu.cromi.teamit.entity.teamup.Project;
 import ssu.cromi.teamit.exception.ProjectNotFoundException;
 import ssu.cromi.teamit.repository.UserRepository;
 import ssu.cromi.teamit.repository.teamup.ProjectRepository;
+import org.springframework.test.annotation.Commit;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -80,6 +81,7 @@ class ProjectApplyPageServiceIntegrationTest {
 
     @Test
     @DisplayName("프로젝트 지원 페이지 조회 시 상세 정보와 빈 답변 목록이 올바르게 반환된다")
+    @Commit
     void getApplicationPage_Success() {
         // given: setUp()에서 데이터가 이미 준비된 상태
         Long projectId = savedProject.getId();
