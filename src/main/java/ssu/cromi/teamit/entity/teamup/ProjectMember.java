@@ -23,7 +23,8 @@ public class ProjectMember {
     @JoinColumn(name = "project_id", nullable = false) // FK (project_table.id)
     private Project project;
 
-    @Column(name = "user_id", nullable = false)
+
+    @Column(name = "user_id", nullable = false, insertable = false, updatable = false)
     private String userId; // 작성자 포함 팀원 ID
 
     @Enumerated(EnumType.STRING)

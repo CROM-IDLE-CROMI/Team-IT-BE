@@ -18,14 +18,10 @@ repositories {
 }
 
 dependencies {
-    implementation 'mysql:mysql-connector-java:8.0.33'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.projectlombok:lombok'
     implementation 'jakarta.validation:jakarta.validation-api:3.0.2'
     implementation 'org.apache.commons:commons-lang3:3.13.0'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'com.vladmihalcea:hibernate-types-60:2.21.1'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-web-services'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
@@ -35,7 +31,6 @@ dependencies {
     testImplementation 'com.h2database:h2'
     // Spring Security 추가
     implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'org.springframework.security:spring-security-test'
     // JWT 추가
     implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6'
@@ -50,6 +45,10 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
+// 테스트 관련 설정
 tasks.named('test') {
     useJUnitPlatform()
+    // Mockito 경고 해결을 위한 JVM 인수 추가
+    jvmArgs '--add-opens=java.base/java.lang=ALL-UNNAMED'
+    jvmArgs '--add-opens=java.base/java.util=ALL-UNNAMED'
 }

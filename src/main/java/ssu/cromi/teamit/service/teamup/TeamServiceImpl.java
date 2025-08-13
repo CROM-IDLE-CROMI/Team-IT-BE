@@ -8,14 +8,18 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static ssu.cromi.teamit.util.EnumValidator.parseEnum;
 import ssu.cromi.teamit.DTO.teamup.CreateTeamRequestDto;
+import ssu.cromi.teamit.domain.User;
 import ssu.cromi.teamit.entity.teamup.Project;
 import ssu.cromi.teamit.entity.teamup.ProjectMember;
 import ssu.cromi.teamit.entity.enums.*;
 import ssu.cromi.teamit.exception.InvalidEnumValueException;
+import ssu.cromi.teamit.exception.UserNotFoundException;
+import ssu.cromi.teamit.repository.UserRepository;
 import ssu.cromi.teamit.repository.teamup.ProjectRepository;
 import ssu.cromi.teamit.repository.teamup.ProjectMemberRepository;
+
+import static ssu.cromi.teamit.util.EnumValidator.parseEnum;
 
 @Service
 @RequiredArgsConstructor
@@ -23,23 +27,20 @@ public class TeamServiceImpl implements TeamService {
 
     private final ProjectRepository projectRepository;
     private final ProjectMemberRepository projectMemberRepository;
-
-    /* <팀원 모집> 등록글 생성
-     * @param dto      >> 입력 받은 받은 모든 필드
-     * @param userId   로그인한 사용자 ID (creatorId, ownerId 로 사용)
-     * @return 생성된 프로젝트 ID
-     */
+    private final UserRepository userRepository;
 
     @Override
     @Transactional
     public Long createTeam(CreateTeamRequestDto dto, String userId) {
-        // 1) Enum 변환 및 유효성 검사
+
+        User owner = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("해당 ID의 사용자를 찾을 수 없습니다: " + userId));
+
         Platform       platform       = parseEnum(Platform.class,       dto.getPlatform(),        "platform");
         Category       category       = parseEnum(Category.class,       dto.getCategory(),        "category");
         ProjectStatus  projectStatus  = parseEnum(ProjectStatus.class,  dto.getProjectStatus(),   "projectStatus");
         MeetingApproach approach      = parseEnum(MeetingApproach.class,dto.getMeetingApproach(), "meetingApproach");
 
-        // 2) ETC 상세 필수 입력 검증
         if (platform == Platform.ETC && StringUtils.isBlank(dto.getPlatformDetail())) {
             throw new InvalidEnumValueException("platformDetail", "기타 플랫폼 상세 내용을 입력하세요.");
         }
@@ -53,7 +54,7 @@ public class TeamServiceImpl implements TeamService {
         List<String> recruitPositions = dto.getRecruitPositions().stream()
                 .map(pos -> {
                     Position parsed = parseEnum(Position.class, pos, "recruitPositions");
-                    return parsed.name(); // Enum → String recruitPositions List<STRING>로 처리
+                    return parsed.name();
                 })
                 .collect(Collectors.toList());
 
@@ -66,7 +67,7 @@ public class TeamServiceImpl implements TeamService {
         // 3) Project 엔티티 빌드
         Project project = Project.builder()
                 .creatorId(userId)
-                .ownerId(userId)
+                .owner(owner)
                 .memberNum(dto.getMemberNum())
                 .validFrom(dto.getValidFrom())
                 .validTo(dto.getValidTo())
@@ -100,7 +101,7 @@ public class TeamServiceImpl implements TeamService {
 
         ProjectMember leader = ProjectMember.builder()
                 .project(saved)
-                .userId(userId)
+                .user(owner)
                 .role(MemberRole.LEADER)
                 .position(leaderPos)
                 .build();
