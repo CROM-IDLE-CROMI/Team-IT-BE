@@ -2,6 +2,7 @@ package ssu.cromi.teamit.service;
 
 import ssu.cromi.teamit.DTO.myproject.CompletedProject;
 import ssu.cromi.teamit.DTO.myproject.InProgressProject;
+import ssu.cromi.teamit.DTO.myproject.MilestoneResponse;
 import ssu.cromi.teamit.DTO.myproject.MyProjectResponse;
 
 import java.util.List;
@@ -25,4 +26,12 @@ public interface MyProjectService {
      @return 진행중, 완료 프로젝트 목록을 모두 담은 응답 객체 (MyProjectResponse)
      */
     MyProjectResponse getAllMyProjects(String uid);
+
+    /**
+     특정 프로젝트의 모든 마일스톤 목록 조회
+     * @param projectId 프로젝트 ID
+     * @return 해당 프로젝트의 마일스톤 DTO 목록
+     */
+    List<MilestoneResponse> getMilestone(Long projectId);
+
 }

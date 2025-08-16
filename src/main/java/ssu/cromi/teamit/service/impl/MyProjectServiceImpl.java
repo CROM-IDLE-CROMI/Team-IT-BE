@@ -1,20 +1,23 @@
 package ssu.cromi.teamit.service.impl;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ssu.cromi.teamit.DTO.myproject.CompletedProject;
 import ssu.cromi.teamit.DTO.myproject.InProgressProject;
+import ssu.cromi.teamit.DTO.myproject.MilestoneResponse;
 import ssu.cromi.teamit.DTO.myproject.MyProjectResponse;
 import ssu.cromi.teamit.domain.User;
+import ssu.cromi.teamit.entity.enums.Position;
 import ssu.cromi.teamit.entity.teamup.Project;
 import ssu.cromi.teamit.entity.teamup.ProjectMember;
-import ssu.cromi.teamit.entity.enums.Position;
-import ssu.cromi.teamit.repository.teamup.ProjectMemberRepository;
+import ssu.cromi.teamit.repository.MilestoneRepository;
 import ssu.cromi.teamit.repository.UserRepository;
+import ssu.cromi.teamit.repository.teamup.ProjectMemberRepository;
+import ssu.cromi.teamit.repository.teamup.ProjectRepository;
 import ssu.cromi.teamit.service.MyProjectService;
 
-import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,7 +27,9 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class MyProjectServiceImpl implements MyProjectService{
     private final UserRepository userRepository;
+    private final MilestoneRepository milestoneRepository;
     private final ProjectMemberRepository projectMemberRepository;
+    private final ProjectRepository projectRepository;
 
     @Override
     public List<InProgressProject> getInProgressProjects(String uid){
@@ -73,6 +78,17 @@ public class MyProjectServiceImpl implements MyProjectService{
                 .inProgressProjects(inProgressProjects)
                 .completedProjects(completedProjects)
                 .build();
+    }
+
+    @Override
+    @Transactional
+    public List<MilestoneResponse> getMilestone(Long projectId){
+        if(!projectRepository.existsById(projectId)){
+            throw new EntityNotFoundException("해당 ID의 프로젝트를 찾을 수 없습니다:" + projectId);
+        }
+        return milestoneRepository.findByProjectId(projectId).stream()
+                .map(MilestoneResponse::from)
+                .collect(Collectors.toList());
     }
 
     private User findUserByUid(String  uid) {
