@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ssu.cromi.teamit.domain.User;
+import ssu.cromi.teamit.entity.Milestone;
 import ssu.cromi.teamit.entity.enums.Platform;
 import ssu.cromi.teamit.entity.enums.Category;
 import ssu.cromi.teamit.entity.enums.MeetingApproach;

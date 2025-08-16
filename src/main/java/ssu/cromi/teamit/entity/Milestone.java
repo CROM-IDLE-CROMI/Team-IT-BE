@@ -1,8 +1,10 @@
-package ssu.cromi.teamit.entity.teamup;
+package ssu.cromi.teamit.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
 import ssu.cromi.teamit.domain.User;
+import ssu.cromi.teamit.entity.teamup.Project;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
