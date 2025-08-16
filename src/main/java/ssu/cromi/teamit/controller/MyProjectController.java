@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ssu.cromi.teamit.DTO.myproject.CompletedProject;
 import ssu.cromi.teamit.DTO.myproject.InProgressProject;
+import ssu.cromi.teamit.DTO.myproject.MilestoneResponse;
 import ssu.cromi.teamit.DTO.myproject.MyProjectResponse;
 import ssu.cromi.teamit.service.MyProjectService;
 
@@ -33,4 +34,10 @@ public class MyProjectController {
             return ResponseEntity.ok(allMyProjects);
         }
     }
+    @GetMapping("/{projectId}/milestones")
+    public ResponseEntity<List<MilestoneResponse>> getProjectMilestones(@PathVariable Long projectId){
+        List<MilestoneResponse> milestones = myProjectService.getMilestone(projectId);
+        return ResponseEntity.ok(milestones);
+    }
+
 }
