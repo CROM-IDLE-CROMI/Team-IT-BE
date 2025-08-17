@@ -1,9 +1,6 @@
 package ssu.cromi.teamit.service;
 
-import ssu.cromi.teamit.DTO.myproject.CompletedProject;
-import ssu.cromi.teamit.DTO.myproject.InProgressProject;
-import ssu.cromi.teamit.DTO.myproject.MilestoneResponse;
-import ssu.cromi.teamit.DTO.myproject.MyProjectResponse;
+import ssu.cromi.teamit.DTO.myproject.*;
 
 import java.util.List;
 
@@ -34,4 +31,11 @@ public interface MyProjectService {
      */
     List<MilestoneResponse> getMilestone(Long projectId);
 
+    /**
+     * 내 프로젝트의 상세 정보를 조회 (소개, 멤버, 진행률, 마일스톤 상위 N개 포함)
+     * @param projectId 조회할 프로젝트 ID
+     * @param milestoneLimit 조회할 마일스톤 개수
+     * @return MyProjectDetailResponse
+     */
+    MyProjectDetailResponse getMyProjectDetail(Long projectId, int milestoneLimit);
 }

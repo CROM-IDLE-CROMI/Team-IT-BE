@@ -3,10 +3,7 @@ package ssu.cromi.teamit.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ssu.cromi.teamit.DTO.myproject.CompletedProject;
-import ssu.cromi.teamit.DTO.myproject.InProgressProject;
-import ssu.cromi.teamit.DTO.myproject.MilestoneResponse;
-import ssu.cromi.teamit.DTO.myproject.MyProjectResponse;
+import ssu.cromi.teamit.DTO.myproject.*;
 import ssu.cromi.teamit.service.MyProjectService;
 
 import java.util.List;
@@ -38,6 +35,12 @@ public class MyProjectController {
     public ResponseEntity<List<MilestoneResponse>> getProjectMilestones(@PathVariable Long projectId){
         List<MilestoneResponse> milestones = myProjectService.getMilestone(projectId);
         return ResponseEntity.ok(milestones);
+    }
+
+    @GetMapping("/{projectId}/detail")
+    public ResponseEntity<MyProjectDetailResponse> getMyProjectDetail(@PathVariable Long projectId, @RequestParam(defaultValue = "5") int milestoneLimit){
+        MyProjectDetailResponse projectDetail = myProjectService.getMyProjectDetail(projectId, milestoneLimit);
+        return ResponseEntity.ok(projectDetail);
     }
 
 }

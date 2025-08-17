@@ -2,12 +2,12 @@ package ssu.cromi.teamit.service.impl;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ssu.cromi.teamit.DTO.myproject.CompletedProject;
-import ssu.cromi.teamit.DTO.myproject.InProgressProject;
-import ssu.cromi.teamit.DTO.myproject.MilestoneResponse;
-import ssu.cromi.teamit.DTO.myproject.MyProjectResponse;
+import ssu.cromi.teamit.DTO.myproject.*;
 import ssu.cromi.teamit.domain.User;
 import ssu.cromi.teamit.entity.enums.Position;
 import ssu.cromi.teamit.entity.teamup.Project;
@@ -89,6 +89,25 @@ public class MyProjectServiceImpl implements MyProjectService{
         return milestoneRepository.findByProjectId(projectId).stream()
                 .map(MilestoneResponse::from)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public MyProjectDetailResponse getMyProjectDetail(Long projectId, int milestoneLimit){
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new EntityNotFoundException("해당 ID의 프로젝트를 찾을 수 없습니다: " + projectId));
+        List<ProjectMemberResponse> members = project.getProjectMembers().stream()
+                .map(ProjectMemberResponse::from)
+                .toList();
+
+        Pageable pageable = PageRequest.of(0, milestoneLimit, Sort.by(Sort.Direction.ASC, "deadline"));
+
+        List<MilestoneResponse> topMilestones = milestoneRepository
+                .findByProjectIdAndProgressLessThan(projectId, 100, pageable)
+                .stream()
+                .map(MilestoneResponse::from)
+                .toList();
+        return MyProjectDetailResponse.of(project, members, topMilestones);
     }
 
     private User findUserByUid(String  uid) {
