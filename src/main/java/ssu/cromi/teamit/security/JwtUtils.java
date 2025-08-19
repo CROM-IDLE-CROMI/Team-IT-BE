@@ -57,16 +57,16 @@ public class JwtUtils {
     }
 
     public boolean isValidToken(String Token){
-       try{
-           Jws<Claims> jws = Jwts.parser()
-                   .verifyWith(getSigningKey())
-                   .build()
-                   .parseSignedClaims(Token);
-           return true;
-       }
-       catch (JwtException | IllegalArgumentException e){
-           return false;
-       }
+        try{
+            Jws<Claims> jws = Jwts.parser()
+                    .verifyWith(getSigningKey())
+                    .build()
+                    .parseSignedClaims(Token);
+            return true;
+        }
+        catch (JwtException | IllegalArgumentException e){
+            return false;
+        }
     }
     /**
      * JWT에서 subject(uid)를 읽는 메서드.
