@@ -46,6 +46,10 @@ public class ProjectComment {
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
+    public void updateContent(String content) {
+        this.content = content;
+    } // 수정을 위해 추가한 코드
+
     @PrePersist
     protected void onCreate() {
         this.createdAt = this.updatedAt = LocalDateTime.now();

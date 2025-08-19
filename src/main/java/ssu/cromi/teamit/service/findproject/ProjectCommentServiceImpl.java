@@ -11,6 +11,8 @@ import ssu.cromi.teamit.entity.teamup.Project;
 import ssu.cromi.teamit.repository.findproject.ProjectCommentRepository;
 import ssu.cromi.teamit.repository.teamup.ProjectRepository;
 import ssu.cromi.teamit.repository.UserRepository;
+import ssu.cromi.teamit.DTO.findproject.CommentUpdateRequestDto;
+
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -79,6 +81,38 @@ public class ProjectCommentServiceImpl implements ProjectCommentService {
 
         // 4. 저장
         commentRepository.save(comment);
+    }
+
+    @Override
+    @Transactional
+    public void updateComment(Long commentId, String currentUserId, CommentUpdateRequestDto dto) {
+        // 1. 댓글 조회
+        ProjectComment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 댓글을 찾을 수 없습니다."));
+
+        // 2. 권한 확인 (현재 사용자와 댓글 작성자가 동일한지)
+        if (!comment.getWriterId().equals(currentUserId)) {
+            throw new SecurityException("댓글을 수정할 권한이 없습니다."); // 또는 다른 권한 관련 예외 처리
+        }
+
+        // 3. 내용 수정
+        comment.updateContent(dto.getContent());
+    }
+
+    @Override
+    @Transactional
+    public void deleteComment(Long commentId, String currentUserId) {
+        // 1. 댓글 조회
+        ProjectComment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 댓글을 찾을 수 없습니다."));
+
+        // 2. 권한 확인
+        if (!comment.getWriterId().equals(currentUserId)) {
+            throw new SecurityException("댓글을 삭제할 권한이 없습니다.");
+        }
+
+        // 3. 삭제
+        commentRepository.delete(comment);
     }
 
     /**
