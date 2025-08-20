@@ -1,6 +1,7 @@
 package ssu.cromi.teamit.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ssu.cromi.teamit.DTO.myproject.*;
@@ -43,4 +44,9 @@ public class MyProjectController {
         return ResponseEntity.ok(projectDetail);
     }
 
+    @PostMapping("/{projectId}/milestones")
+    public ResponseEntity<MilestoneResponse> createProjectMilestones(@PathVariable Long projectId, @RequestBody MilestoneRequest milestoneRequest){
+        MilestoneResponse newMilestone = myProjectService.createMilestone(projectId, milestoneRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newMilestone);
+    }
 }

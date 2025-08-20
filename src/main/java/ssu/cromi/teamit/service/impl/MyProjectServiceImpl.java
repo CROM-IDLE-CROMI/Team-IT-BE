@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ssu.cromi.teamit.DTO.myproject.*;
 import ssu.cromi.teamit.domain.User;
+import ssu.cromi.teamit.entity.Milestone;
 import ssu.cromi.teamit.entity.enums.Position;
 import ssu.cromi.teamit.entity.teamup.Project;
 import ssu.cromi.teamit.entity.teamup.ProjectMember;
@@ -18,6 +19,7 @@ import ssu.cromi.teamit.repository.teamup.ProjectMemberRepository;
 import ssu.cromi.teamit.repository.teamup.ProjectRepository;
 import ssu.cromi.teamit.service.MyProjectService;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -108,6 +110,25 @@ public class MyProjectServiceImpl implements MyProjectService{
                 .map(MilestoneResponse::from)
                 .toList();
         return MyProjectDetailResponse.of(project, members, topMilestones);
+    }
+
+    @Override
+    @Transactional
+    public MilestoneResponse createMilestone(Long projectId, MilestoneRequest milestoneRequest) {
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new EntityNotFoundException("해당 ID의 프로젝트를 찾을 수 없습니다: " + projectId));
+        User assignee = userRepository.findByUid(milestoneRequest.getAssigneeName())
+                .orElseThrow(() -> new EntityNotFoundException("해당 ID의 사용자를 찾을 수 없습니다: " + milestoneRequest.getAssigneeName()));
+        Milestone milestone = Milestone.builder()
+                .project(project)
+                .title(milestoneRequest.getTitle())
+                .assignee(assignee)
+                .deadline(LocalDate.parse(milestoneRequest.getDeadline()))
+                .progress(milestoneRequest.getProgress())
+                .build();
+
+        Milestone savedMilestone = milestoneRepository.save(milestone);
+        return MilestoneResponse.from(savedMilestone);
     }
 
     private User findUserByUid(String  uid) {

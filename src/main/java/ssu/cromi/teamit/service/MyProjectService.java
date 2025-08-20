@@ -38,4 +38,12 @@ public interface MyProjectService {
      * @return MyProjectDetailResponse
      */
     MyProjectDetailResponse getMyProjectDetail(Long projectId, int milestoneLimit);
+
+    /**
+     * 새 마일스톤 생성
+     * @param projectId 마일스톤을 추가할 프로젝트 ID
+     * @param milestoneRequest 생성할 마일스톤 정보
+     * @return 생성된 마일스톤 정보
+     */
+    MilestoneResponse createMilestone(Long projectId, MilestoneRequest milestoneRequest);
 }
