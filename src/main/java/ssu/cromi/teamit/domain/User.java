@@ -25,7 +25,6 @@ public class User {
     private String nickName;
     @Column(name = "email", length = 255, nullable = false)
     private String email;
-    @Builder.Default
     @Column(name = "email_verified", length = 1, nullable = false)
     private Boolean emailVerified = false;
     @Column(nullable = false)
@@ -39,7 +38,6 @@ public class User {
     private LocalDateTime createdAt;
     @Column(name = "my_score")
     private Double myScore;
-    @Builder.Default
     @Column(name = "roles", length = 50, nullable = false)
     private String roles = "ROLE_USER";
     @Column(name = "updated_at", nullable = false)
