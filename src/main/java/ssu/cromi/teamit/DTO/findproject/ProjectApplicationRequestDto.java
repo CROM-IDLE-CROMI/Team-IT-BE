@@ -28,6 +28,6 @@ public class ProjectApplicationRequestDto {
     // 해당 필드의 갓이 true가 아닐 경우, 지원서 제출 불가
     private Boolean requirements;
     
-    @NotBlank(message = "질문에 대한 답변을 입력해주세요.")
+    @NotEmpty(message = "질문에 대한 답변을 입력해주세요.")
     private List<@NotBlank(message = "모든 질문에 대해 답변을 입력해주세요.") String> answers;
 }
