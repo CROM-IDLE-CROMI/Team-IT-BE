@@ -13,12 +13,14 @@ import java.util.Collections;
 @Getter
 public class UserDetailsImpl implements UserDetails {
     private final String uid;
+    private final User user;
     @JsonIgnore
     private final String password;
     private final String nickName;
     private final Collection<? extends GrantedAuthority> authorities;
 
-    public UserDetailsImpl(String uid, String password, String nickName, Collection<? extends GrantedAuthority> authorities){
+    public UserDetailsImpl(User user, String uid, String password, String nickName, Collection<? extends GrantedAuthority> authorities){
+        this.user = user;
         this.uid = uid;
         this.password = password;
         this.nickName = nickName;
@@ -28,6 +30,7 @@ public class UserDetailsImpl implements UserDetails {
     public static UserDetailsImpl build(User user){
         var authority = new SimpleGrantedAuthority(user.getRoles());
         return new UserDetailsImpl(
+                user,
                 user.getUid(),
                 user.getPassword(),
                 user.getNickName(),

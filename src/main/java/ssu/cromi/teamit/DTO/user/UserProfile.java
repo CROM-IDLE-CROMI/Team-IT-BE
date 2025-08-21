@@ -5,7 +5,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import org.hibernate.validator.constraints.Length;
-import java.time.LocalDateTime;
 
 @EqualsAndHashCode
 @ToString
@@ -37,17 +36,6 @@ public class UserProfile {
     @NotNull(message = "생년월일 누락됨")
     @Getter
     private Integer birthday;
-
-    /*
-    @NotNull(message = "생성날짜 누락됨")
-    @Getter
-    private LocalDateTime createdAt;
-
-    @NotNull(message = "업데이트 날짜 누락됨")
-    @Getter
-
-    private LocalDateTime updatedAt;
-    */
 
     @Getter
     @PositiveOrZero(message = "정의되지 않은 포인트")
