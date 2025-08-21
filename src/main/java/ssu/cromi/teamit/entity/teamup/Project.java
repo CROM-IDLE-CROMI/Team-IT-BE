@@ -3,25 +3,23 @@
 package ssu.cromi.teamit.entity.teamup;
 
 import jakarta.persistence.*;
+import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
-import lombok.*;
+import ssu.cromi.teamit.domain.User;
+import ssu.cromi.teamit.entity.Milestone;
+import ssu.cromi.teamit.entity.enums.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
-
-import ssu.cromi.teamit.entity.enums.Platform;
-import ssu.cromi.teamit.entity.enums.Category;
-import ssu.cromi.teamit.entity.enums.MeetingApproach;
-import ssu.cromi.teamit.entity.enums.ProjectStatus;
-import ssu.cromi.teamit.entity.enums.WritingStatus;
-import ssu.cromi.teamit.entity.enums.Status;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
+@Setter
 @Table(name = "project_table")
 public class Project {
     // 프로젝트 모집 양식에는 없지만 필요한 내용
@@ -34,7 +32,7 @@ public class Project {
     @Column(name = "creator_id", nullable = false, length = 50)
     private String creatorId; // 작성자 아이디
 
-    @Column(name = "owner_id", nullable = false, length = 50)
+    @Column(name = "owner_id", nullable = false, length = 50, insertable = false, updatable = false)
     private String ownerId; // 팀장 아이디
 
     // 작성중, 임시저장, 작성완료
@@ -105,6 +103,9 @@ public class Project {
     @Column(name = "project_name", nullable = false)
     private String projectName; // 팀 이름
 
+    @Column(name = "project_logo_url", length = 2083)
+    private String projectLogoUrl; // 프로젝트 로고 이미지 URL
+
     @Enumerated(EnumType.STRING)
     @Column(name = "category", nullable = false)
     private Category category; // 활동 종류
@@ -147,4 +148,16 @@ public class Project {
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "applicant_questions", columnDefinition = "JSON", nullable = false)
     private List<String> applicantQuestions; // 지원자에게 질문하고 싶은 내용
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner_id")
+    private User owner;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "project")
+    private List<ProjectMember> projectMembers = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Milestone> milestones = new ArrayList<>();
 }

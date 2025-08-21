@@ -3,6 +3,7 @@ package ssu.cromi.teamit.entity.teamup;
 import jakarta.persistence.*;
 import lombok.*;
 
+import ssu.cromi.teamit.domain.User;
 import ssu.cromi.teamit.entity.enums.MemberRole;
 import ssu.cromi.teamit.entity.enums.Position;
 
@@ -22,7 +23,8 @@ public class ProjectMember {
     @JoinColumn(name = "project_id", nullable = false) // FK (project_table.id)
     private Project project;
 
-    @Column(name = "user_id", nullable = false)
+
+    @Column(name = "user_id", nullable = false, insertable = false, updatable = false)
     private String userId; // 작성자 포함 팀원 ID
 
     @Enumerated(EnumType.STRING)
@@ -32,4 +34,8 @@ public class ProjectMember {
     @Enumerated(EnumType.STRING)
     @Column(name = "member_position", nullable = false)
     private Position position;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 }
