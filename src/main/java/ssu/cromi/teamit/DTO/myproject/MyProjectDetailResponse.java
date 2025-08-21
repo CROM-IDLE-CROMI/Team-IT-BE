@@ -14,6 +14,7 @@ public class MyProjectDetailResponse {
     private String projectStatus;
     private String projectIntro;
     private int overallProgress;
+    private String projectLogoUrl;
     private List<ProjectMemberResponse> members;
     private List<MilestoneResponse> milestones;
 
@@ -21,6 +22,7 @@ public class MyProjectDetailResponse {
         return MyProjectDetailResponse.builder()
                 .projectId(project.getId())
                 .projectName(project.getProjectName())
+                .projectLogoUrl(project.getProjectLogoUrl())
                 .projectStatus(project.getProjectStatus().getDisplayName())
                 .projectIntro(project.getIdeaExplain())
                 .overallProgress(project.getProgress())

@@ -151,10 +151,12 @@ public class MyProjectServiceImpl implements MyProjectService{
 
     @Override
     @Transactional
-    public void updateProjectProgress(Long projectId, ProgressUpdateRequest progressUpdateRequest) {
+    public void updateProjectDetails(Long projectId, MyProjectUpdateRequest updateRequestDto) {
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new EntityNotFoundException("해당 ID의 프로젝트를 찾을 수 없습니다: " + projectId));
-        project.setProgress(progressUpdateRequest.getProgress());
+        project.setProjectName(updateRequestDto.getProjectName());
+        project.setProjectLogoUrl(updateRequestDto.getProjectLogoUrl());
+        project.setProgress(updateRequestDto.getProgress());
     }
 
     private User findUserByUid(String  uid) {

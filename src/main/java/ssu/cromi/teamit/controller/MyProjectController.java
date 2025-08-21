@@ -45,9 +45,11 @@ public class MyProjectController {
         return ResponseEntity.ok(projectDetail);
     }
 
-    @PatchMapping("/{projectId}/progress")
-    public ResponseEntity<Void> updateProjectProgress(@PathVariable Long projectId, @Valid @RequestBody ProgressUpdateRequest progressUpdateRequest){
-        myProjectService.updateProjectProgress(projectId, progressUpdateRequest);
+    @PatchMapping("/{projectId}/details")
+    public ResponseEntity<Void> updateProjectDetails(
+            @PathVariable Long projectId,
+            @Valid @RequestBody MyProjectUpdateRequest updateRequestDto) {
+        myProjectService.updateProjectDetails(projectId, updateRequestDto);
         return ResponseEntity.ok().build();
     }
 

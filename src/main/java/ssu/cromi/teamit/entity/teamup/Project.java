@@ -19,6 +19,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
+@Setter
 @Table(name = "project_table")
 public class Project {
     // 프로젝트 모집 양식에는 없지만 필요한 내용
@@ -52,7 +53,6 @@ public class Project {
     private LocalDateTime updatedAt;
 
     @Builder.Default
-    @Setter
     @Column(name = "progress", nullable = false)
     private int progress = 0; // 진행률 (프로젝트 진척도)
 
@@ -102,6 +102,9 @@ public class Project {
 
     @Column(name = "project_name", nullable = false)
     private String projectName; // 팀 이름
+
+    @Column(name = "project_logo_url", length = 2083)
+    private String projectLogoUrl; // 프로젝트 로고 이미지 URL
 
     @Enumerated(EnumType.STRING)
     @Column(name = "category", nullable = false)

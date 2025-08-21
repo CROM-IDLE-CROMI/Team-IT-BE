@@ -57,10 +57,6 @@ public interface MyProjectService {
      */
     MilestoneResponse updateMilestone(Long projectId, Long milestoneId, MilestoneRequest milestoneRequest);
 
-    /**
-     * 프로젝트 진척도 수정
-     * @param projectId 프로젝트 ID
-     * @param progressUpdateRequest 수정할 진척도 정보
-     */
-    void updateProjectProgress(Long projectId, @Valid ProgressUpdateRequest progressUpdateRequest);
+
+    void updateProjectDetails(Long projectId, @Valid MyProjectUpdateRequest updateRequestDto);
 }
