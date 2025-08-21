@@ -46,4 +46,6 @@ public interface MyProjectService {
      * @return 생성된 마일스톤 정보
      */
     MilestoneResponse createMilestone(Long projectId, MilestoneRequest milestoneRequest);
+
+    MilestoneResponse updateMilestone(Long projectId, Long milestoneId, MilestoneRequest milestoneRequest);
 }

@@ -131,6 +131,24 @@ public class MyProjectServiceImpl implements MyProjectService{
         return MilestoneResponse.from(savedMilestone);
     }
 
+    @Override
+    @Transactional
+    public MilestoneResponse updateMilestone(Long projectId, Long milestoneId, MilestoneRequest milestoneRequest){
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new EntityNotFoundException("해당 ID의 프로젝트를 찾을 수 없습니다: " + projectId));
+        Milestone milestone = milestoneRepository.findById(milestoneId)
+                .orElseThrow(() -> new EntityNotFoundException("해당 ID의 마일스톤을 찾을 수 없습니다: " + milestoneId));
+        User assignee = userRepository.findByUid(milestoneRequest.getAssigneeName())
+                .orElseThrow(() -> new EntityNotFoundException("해당 ID의 사용자를 찾을 수 없습니다: " + milestoneRequest.getAssigneeName()));
+        milestone.setTitle(milestoneRequest.getTitle());
+        milestone.setAssignee(assignee);
+        milestone.setDeadline(LocalDate.parse(milestoneRequest.getDeadline()));
+        milestone.setProgress(milestoneRequest.getProgress());
+
+        Milestone savedMilestone = milestoneRepository.save(milestone);
+        return MilestoneResponse.from(savedMilestone);
+    }
+
     private User findUserByUid(String  uid) {
         return userRepository.findById(uid)
                 .orElseThrow(() -> new EntityNotFoundException("해당 ID의 사용자를 찾을 수 없습니다: " + uid));
