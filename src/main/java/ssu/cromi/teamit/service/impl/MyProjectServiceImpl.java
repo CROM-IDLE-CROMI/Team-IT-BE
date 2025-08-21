@@ -159,6 +159,14 @@ public class MyProjectServiceImpl implements MyProjectService{
         project.setProgress(updateRequestDto.getProgress());
     }
 
+    @Override
+    @Transactional
+    public void updateProjectDescription(Long projectId, ProjectDescriptionUpdateRequest descriptionRequest) {
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new EntityNotFoundException("해당 ID의 프로젝트를 찾을 수 없습니다: " + projectId));
+        project.setIdeaExplain(descriptionRequest.getIdeaExplain());
+    }
+
     private User findUserByUid(String  uid) {
         return userRepository.findById(uid)
                 .orElseThrow(() -> new EntityNotFoundException("해당 ID의 사용자를 찾을 수 없습니다: " + uid));

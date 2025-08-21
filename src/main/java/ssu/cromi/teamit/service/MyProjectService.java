@@ -59,4 +59,11 @@ public interface MyProjectService {
 
 
     void updateProjectDetails(Long projectId, @Valid MyProjectUpdateRequest updateRequestDto);
+
+    /**
+     * 프로젝트 소개 수정
+     * @param projectId 프로젝트 ID
+     * @param descriptionRequest 수정할 소개 정보
+     */
+    void updateProjectDescription(Long projectId, ProjectDescriptionUpdateRequest descriptionRequest);
 }

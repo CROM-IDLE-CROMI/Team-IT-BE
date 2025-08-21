@@ -64,4 +64,12 @@ public class MyProjectController {
         MilestoneResponse updateMilestone = myProjectService.updateMilestone(projectId, milestoneId, milestoneRequest);
         return ResponseEntity.ok(updateMilestone);
     }
+
+    @PatchMapping("/{projectId}/description")
+    public ResponseEntity<Void> updateProjectDescription(
+            @PathVariable Long projectId,
+            @Valid @RequestBody ProjectDescriptionUpdateRequest descriptionRequest) {
+        myProjectService.updateProjectDescription(projectId, descriptionRequest);
+        return ResponseEntity.ok().build();
+    }
 }
