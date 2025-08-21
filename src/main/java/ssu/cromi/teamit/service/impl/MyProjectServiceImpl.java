@@ -149,6 +149,14 @@ public class MyProjectServiceImpl implements MyProjectService{
         return MilestoneResponse.from(savedMilestone);
     }
 
+    @Override
+    @Transactional
+    public void updateProjectProgress(Long projectId, ProgressUpdateRequest progressUpdateRequest) {
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new EntityNotFoundException("해당 ID의 프로젝트를 찾을 수 없습니다: " + projectId));
+        project.setProgress(progressUpdateRequest.getProgress());
+    }
+
     private User findUserByUid(String  uid) {
         return userRepository.findById(uid)
                 .orElseThrow(() -> new EntityNotFoundException("해당 ID의 사용자를 찾을 수 없습니다: " + uid));

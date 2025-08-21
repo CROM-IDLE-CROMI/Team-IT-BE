@@ -1,5 +1,6 @@
 package ssu.cromi.teamit.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,6 +43,12 @@ public class MyProjectController {
     public ResponseEntity<MyProjectDetailResponse> getMyProjectDetail(@PathVariable Long projectId, @RequestParam(defaultValue = "5") int milestoneLimit){
         MyProjectDetailResponse projectDetail = myProjectService.getMyProjectDetail(projectId, milestoneLimit);
         return ResponseEntity.ok(projectDetail);
+    }
+
+    @PatchMapping("/{projectId}/progress")
+    public ResponseEntity<Void> updateProjectProgress(@PathVariable Long projectId, @Valid @RequestBody ProgressUpdateRequest progressUpdateRequest){
+        myProjectService.updateProjectProgress(projectId, progressUpdateRequest);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/{projectId}/milestones")

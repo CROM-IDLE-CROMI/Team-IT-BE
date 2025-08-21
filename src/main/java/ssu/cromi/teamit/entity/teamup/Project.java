@@ -3,22 +3,16 @@
 package ssu.cromi.teamit.entity.teamup;
 
 import jakarta.persistence.*;
+import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
-import lombok.*;
+import ssu.cromi.teamit.domain.User;
+import ssu.cromi.teamit.entity.Milestone;
+import ssu.cromi.teamit.entity.enums.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
-import ssu.cromi.teamit.domain.User;
-import ssu.cromi.teamit.entity.Milestone;
-import ssu.cromi.teamit.entity.enums.Platform;
-import ssu.cromi.teamit.entity.enums.Category;
-import ssu.cromi.teamit.entity.enums.MeetingApproach;
-import ssu.cromi.teamit.entity.enums.ProjectStatus;
-import ssu.cromi.teamit.entity.enums.WritingStatus;
-import ssu.cromi.teamit.entity.enums.Status;
 
 @Entity
 @Getter
@@ -58,6 +52,7 @@ public class Project {
     private LocalDateTime updatedAt;
 
     @Builder.Default
+    @Setter
     @Column(name = "progress", nullable = false)
     private int progress = 0; // 진행률 (프로젝트 진척도)
 

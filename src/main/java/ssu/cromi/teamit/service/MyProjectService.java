@@ -1,5 +1,6 @@
 package ssu.cromi.teamit.service;
 
+import jakarta.validation.Valid;
 import ssu.cromi.teamit.DTO.myproject.*;
 
 import java.util.List;
@@ -47,5 +48,19 @@ public interface MyProjectService {
      */
     MilestoneResponse createMilestone(Long projectId, MilestoneRequest milestoneRequest);
 
+    /**
+     * 마일스톤 내용 수정
+     * @param projectId 프로젝트 ID
+     * @param milestoneId 수정할 마일스톤 ID
+     * @param milestoneRequest 수정할 마일스톤 정보
+     * @return 수정된 마일스톤 정보
+     */
     MilestoneResponse updateMilestone(Long projectId, Long milestoneId, MilestoneRequest milestoneRequest);
+
+    /**
+     * 프로젝트 진척도 수정
+     * @param projectId 프로젝트 ID
+     * @param progressUpdateRequest 수정할 진척도 정보
+     */
+    void updateProjectProgress(Long projectId, @Valid ProgressUpdateRequest progressUpdateRequest);
 }
