@@ -13,6 +13,13 @@ java {
     }
 }
 
+def querydslDir = "$buildDir/generated/querydsl"
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
 repositories {
     mavenCentral()
 }
@@ -43,6 +50,12 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter:5.9.2'
     testImplementation 'org.springframework.security:spring-security-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    // QueryDSL 의존성 추가
+    implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+    annotationProcessor "com.querydsl:querydsl-apt:5.0.0:jakarta"
+    annotationProcessor "jakarta.annotation:jakarta.annotation-api"
+    annotationProcessor "jakarta.persistence:jakarta.persistence-api"
 }
 
 // 테스트 관련 설정
@@ -51,4 +64,23 @@ tasks.named('test') {
     // Mockito 경고 해결을 위한 JVM 인수 추가
     jvmArgs '--add-opens=java.base/java.lang=ALL-UNNAMED'
     jvmArgs '--add-opens=java.base/java.util=ALL-UNNAMED'
+}
+
+// Q파일 생성 경로를 소스셋에 포함
+sourceSets {
+    main {
+        java {
+            srcDirs += [querydslDir]
+        }
+    }
+}
+
+// 컴파일 시 Q파일 생성되도록 설정
+tasks.withType(JavaCompile) {
+    options.getGeneratedSourceOutputDirectory().set(file(querydslDir))
+}
+
+// clean 작업 시 generated 폴더도 삭제
+clean {
+    delete file(querydslDir)
 }
