@@ -73,4 +73,12 @@ public interface MyProjectService {
      * @return 해당 프로젝트의 멤버 상세 정보 DTO 목록
      */
     List<ProjectMemberDetailResponse> getProjectMembers(Long projectId);
+
+    /**
+     * 특정 프로젝트에 새로운 멤버를 추가
+     * @param projectId 멤버를 추가할 프로젝트 ID
+     * @param requestDto 추가할 멤버의 정보 (userId, position)
+     * @return 추가된 멤버의 정보
+     */
+    ProjectMemberResponse addProjectMember(Long projectId, AddProjectMemberRequest requestDto);
 }

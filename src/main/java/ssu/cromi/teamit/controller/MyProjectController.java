@@ -78,4 +78,12 @@ public class MyProjectController {
         List<ProjectMemberDetailResponse> members = myProjectService.getProjectMembers(projectId);
         return  ResponseEntity.ok(members);
     }
+
+    @PostMapping("/{projectId}/members")
+    public ResponseEntity<ProjectMemberResponse> addProjectMember(
+            @PathVariable Long projectId,
+            @Valid @RequestBody AddProjectMemberRequest requestDto) {
+        ProjectMemberResponse newMember = myProjectService.addProjectMember(projectId, requestDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newMember);
+    }
 }

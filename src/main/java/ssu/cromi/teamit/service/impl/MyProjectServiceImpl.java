@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ssu.cromi.teamit.DTO.myproject.*;
 import ssu.cromi.teamit.domain.User;
 import ssu.cromi.teamit.entity.Milestone;
+import ssu.cromi.teamit.entity.enums.MemberRole;
 import ssu.cromi.teamit.entity.enums.Position;
 import ssu.cromi.teamit.entity.teamup.Project;
 import ssu.cromi.teamit.entity.teamup.ProjectMember;
@@ -18,6 +19,7 @@ import ssu.cromi.teamit.repository.UserRepository;
 import ssu.cromi.teamit.repository.teamup.ProjectMemberRepository;
 import ssu.cromi.teamit.repository.teamup.ProjectRepository;
 import ssu.cromi.teamit.service.MyProjectService;
+import ssu.cromi.teamit.util.EnumValidator;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -188,5 +190,32 @@ public class MyProjectServiceImpl implements MyProjectService{
         return project.getProjectMembers().stream()
                 .map(ProjectMemberDetailResponse::from)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public ProjectMemberResponse addProjectMember(Long projectId, AddProjectMemberRequest requestDto){
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new EntityNotFoundException("해당 ID의 프로젝트를 찾을 수 없습니다" + projectId));
+        User user = userRepository.findById(requestDto.getUserId())
+                .orElseThrow(() -> new EntityNotFoundException("해당 ID의 사용자를 찾을 수 없습니다" + requestDto.getUserId()));
+        Position position = EnumValidator.parseEnum(Position.class, requestDto.getPosition(),"position");
+
+        boolean isAlreadyMember = project.getProjectMembers().stream()
+                .anyMatch(member -> member.getUser().getUid().equals(requestDto.getUserId()));
+        if(isAlreadyMember){
+            throw new IllegalArgumentException("해당 프로젝트에 이미 참여중인 멤버입니다.");
+        }
+
+        ProjectMember newMember = ProjectMember.builder()
+                .project(project)
+                .user(user)
+                .role(MemberRole.MEMBER) // 기본 팀원
+                .position(position)
+                .build();
+
+        ProjectMember savedMember = projectMemberRepository.save(newMember);
+
+        return ProjectMemberResponse.from(savedMember);
     }
 }
