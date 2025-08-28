@@ -22,7 +22,7 @@ public class ProjectMemberDetailResponse {
                 .nickname(member.getUser().getNickName())
                 .email(member.getUser().getEmail())
                 .position(member.getPosition().getDisplayName())
-                .techStacks(member.getUser().getStacks().stream()
+                .techStacks(member.getProjectStacks().stream()
                         .map(Stack::getTag)
                         .collect(Collectors.toList()))
                 .developerRating(member.getUser().getMyScore())

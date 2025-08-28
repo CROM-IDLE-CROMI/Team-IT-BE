@@ -81,4 +81,13 @@ public interface MyProjectService {
      * @return 추가된 멤버의 정보
      */
     ProjectMemberResponse addProjectMember(Long projectId, AddProjectMemberRequest requestDto);
+
+    /**
+     * 특정 프로젝트의 멤버 정보를 수정
+     * @param projectId 프로젝트 ID
+     * @param userId 수정할 멤버의 사용자 ID
+     * @param requestDto 수정할 멤버 정보 (position, role)
+     * @return 수정된 멤버 정보
+     */
+    ProjectMemberResponse updateProjectMember(Long projectId, String userId, UpdateProjectMemberRequest requestDto);
 }

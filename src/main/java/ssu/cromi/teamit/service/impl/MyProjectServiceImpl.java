@@ -2,12 +2,14 @@ package ssu.cromi.teamit.service.impl;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ssu.cromi.teamit.DTO.myproject.*;
+import ssu.cromi.teamit.domain.Stack;
 import ssu.cromi.teamit.domain.User;
 import ssu.cromi.teamit.entity.Milestone;
 import ssu.cromi.teamit.entity.enums.MemberRole;
@@ -15,17 +17,22 @@ import ssu.cromi.teamit.entity.enums.Position;
 import ssu.cromi.teamit.entity.teamup.Project;
 import ssu.cromi.teamit.entity.teamup.ProjectMember;
 import ssu.cromi.teamit.repository.MilestoneRepository;
+import ssu.cromi.teamit.repository.StackRepository;
 import ssu.cromi.teamit.repository.UserRepository;
 import ssu.cromi.teamit.repository.teamup.ProjectMemberRepository;
 import ssu.cromi.teamit.repository.teamup.ProjectRepository;
 import ssu.cromi.teamit.service.MyProjectService;
 import ssu.cromi.teamit.util.EnumValidator;
 
+import java.lang.reflect.Constructor;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -34,6 +41,7 @@ public class MyProjectServiceImpl implements MyProjectService{
     private final MilestoneRepository milestoneRepository;
     private final ProjectMemberRepository projectMemberRepository;
     private final ProjectRepository projectRepository;
+    private final StackRepository stackRepository;
 
     @Override
     public List<InProgressProject> getInProgressProjects(String uid){
@@ -217,5 +225,60 @@ public class MyProjectServiceImpl implements MyProjectService{
         ProjectMember savedMember = projectMemberRepository.save(newMember);
 
         return ProjectMemberResponse.from(savedMember);
+    }
+
+    @Override
+    @Transactional
+    public ProjectMemberResponse updateProjectMember(Long projectId, String userId, UpdateProjectMemberRequest requestDto) {
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new EntityNotFoundException("해당 ID의 프로젝트를 찾을 수 없습니다: " + projectId));
+
+        ProjectMember member = projectMemberRepository.findByProjectIdAndUserId(projectId, userId)
+                .orElseThrow(() -> new EntityNotFoundException("해당 프로젝트에서 멤버를 찾을 수 없습니다: " + userId));
+
+        Position newPosition = EnumValidator.parseEnum(Position.class, requestDto.getPosition(), "position");
+        
+        // 기술스택 처리 (없으면 자동 생성)
+        Set<Stack> projectStacks = new HashSet<>();
+        if (requestDto.getTechStacks() != null && !requestDto.getTechStacks().isEmpty()) {
+            for (String stackTag : requestDto.getTechStacks()) {
+                Stack stack = stackRepository.findByTag(stackTag)
+                        .orElseGet(() -> createNewStack(stackTag));
+                projectStacks.add(stack);
+            }
+        }
+        
+        ProjectMember updatedMember = ProjectMember.builder()
+                .id(member.getId())
+                .project(member.getProject())
+                .userId(member.getUserId())
+                .user(member.getUser())
+                .role(requestDto.getRole() != null ? 
+                    EnumValidator.parseEnum(MemberRole.class, requestDto.getRole(), "role") : 
+                    member.getRole())
+                .position(newPosition)
+                .projectStacks(projectStacks)
+                .build();
+
+        ProjectMember savedMember = projectMemberRepository.save(updatedMember);
+
+        return ProjectMemberResponse.from(savedMember);
+    }
+
+    private Stack createNewStack(String stackTag) {
+        try {
+            // 리플렉션을 사용해서 Stack 엔티티 생성
+            Constructor<Stack> constructor = Stack.class.getDeclaredConstructor();
+            constructor.setAccessible(true);
+            Stack newStack = constructor.newInstance();
+            newStack.setTag(stackTag);
+            newStack.setIcon(stackTag.toLowerCase() + "-icon.png");
+            
+            Stack savedStack = stackRepository.save(newStack);
+            log.info("새로운 기술스택 자동 생성: {}", stackTag);
+            return savedStack;
+        } catch (Exception e) {
+            throw new RuntimeException("기술스택 생성 실패: " + stackTag, e);
+        }
     }
 }

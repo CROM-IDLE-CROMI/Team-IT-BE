@@ -2,10 +2,13 @@ package ssu.cromi.teamit.entity.teamup;
 
 import jakarta.persistence.*;
 import lombok.*;
-
+import ssu.cromi.teamit.domain.Stack;
 import ssu.cromi.teamit.domain.User;
 import ssu.cromi.teamit.entity.enums.MemberRole;
 import ssu.cromi.teamit.entity.enums.Position;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "Project_Member")
@@ -38,4 +41,13 @@ public class ProjectMember {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    @ManyToMany
+    @JoinTable(
+            name = "project_member_stacks",
+            joinColumns = @JoinColumn(name = "project_member_id"),
+            inverseJoinColumns = @JoinColumn(name = "stack_id")
+    )
+    @Builder.Default
+    private Set<Stack> projectStacks = new HashSet<>();
 }

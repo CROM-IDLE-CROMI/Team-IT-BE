@@ -86,4 +86,13 @@ public class MyProjectController {
         ProjectMemberResponse newMember = myProjectService.addProjectMember(projectId, requestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(newMember);
     }
+
+    @PatchMapping("/{projectId}/members/{userId}")
+    public ResponseEntity<ProjectMemberResponse> updateProjectMember(
+            @PathVariable Long projectId,
+            @PathVariable String userId,
+            @Valid @RequestBody UpdateProjectMemberRequest requestDto) {
+        ProjectMemberResponse updatedMember = myProjectService.updateProjectMember(projectId, userId, requestDto);
+        return ResponseEntity.ok(updatedMember);
+    }
 }
