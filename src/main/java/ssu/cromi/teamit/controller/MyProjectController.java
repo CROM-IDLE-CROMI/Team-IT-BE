@@ -72,4 +72,10 @@ public class MyProjectController {
         myProjectService.updateProjectDescription(projectId, descriptionRequest);
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/{projectId}/members")
+    public ResponseEntity<List<ProjectMemberDetailResponse>> getProjectMembers(@PathVariable Long projectId){
+        List<ProjectMemberDetailResponse> members = myProjectService.getProjectMembers(projectId);
+        return  ResponseEntity.ok(members);
+    }
 }

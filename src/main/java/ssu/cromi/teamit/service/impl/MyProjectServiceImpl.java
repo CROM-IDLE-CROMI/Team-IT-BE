@@ -178,4 +178,15 @@ public class MyProjectServiceImpl implements MyProjectService{
                 .map(ProjectMember::getPosition)
                 .orElse(null);
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ProjectMemberDetailResponse> getProjectMembers(Long projectId) {
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new EntityNotFoundException("해당 ID의 프로젝트를 찾을 수 없습니다: " + projectId));
+
+        return project.getProjectMembers().stream()
+                .map(ProjectMemberDetailResponse::from)
+                .collect(Collectors.toList());
+    }
 }

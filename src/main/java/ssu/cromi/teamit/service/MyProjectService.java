@@ -57,7 +57,7 @@ public interface MyProjectService {
      */
     MilestoneResponse updateMilestone(Long projectId, Long milestoneId, MilestoneRequest milestoneRequest);
 
-
+    //프로젝트 수정하기
     void updateProjectDetails(Long projectId, @Valid MyProjectUpdateRequest updateRequestDto);
 
     /**
@@ -66,4 +66,11 @@ public interface MyProjectService {
      * @param descriptionRequest 수정할 소개 정보
      */
     void updateProjectDescription(Long projectId, ProjectDescriptionUpdateRequest descriptionRequest);
+
+    /**
+     * 특정 프로젝트에 참여중인 멤버 목록을 상세 정보와 함께 조회
+     * @param projectId 조회할 프로젝트 ID
+     * @return 해당 프로젝트의 멤버 상세 정보 DTO 목록
+     */
+    List<ProjectMemberDetailResponse> getProjectMembers(Long projectId);
 }
