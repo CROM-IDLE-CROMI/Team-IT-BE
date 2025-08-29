@@ -2,6 +2,8 @@ package ssu.cromi.teamit.repository.teamup;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import ssu.cromi.teamit.domain.User;
+import ssu.cromi.teamit.entity.enums.MemberRole;
+import ssu.cromi.teamit.entity.teamup.Project;
 import ssu.cromi.teamit.entity.teamup.ProjectMember;
 
 import java.util.List;
@@ -12,4 +14,5 @@ public interface ProjectMemberRepository extends JpaRepository<ProjectMember, Lo
     List<ProjectMember> findByUser(User user);
     List<ProjectMember> findByProjectId(Long projectId);
     Optional<ProjectMember> findByProjectIdAndUserId(Long projectId, String userId);
+    Optional<ProjectMember> findByProjectAndRole(Project project, MemberRole role);
 }

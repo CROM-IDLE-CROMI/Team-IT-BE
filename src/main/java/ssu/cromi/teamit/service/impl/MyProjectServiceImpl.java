@@ -310,4 +310,64 @@ public class MyProjectServiceImpl implements MyProjectService{
         projectMemberRepository.delete(member);
         log.info("프로젝트(ID : {})에서 멤버(ID: {})를 삭제했습니다.", projectId, userId);
     }
+
+    @Override
+    @Transactional
+    public void delegateLeadership(Long projectId, DelegateLeadershipRequest requestDto) {
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new EntityNotFoundException("해당 ID의 프로젝트를 찾을 수 없습니다: " + projectId));
+
+        String newLeaderUserId = requestDto.getNewLeaderUserId();
+        
+        // 새로운 팀장이 될 멤버가 프로젝트에 참여 중인지 확인
+        ProjectMember newLeaderMember = projectMemberRepository.findByProjectIdAndUserId(projectId, newLeaderUserId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 프로젝트 멤버가 아닙니다: " + newLeaderUserId));
+
+        // 현재 팀장 찾기
+        ProjectMember currentLeader = projectMemberRepository.findByProjectAndRole(project, MemberRole.LEADER)
+                .orElse(null);
+
+        // 새로운 팀장이 이미 팀장인지 확인
+        if (newLeaderMember.getRole() == MemberRole.LEADER) {
+            throw new IllegalArgumentException("해당 멤버는 이미 팀장입니다.");
+        }
+
+        // 현재 팀장을 멤버로 변경
+        if (currentLeader != null) {
+            ProjectMember updatedCurrentLeader = ProjectMember.builder()
+                    .id(currentLeader.getId())
+                    .project(currentLeader.getProject())
+                    .userId(currentLeader.getUserId())
+                    .user(currentLeader.getUser())
+                    .role(MemberRole.MEMBER)
+                    .position(currentLeader.getPosition())
+                    .projectStacks(currentLeader.getProjectStacks())
+                    .build();
+            projectMemberRepository.save(updatedCurrentLeader);
+        }
+
+        // 새로운 멤버를 팀장으로 변경
+        ProjectMember updatedNewLeader = ProjectMember.builder()
+                .id(newLeaderMember.getId())
+                .project(newLeaderMember.getProject())
+                .userId(newLeaderMember.getUserId())
+                .user(newLeaderMember.getUser())
+                .role(MemberRole.LEADER)
+                .position(newLeaderMember.getPosition())
+                .projectStacks(newLeaderMember.getProjectStacks())
+                .build();
+        projectMemberRepository.save(updatedNewLeader);
+
+        // 프로젝트의 소유자(ownerId) 변경
+        project.setOwnerId(newLeaderUserId);
+        User newOwner = userRepository.findById(newLeaderUserId)
+                .orElseThrow(() -> new EntityNotFoundException("해당 ID의 사용자를 찾을 수 없습니다: " + newLeaderUserId));
+        project.setOwner(newOwner);
+        projectRepository.save(project);
+
+        log.info("프로젝트(ID: {})의 팀장 권한을 {}에서 {}로 위임했습니다.", 
+                projectId, 
+                currentLeader != null ? currentLeader.getUserId() : "none", 
+                newLeaderUserId);
+    }
 }

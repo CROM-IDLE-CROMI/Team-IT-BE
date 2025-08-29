@@ -97,4 +97,11 @@ public interface MyProjectService {
      * @param userId 삭제할 멤버의 사용자 ID
      */
     void deleteProjectMember(Long projectId, String userId);
+
+    /**
+     * 팀장 권한을 다른 멤버에게 위임
+     * @param projectId 프로젝트 ID
+     * @param requestDto 새로운 팀장이 될 사용자 ID
+     */
+    void delegateLeadership(Long projectId, DelegateLeadershipRequest requestDto);
 }

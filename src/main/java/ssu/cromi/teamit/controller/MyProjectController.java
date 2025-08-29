@@ -101,4 +101,12 @@ public class MyProjectController {
         myProjectService.deleteProjectMember(projectId, userId);
         return ResponseEntity.noContent().build();
     }
+
+    @PatchMapping("/{projectId}/delegate-leadership")
+    public ResponseEntity<Void> delegateLeadership(
+            @PathVariable Long projectId,
+            @Valid @RequestBody DelegateLeadershipRequest requestDto) {
+        myProjectService.delegateLeadership(projectId, requestDto);
+        return ResponseEntity.ok().build();
+    }
 }
