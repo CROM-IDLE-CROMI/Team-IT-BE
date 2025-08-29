@@ -6,7 +6,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ssu.cromi.teamit.DTO.myproject.*;
+import ssu.cromi.teamit.security.jwt.JwtUtil;
 import ssu.cromi.teamit.service.MyProjectService;
+import ssu.cromi.teamit.service.ProjectReviewService;
 
 import java.util.List;
 
@@ -15,6 +17,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MyProjectController {
     private final MyProjectService myProjectService;
+    private final ProjectReviewService projectReviewService;
+    private final JwtUtil jwtUtil;
 
     @GetMapping("/{uid}")
     public ResponseEntity<?> getMyprojects(
@@ -108,5 +112,35 @@ public class MyProjectController {
             @Valid @RequestBody DelegateLeadershipRequest requestDto) {
         myProjectService.delegateLeadership(projectId, requestDto);
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{projectId}/reviews")
+    public ResponseEntity<ProjectReviewResponse> createReview(
+            @PathVariable Long projectId,
+            @Valid @RequestBody ProjectReviewRequest reviewRequest,
+            @RequestHeader("Authorization") String token) {
+        String reviewerId = jwtUtil.extractUid(token.replace("Bearer ", ""));
+        reviewRequest.setProjectId(projectId);
+        ProjectReviewResponse review = projectReviewService.createReview(reviewerId, reviewRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body(review);
+    }
+
+    @GetMapping("/{projectId}/reviews")
+    public ResponseEntity<List<ProjectReviewResponse>> getProjectReviews(@PathVariable Long projectId) {
+        List<ProjectReviewResponse> reviews = projectReviewService.getProjectReviews(projectId);
+        return ResponseEntity.ok(reviews);
+    }
+
+    @GetMapping("/users/{userId}/reviews")
+    public ResponseEntity<List<ProjectReviewResponse>> getUserReviews(@PathVariable String userId) {
+        List<ProjectReviewResponse> reviews = projectReviewService.getUserReviews(userId);
+        return ResponseEntity.ok(reviews);
+    }
+
+    @GetMapping("/reviews/my-reviews")
+    public ResponseEntity<List<ProjectReviewResponse>> getMyReviews(@RequestHeader("Authorization") String token) {
+        String reviewerId = jwtUtil.extractUid(token.replace("Bearer ", ""));
+        List<ProjectReviewResponse> reviews = projectReviewService.getReviewsByReviewer(reviewerId);
+        return ResponseEntity.ok(reviews);
     }
 }
