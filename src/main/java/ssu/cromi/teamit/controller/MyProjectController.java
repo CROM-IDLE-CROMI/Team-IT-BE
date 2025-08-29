@@ -95,4 +95,10 @@ public class MyProjectController {
         ProjectMemberResponse updatedMember = myProjectService.updateProjectMember(projectId, userId, requestDto);
         return ResponseEntity.ok(updatedMember);
     }
+
+    @DeleteMapping("/{projectId}/members/{userId}")
+    public ResponseEntity<Void> deleteProjectMember(@PathVariable Long projectId, @PathVariable String userId){
+        myProjectService.deleteProjectMember(projectId, userId);
+        return ResponseEntity.noContent().build();
+    }
 }

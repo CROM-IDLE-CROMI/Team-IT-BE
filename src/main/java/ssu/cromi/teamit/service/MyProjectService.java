@@ -90,4 +90,11 @@ public interface MyProjectService {
      * @return 수정된 멤버 정보
      */
     ProjectMemberResponse updateProjectMember(Long projectId, String userId, UpdateProjectMemberRequest requestDto);
+
+    /**
+     * 특정 프로젝트의 멤버를 삭제
+     * @param projectId 프로젝트 ID
+     * @param userId 삭제할 멤버의 사용자 ID
+     */
+    void deleteProjectMember(Long projectId, String userId);
 }

@@ -2,6 +2,7 @@ package ssu.cromi.teamit.repository;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import ssu.cromi.teamit.domain.User;
 import ssu.cromi.teamit.entity.Milestone;
 
 import java.util.List;
@@ -17,4 +18,13 @@ public interface MilestoneRepository extends JpaRepository<Milestone, Long> {
      * @return List<Milestone>
      */
     List<Milestone> findByProjectIdAndProgressLessThan(Long projectId, int progress, Pageable pageable);
+
+    /**
+     * 특정 프로젝트에서 특정 담당자에게 할당된 모든 마일스톤 조회
+     * @param projectId 프로젝트 ID
+     * @param assignee 담당자 User 객체
+     * @return List<Milestone>
+     */
+    List<Milestone> findByProjectIdAndAssignee(Long projectId, User assignee);
+
 }

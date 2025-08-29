@@ -16,6 +16,7 @@ import ssu.cromi.teamit.entity.enums.MemberRole;
 import ssu.cromi.teamit.entity.enums.Position;
 import ssu.cromi.teamit.entity.teamup.Project;
 import ssu.cromi.teamit.entity.teamup.ProjectMember;
+import ssu.cromi.teamit.exceptions.LeaderDeletionException;
 import ssu.cromi.teamit.repository.MilestoneRepository;
 import ssu.cromi.teamit.repository.StackRepository;
 import ssu.cromi.teamit.repository.UserRepository;
@@ -280,5 +281,33 @@ public class MyProjectServiceImpl implements MyProjectService{
         } catch (Exception e) {
             throw new RuntimeException("기술스택 생성 실패: " + stackTag, e);
         }
+    }
+
+    @Override
+    @Transactional
+    public void deleteProjectMember(Long projectId, String userId){
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new EntityNotFoundException("해당 ID의 프로젝트를 찾을 수 없습니다: " + projectId));
+        ProjectMember member = projectMemberRepository.findByProjectIdAndUserId(projectId, userId)
+                .orElseThrow(() -> new EntityNotFoundException("해당 프로젝트에서 멤버를 찾을 수 없습니다: " + userId));
+        if(member.getRole() == MemberRole.LEADER){
+            throw new LeaderDeletionException("팀장은 프로젝트에서 삭제할 수 없습니다");
+        }
+        User user = member.getUser();
+        List<Milestone> assignedMilestones = milestoneRepository.findByProjectIdAndAssignee(projectId,user);
+        
+        // 프로젝트 리더를 찾아서 마일스톤 재할당
+        User projectLeader = project.getProjectMembers().stream()
+                .filter(m -> m.getRole() == MemberRole.LEADER)
+                .findFirst()
+                .map(ProjectMember::getUser)
+                .orElse(project.getOwner()); // 리더가 없으면 프로젝트 소유자에게 할당
+        
+        for(Milestone milestone : assignedMilestones){
+            milestone.setAssignee(projectLeader);
+        }
+
+        projectMemberRepository.delete(member);
+        log.info("프로젝트(ID : {})에서 멤버(ID: {})를 삭제했습니다.", projectId, userId);
     }
 }
