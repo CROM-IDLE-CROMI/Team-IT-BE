@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ssu.cromi.teamit.DTO.myproject.*;
-import ssu.cromi.teamit.security.jwt.JwtUtil;
+import ssu.cromi.teamit.security.JwtUtils;
 import ssu.cromi.teamit.service.MyProjectService;
 import ssu.cromi.teamit.service.ProjectReviewService;
 
@@ -18,7 +18,7 @@ import java.util.List;
 public class MyProjectController {
     private final MyProjectService myProjectService;
     private final ProjectReviewService projectReviewService;
-    private final JwtUtil jwtUtil;
+    private final JwtUtils jwtUtils;
 
     @GetMapping("/{uid}")
     public ResponseEntity<?> getMyprojects(
@@ -119,7 +119,7 @@ public class MyProjectController {
             @PathVariable Long projectId,
             @Valid @RequestBody ProjectReviewRequest reviewRequest,
             @RequestHeader("Authorization") String token) {
-        String reviewerId = jwtUtil.extractUid(token.replace("Bearer ", ""));
+        String reviewerId = jwtUtils.getUsernameFromJwt(token.replace("Bearer ", ""));
         reviewRequest.setProjectId(projectId);
         ProjectReviewResponse review = projectReviewService.createReview(reviewerId, reviewRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(review);
@@ -139,7 +139,7 @@ public class MyProjectController {
 
     @GetMapping("/reviews/my-reviews")
     public ResponseEntity<List<ProjectReviewResponse>> getMyReviews(@RequestHeader("Authorization") String token) {
-        String reviewerId = jwtUtil.extractUid(token.replace("Bearer ", ""));
+        String reviewerId = jwtUtils.getUsernameFromJwt(token.replace("Bearer ", ""));
         List<ProjectReviewResponse> reviews = projectReviewService.getReviewsByReviewer(reviewerId);
         return ResponseEntity.ok(reviews);
     }

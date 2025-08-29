@@ -160,4 +160,8 @@ public class Project {
     @Builder.Default
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Milestone> milestones = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "project")
+    private List<ProjectReview> projectReviews = new ArrayList<>();
 }
