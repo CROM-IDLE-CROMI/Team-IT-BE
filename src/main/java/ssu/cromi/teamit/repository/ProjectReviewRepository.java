@@ -1,4 +1,4 @@
-package ssu.cromi.teamit.repository.teamup;
+package ssu.cromi.teamit.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

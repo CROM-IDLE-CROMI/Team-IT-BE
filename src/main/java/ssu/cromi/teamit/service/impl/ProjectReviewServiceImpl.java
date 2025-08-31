@@ -9,9 +9,9 @@ import ssu.cromi.teamit.DTO.myproject.ProjectReviewResponse;
 import ssu.cromi.teamit.domain.User;
 import ssu.cromi.teamit.entity.teamup.Project;
 import ssu.cromi.teamit.entity.teamup.ProjectReview;
+import ssu.cromi.teamit.repository.ProjectReviewRepository;
 import ssu.cromi.teamit.repository.UserRepository;
 import ssu.cromi.teamit.repository.teamup.ProjectRepository;
-import ssu.cromi.teamit.repository.teamup.ProjectReviewRepository;
 import ssu.cromi.teamit.service.ProjectReviewService;
 
 import java.util.List;
