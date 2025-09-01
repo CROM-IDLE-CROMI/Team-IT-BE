@@ -66,8 +66,22 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
     }
 
     // private BooleanExpression 메서드
+    // ProjectRepositoryImpl.java
+
     private BooleanExpression keywordContains(String keyword) {
-        return StringUtils.hasText(keyword) ? project.title.containsIgnoreCase(keyword).or(project.ideaExplain.containsIgnoreCase(keyword)) : null;
+        // keyword가 비어있으면 null을 반환하여 검색 조건에서 제외
+        if (!StringUtils.hasText(keyword)) {
+            return null;
+        }
+
+        // 1. 사용자가 입력한 검색어(keyword)에서 모든 공백을 제거
+        String keywordWithoutSpaces = keyword.replaceAll("\\s+", "");
+
+        // 2. DB의 title 컬럼 값에서 공백을 제거하는 SQL 함수(REPLACE)를 생성
+        StringTemplate titleWithoutSpaces = Expressions.stringTemplate("REPLACE({0}, ' ', '')", project.title);
+
+        // 3. 공백이 제거된 title 값에 공백이 제거된 검색어가 포함되어 있는지 확인 (대소문자 무시)
+        return titleWithoutSpaces.containsIgnoreCase(keywordWithoutSpaces);
     }
 
     private BooleanExpression platformEq(Platform platform) {
