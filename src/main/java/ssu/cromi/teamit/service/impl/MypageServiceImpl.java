@@ -4,12 +4,17 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ssu.cromi.teamit.DTO.mypage.MypageResponse;
-import ssu.cromi.teamit.domain.*;
+import ssu.cromi.teamit.DTO.mypage.StackWithLevel;
+import ssu.cromi.teamit.domain.Organization;
+import ssu.cromi.teamit.domain.Position;
+import ssu.cromi.teamit.domain.User;
+import ssu.cromi.teamit.domain.UserProfile;
 import ssu.cromi.teamit.entity.teamup.ProjectMember;
 import ssu.cromi.teamit.entity.teamup.ProjectReview;
 import ssu.cromi.teamit.repository.ProjectReviewRepository;
 import ssu.cromi.teamit.repository.UserProfileRepository;
 import ssu.cromi.teamit.repository.UserRepository;
+import ssu.cromi.teamit.repository.UserStackRepository;
 import ssu.cromi.teamit.repository.teamup.ProjectMemberRepository;
 import ssu.cromi.teamit.service.MypageService;
 
@@ -26,6 +31,7 @@ public class MypageServiceImpl implements MypageService {
     private final ProjectMemberRepository projectMemberRepository;
     private final ProjectReviewRepository projectReviewRepository;
     private final UserProfileRepository userProfileRepository;
+    private final UserStackRepository userStackRepository;
 
     @Override
     public MypageResponse getMypageInfo(String uid) {
@@ -33,8 +39,8 @@ public class MypageServiceImpl implements MypageService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
         
         List<ProjectMember> projectMembers = projectMemberRepository.findByUser(user);
-        List<Long> projectIds = projectMembers.stream()
-                .map(pm -> pm.getProject().getId())
+        List<String> projectNames = projectMembers.stream()
+                .map(pm -> pm.getProject().getProjectName())
                 .collect(Collectors.toList());
         
         List<ProjectReview> reviews = projectReviewRepository.findByRevieweeId(uid);
@@ -43,8 +49,13 @@ public class MypageServiceImpl implements MypageService {
                 .average()
                 .orElse(0.0);
         
-        List<String> stacks = user.getStacks().stream()
-                .map(Stack::getTag)
+        List<StackWithLevel> stacks = userStackRepository.findByUserUidAndIsRepresentativeTrue(uid).stream()
+                .limit(3)
+                .map(userStack -> StackWithLevel.builder()
+                        .stackName(userStack.getStack().getTag())
+                        .icon(userStack.getStack().getIcon())
+                        .level(userStack.getLevel().getDisplayName())
+                        .build())
                 .collect(Collectors.toList());
         
         String organization = user.getOrganizations().stream()
@@ -66,7 +77,7 @@ public class MypageServiceImpl implements MypageService {
                 .email(user.getEmail())
                 .position(position)
                 .description(getUserDescription(uid))
-                .projects(projectIds)
+                .projects(projectNames)
                 .stacks(stacks)
                 .prize(getUserPrize(uid))
                 .stars(averageStars)

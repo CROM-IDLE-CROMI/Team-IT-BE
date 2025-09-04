@@ -17,8 +17,8 @@ public class MypageResponse {
     private String email;
     private String position;
     private String description;
-    private List<Long> projects;
-    private List<String> stacks;
+    private List<String> projects;
+    private List<StackWithLevel> stacks;
     private String prize;
     private double stars;
 }
