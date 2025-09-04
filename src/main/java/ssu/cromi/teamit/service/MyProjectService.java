@@ -104,4 +104,12 @@ public interface MyProjectService {
      * @param requestDto 새로운 팀장이 될 사용자 ID
      */
     void delegateLeadership(Long projectId, DelegateLeadershipRequest requestDto);
+
+    /**
+     * 프로젝트 상태를 변경 (팀장 권한 필요)
+     * @param projectId 프로젝트 ID
+     * @param uid 요청자 사용자 ID (팀장 권한 확인용)
+     * @param requestDto 변경할 상태 정보
+     */
+    void updateProjectStatus(Long projectId, String uid, ProjectStatusUpdateRequest requestDto);
 }

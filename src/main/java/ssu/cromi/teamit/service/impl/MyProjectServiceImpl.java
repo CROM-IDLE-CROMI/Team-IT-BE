@@ -14,6 +14,7 @@ import ssu.cromi.teamit.domain.User;
 import ssu.cromi.teamit.entity.Milestone;
 import ssu.cromi.teamit.entity.enums.MemberRole;
 import ssu.cromi.teamit.entity.enums.Position;
+import ssu.cromi.teamit.entity.enums.Status;
 import ssu.cromi.teamit.entity.teamup.Project;
 import ssu.cromi.teamit.entity.teamup.ProjectMember;
 import ssu.cromi.teamit.exceptions.LeaderDeletionException;
@@ -58,7 +59,7 @@ public class MyProjectServiceImpl implements MyProjectService{
                         .platform(project.getPlatform())
                         .position(findMyPositionInProject(user, project))
                         .projectStartDate(project.getStartDate())
-                        .progressStatus(project.getProjectStatus())
+                        .status(project.getStatus())
                         .build())
                 .collect(Collectors.toList());
     }
@@ -77,7 +78,7 @@ public class MyProjectServiceImpl implements MyProjectService{
                         .position(findMyPositionInProject(user, project))
                         .requireStack(project.getRequireStack())
                         .projectStartDate(project.getStartDate())
-                        .isCompleted(true)
+                        .status(project.getStatus())
                         .build())
                 .collect(Collectors.toList());
     }
@@ -369,5 +370,30 @@ public class MyProjectServiceImpl implements MyProjectService{
                 projectId, 
                 currentLeader != null ? currentLeader.getUserId() : "none", 
                 newLeaderUserId);
+    }
+
+    @Override
+    @Transactional
+    public void updateProjectStatus(Long projectId, String uid, ProjectStatusUpdateRequest requestDto) {
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new EntityNotFoundException("해당 ID의 프로젝트를 찾을 수 없습니다: " + projectId));
+        
+        User user = userRepository.findById(uid)
+                .orElseThrow(() -> new EntityNotFoundException("해당 ID의 사용자를 찾을 수 없습니다: " + uid));
+        
+        // 팀장 권한 확인
+        ProjectMember member = projectMemberRepository.findByProjectIdAndUserId(projectId, uid)
+                .orElseThrow(() -> new IllegalArgumentException("해당 프로젝트의 멤버가 아닙니다: " + uid));
+        
+        if (member.getRole() != MemberRole.LEADER) {
+            throw new IllegalArgumentException("프로젝트 상태 변경은 팀장만 가능합니다.");
+        }
+        
+        // Status enum 검증 및 변경
+        Status newStatus = EnumValidator.parseEnum(Status.class, requestDto.getStatus(), "status");
+        project.setStatus(newStatus);
+        
+        log.info("프로젝트(ID: {}) 상태를 {}로 변경했습니다. 변경자: {}", 
+                projectId, newStatus.getDisplayName(), uid);
     }
 }

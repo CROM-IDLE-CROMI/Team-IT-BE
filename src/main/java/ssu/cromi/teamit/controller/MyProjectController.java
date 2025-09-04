@@ -114,6 +114,16 @@ public class MyProjectController {
         return ResponseEntity.ok().build();
     }
 
+    @PatchMapping("/{projectId}/status")
+    public ResponseEntity<Void> updateProjectStatus(
+            @PathVariable Long projectId,
+            @Valid @RequestBody ProjectStatusUpdateRequest requestDto,
+            @RequestHeader("Authorization") String token) {
+        String uid = jwtUtils.getUsernameFromJwt(token.replace("Bearer ", ""));
+        myProjectService.updateProjectStatus(projectId, uid, requestDto);
+        return ResponseEntity.ok().build();
+    }
+
     @PostMapping("/{projectId}/reviews")
     public ResponseEntity<ProjectReviewResponse> createReview(
             @PathVariable Long projectId,

@@ -2,6 +2,7 @@ package ssu.cromi.teamit.DTO.myproject;
 
 import lombok.Builder;
 import lombok.Getter;
+import ssu.cromi.teamit.entity.enums.Status;
 import ssu.cromi.teamit.entity.teamup.Project;
 
 import java.util.List;
@@ -15,6 +16,7 @@ public class MyProjectDetailResponse {
     private String projectIntro;
     private int overallProgress;
     private String projectLogoUrl;
+    private Status status;
     private List<ProjectMemberResponse> members;
     private List<MilestoneResponse> milestones;
 
@@ -26,6 +28,7 @@ public class MyProjectDetailResponse {
                 .projectStatus(project.getProjectStatus().getDisplayName())
                 .projectIntro(project.getIdeaExplain())
                 .overallProgress(project.getProgress())
+                .status(project.getStatus())
                 .members(members)
                 .milestones(milestones)
                 .build();
