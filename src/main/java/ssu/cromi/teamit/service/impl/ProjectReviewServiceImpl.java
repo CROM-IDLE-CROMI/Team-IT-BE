@@ -49,6 +49,7 @@ public class ProjectReviewServiceImpl implements ProjectReviewService {
                 .projectId(reviewRequest.getProjectId())
                 .reviewerId(reviewerId)
                 .revieweeId(reviewRequest.getRevieweeId())
+                .writerId(reviewerId)
                 .score(reviewRequest.getScore())
                 .content(reviewRequest.getContent())
                 .project(project)

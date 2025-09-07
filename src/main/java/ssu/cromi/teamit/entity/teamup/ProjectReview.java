@@ -27,6 +27,9 @@ public class ProjectReview {
     @Column(name = "reviewee_id", nullable = false, length = 50)
     private String revieweeId;
 
+    @Column(name = "writer_id", nullable = false, length = 50)
+    private String writerId;
+
     @Column(name = "score", nullable = false)
     private Double score;
 
