@@ -66,7 +66,6 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
     }
 
     // private BooleanExpression 메서드
-    // ProjectRepositoryImpl.java
 
     private BooleanExpression keywordContains(String keyword) {
         // keyword가 비어있으면 null을 반환하여 검색 조건에서 제외
