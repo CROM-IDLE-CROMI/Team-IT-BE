@@ -3,6 +3,7 @@ package ssu.cromi.teamit.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ssu.cromi.teamit.DTO.mypage.MyRatingResponse;
 import ssu.cromi.teamit.DTO.mypage.MypageResponse;
 import ssu.cromi.teamit.DTO.mypage.StackWithLevel;
 import ssu.cromi.teamit.domain.Organization;
@@ -16,6 +17,7 @@ import ssu.cromi.teamit.repository.UserProfileRepository;
 import ssu.cromi.teamit.repository.UserRepository;
 import ssu.cromi.teamit.repository.UserStackRepository;
 import ssu.cromi.teamit.repository.teamup.ProjectMemberRepository;
+import ssu.cromi.teamit.repository.teamup.ProjectRepository;
 import ssu.cromi.teamit.service.MypageService;
 
 import java.time.LocalDateTime;
@@ -32,6 +34,7 @@ public class MypageServiceImpl implements MypageService {
     private final ProjectReviewRepository projectReviewRepository;
     private final UserProfileRepository userProfileRepository;
     private final UserStackRepository userStackRepository;
+    private final ProjectRepository projectRepository;
 
     @Override
     public MypageResponse getMypageInfo(String uid) {
@@ -94,5 +97,40 @@ public class MypageServiceImpl implements MypageService {
         return userProfileRepository.findByUid(uid)
                 .map(UserProfile::getPrize)
                 .orElse("");
+    }
+    
+    @Override
+    public List<MyRatingResponse> getMyRatings(String uid) {
+        List<ProjectReview> reviews = projectReviewRepository.findByRevieweeId(uid);
+        
+        return reviews.stream()
+                .map(review -> {
+                    String reviewerNickName = userRepository.findByUid(review.getReviewerId())
+                            .map(User::getNickName)
+                            .orElse("Unknown");
+                    
+                    String projectName = "Unknown Project";
+                    String platform = "Unknown";
+                    
+                    if (review.getProjectId() != null) {
+                        var project = projectRepository.findById(review.getProjectId());
+                        if (project.isPresent()) {
+                            projectName = project.get().getProjectName();
+                            platform = project.get().getPlatform().name();
+                        }
+                    }
+                    
+                    return new MyRatingResponse(
+                            review.getId(),
+                            review.getReviewerId(),
+                            reviewerNickName,
+                            review.getScore(),
+                            review.getContent(),
+                            review.getUpdatedAt(),
+                            projectName,
+                            platform
+                    );
+                })
+                .collect(Collectors.toList());
     }
 }
