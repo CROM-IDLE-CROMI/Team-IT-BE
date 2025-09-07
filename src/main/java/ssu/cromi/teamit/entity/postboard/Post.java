@@ -3,13 +3,13 @@ package ssu.cromi.teamit.entity.postboard;
 import jakarta.persistence.*;
 import lombok.*;
 import ssu.cromi.teamit.entity.enums.PostCategory;
-import ssu.cromi.teamit.entity.enums.PostStatus;
+import ssu.cromi.teamit.entity.enums.WritingStatus;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "posts")
 @Getter
-@Setter // Service 레이어에서 Entity 수정을 위해 추가
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
@@ -31,7 +31,7 @@ public class Post {
     @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
-    private PostStatus status = PostStatus.PUBLISHED;
+    private WritingStatus status = WritingStatus.IN_PROGRESS;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "category", nullable = false)
