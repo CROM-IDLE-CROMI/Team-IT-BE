@@ -35,7 +35,7 @@ public class PostController {
         );
     }
 
-    @PutMapping("/{postId}") // 게시글 수정
+    @PatchMapping("/{postId}") // 게시글 수정
     public ResponseEntity<ApiResponse<PostResponse>> updatePost(
             @PathVariable Long postId,
             @Valid @RequestBody PostUpdateRequest requestDto,
