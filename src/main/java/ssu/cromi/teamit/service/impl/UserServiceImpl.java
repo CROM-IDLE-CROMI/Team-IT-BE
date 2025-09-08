@@ -5,10 +5,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ssu.cromi.teamit.DTO.auth.SignupRequest;
 import ssu.cromi.teamit.DTO.mypage.AwardResponse;
-import ssu.cromi.teamit.DTO.user.ProfileUpdateRequest;
-import ssu.cromi.teamit.DTO.user.ProfileUpdateResponse;
-import ssu.cromi.teamit.DTO.user.UserAwardUpdateRequest;
-import ssu.cromi.teamit.DTO.user.UserStackUpdateRequest;
+import ssu.cromi.teamit.DTO.user.*;
 import ssu.cromi.teamit.domain.Position;
 import ssu.cromi.teamit.domain.Stack;
 import ssu.cromi.teamit.domain.User;
@@ -136,7 +133,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public List<UserStack> updateUserStacks(String uid, UserStackUpdateRequest request) {
+    public List<StackResponse> updateUserStacks(String uid, UserStackUpdateRequest request) {
         User user = userRepository.findByUid(uid)
                 .orElseThrow(() -> new UserNotFoundException("사용자를 찾을 수 없습니다: " + uid));
 
@@ -169,15 +166,33 @@ public class UserServiceImpl implements UserService {
             newUserStacks.add(userStack);
         }
 
-        return userStackRepository.saveAll(newUserStacks);
+        List<UserStack> savedStacks = userStackRepository.saveAll(newUserStacks);
+        
+        return savedStacks.stream()
+                .map(userStack -> StackResponse.builder()
+                        .stackId(userStack.getStack().getId())
+                        .level(userStack.getLevel())
+                        .isRepresentative(userStack.getIsRepresentative())
+                        .iconUrl(userStack.getStack().getIcon())
+                        .build())
+                .collect(Collectors.toList());
     }
 
     @Override
-    public List<UserStack> getUserStacks(String uid) {
+    public List<StackResponse> getUserStacks(String uid) {
         User user = userRepository.findByUid(uid)
                 .orElseThrow(() -> new UserNotFoundException("사용자를 찾을 수 없습니다: " + uid));
         
-        return userStackRepository.findByUser(user);
+        List<UserStack> userStacks = userStackRepository.findByUser(user);
+        
+        return userStacks.stream()
+                .map(userStack -> StackResponse.builder()
+                        .stackId(userStack.getStack().getId())
+                        .level(userStack.getLevel())
+                        .isRepresentative(userStack.getIsRepresentative())
+                        .iconUrl(userStack.getStack().getIcon())
+                        .build())
+                .collect(Collectors.toList());
     }
 
     @Override

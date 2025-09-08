@@ -7,11 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import ssu.cromi.teamit.DTO.mypage.AwardResponse;
 import ssu.cromi.teamit.DTO.mypage.MyRatingResponse;
 import ssu.cromi.teamit.DTO.mypage.MypageResponse;
-import ssu.cromi.teamit.DTO.user.ProfileUpdateRequest;
-import ssu.cromi.teamit.DTO.user.ProfileUpdateResponse;
-import ssu.cromi.teamit.DTO.user.UserAwardUpdateRequest;
-import ssu.cromi.teamit.DTO.user.UserStackUpdateRequest;
-import ssu.cromi.teamit.entity.UserStack;
+import ssu.cromi.teamit.DTO.user.*;
 import ssu.cromi.teamit.security.JwtUtils;
 import ssu.cromi.teamit.service.MypageService;
 import ssu.cromi.teamit.service.UserService;
@@ -49,18 +45,18 @@ public class MypageController {
     }
 
     @PatchMapping("/stacks")
-    public ResponseEntity<List<UserStack>> updateUserStacks(
+    public ResponseEntity<List<StackResponse>> updateUserStacks(
             @Valid @RequestBody UserStackUpdateRequest request,
             @RequestHeader("Authorization") String token) {
         String uid = jwtUtils.getUsernameFromJwt(token.replace("Bearer ", ""));
-        List<UserStack> updatedStacks = userService.updateUserStacks(uid, request);
+        List<StackResponse> updatedStacks = userService.updateUserStacks(uid, request);
         return ResponseEntity.ok(updatedStacks);
     }
 
     @GetMapping("/stacks")
-    public ResponseEntity<List<UserStack>> getUserStacks(@RequestHeader("Authorization") String token) {
+    public ResponseEntity<List<StackResponse>> getUserStacks(@RequestHeader("Authorization") String token) {
         String uid = jwtUtils.getUsernameFromJwt(token.replace("Bearer ", ""));
-        List<UserStack> userStacks = userService.getUserStacks(uid);
+        List<StackResponse> userStacks = userService.getUserStacks(uid);
         return ResponseEntity.ok(userStacks);
     }
 
