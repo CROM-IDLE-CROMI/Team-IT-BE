@@ -24,17 +24,11 @@ public class PostListServiceImpl implements PostListService {
     private final UserRepository userRepository;
 
     @Override
-    public Page<PostListResponse> getPostsByCategory(PostCategory category, Pageable pageable) {
-        Page<Post> posts;
+    public Page<PostListResponse> getPosts(PostCategory category, String keyword, Pageable pageable) {
 
-        if (category != null) {
-            posts = postRepository.findByCategory(category, pageable);
-        } else {
-            posts = postRepository.findAll(pageable);
-        }
+        Page<Post> posts = postRepository.searchPosts(category, keyword, pageable);
 
-        List<Post> postContent = posts.getContent();
-        List<String> authorIds = postContent.stream().map(Post::getAuthorId).distinct().collect(Collectors.toList());
+        List<String> authorIds = posts.getContent().stream().map(Post::getAuthorId).distinct().collect(Collectors.toList());
         Map<String, User> authorsMap = userRepository.findAllById(authorIds).stream().collect(Collectors.toMap(User::getUid, user -> user));
 
         return posts.map(post -> {
