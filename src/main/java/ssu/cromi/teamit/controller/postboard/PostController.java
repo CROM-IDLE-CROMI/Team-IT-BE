@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import ssu.cromi.teamit.DTO.postboard.PostCreateRequest;
-import ssu.cromi.teamit.DTO.postboard.PostResponse;
+import ssu.cromi.teamit.DTO.common.PageResponse;
 import ssu.cromi.teamit.DTO.postboard.PostUpdateRequest;
 import ssu.cromi.teamit.entity.postboard.Post;
 import ssu.cromi.teamit.response.ApiResponse;
@@ -21,8 +21,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
-import ssu.cromi.teamit.DTO.postboard.PageResponse;
-
+import ssu.cromi.teamit.DTO.postboard.PostResponse;
 
 @RestController
 @RequestMapping("/api/posts")
