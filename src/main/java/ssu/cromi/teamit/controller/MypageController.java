@@ -1,15 +1,16 @@
 package ssu.cromi.teamit.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ssu.cromi.teamit.DTO.mypage.MyRatingResponse;
 import ssu.cromi.teamit.DTO.mypage.MypageResponse;
+import ssu.cromi.teamit.DTO.user.ProfileUpdateRequest;
+import ssu.cromi.teamit.domain.User;
 import ssu.cromi.teamit.security.JwtUtils;
 import ssu.cromi.teamit.service.MypageService;
+import ssu.cromi.teamit.service.UserService;
 
 import java.util.List;
 
@@ -19,6 +20,7 @@ import java.util.List;
 public class MypageController {
     
     private final MypageService mypageService;
+    private final UserService userService;
     private final JwtUtils jwtUtils;
     
     @GetMapping("/{uid}")
@@ -31,5 +33,14 @@ public class MypageController {
     public ResponseEntity<List<MyRatingResponse>> getMyRatings(@PathVariable String uid) {
         List<MyRatingResponse> ratings = mypageService.getMyRatings(uid);
         return ResponseEntity.ok(ratings);
+    }
+
+    @PatchMapping("/profile")
+    public ResponseEntity<User> updateProfile(
+            @Valid @RequestBody ProfileUpdateRequest request,
+            @RequestHeader("Authorization") String token) {
+        String uid = jwtUtils.getUsernameFromJwt(token.replace("Bearer ", ""));
+        User updatedUser = userService.updateProfile(uid, request);
+        return ResponseEntity.ok(updatedUser);
     }
 }

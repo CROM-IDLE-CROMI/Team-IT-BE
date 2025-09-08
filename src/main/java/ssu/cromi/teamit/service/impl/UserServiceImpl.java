@@ -4,7 +4,9 @@ import jakarta.transaction.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ssu.cromi.teamit.DTO.auth.SignupRequest;
+import ssu.cromi.teamit.DTO.user.ProfileUpdateRequest;
 import ssu.cromi.teamit.domain.User;
+import ssu.cromi.teamit.exception.UserNotFoundException;
 import ssu.cromi.teamit.exceptions.DuplicateEmailException;
 import ssu.cromi.teamit.exceptions.DuplicateUsernameException;
 import ssu.cromi.teamit.repository.UserRepository;
@@ -52,5 +54,25 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean existsByUid(String uid){
         return userRepository.existsByUid(uid);
+    }
+
+    @Override
+    @Transactional
+    public User updateProfile(String uid, ProfileUpdateRequest request) {
+        User user = userRepository.findByUid(uid)
+                .orElseThrow(() -> new UserNotFoundException("사용자를 찾을 수 없습니다: " + uid));
+        
+        user.setNickName(request.getNickName());
+        user.setBirthday(request.getBirthday());
+        user.setEmail(request.getEmail());
+        user.setIntroduction(request.getIntroduction());
+        
+        return userRepository.save(user);
+    }
+
+    @Override
+    public User findByUid(String uid) {
+        return userRepository.findByUid(uid)
+                .orElseThrow(() -> new UserNotFoundException("사용자를 찾을 수 없습니다: " + uid));
     }
 }
