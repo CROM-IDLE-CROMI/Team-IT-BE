@@ -56,7 +56,7 @@ public class PostSearchRepositoryImpl implements PostSearchRepository{
 
         String processedKeyword = keyword.replaceAll("\\s+", "");
 
-        // 제목(띄어쓰기 무시) OR 내용(띄어쓰기 무시) OR 작성자 닉네임
+        // 제목 (띄어쓰기 무시), 내용 (띄어쓰기 무시), 작성자 닉네임
         return Expressions.stringTemplate("function('REPLACE', {0}, ' ', '')", post.title)
                 .containsIgnoreCase(processedKeyword)
                 .or(Expressions.stringTemplate("function('REPLACE', {0}, ' ', '')", post.content)
