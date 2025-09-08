@@ -85,12 +85,11 @@ public class PostController {
 
     @GetMapping
     public ResponseEntity<ApiResponse<PageResponse<PostListResponse>>> getPosts(
-            @RequestParam(value = "category", required = false) PostCategory category,
+            @RequestParam(value = "category", defaultValue = "INFO") PostCategory category,
             @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
 
         Page<PostListResponse> postPage = postListService.getPostsByCategory(category, pageable);
 
-        // Page 객체를 우리가 만든 PageResponse DTO로 한번 더 감싸서 클라이언트에 필요한 페이징 정보를 전달합니다.
         return ResponseEntity.ok(
                 new ApiResponse<>(200, "게시글 목록이 성공적으로 조회되었습니다.", PageResponse.of(postPage))
         );

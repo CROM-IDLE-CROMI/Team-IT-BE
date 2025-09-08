@@ -34,10 +34,6 @@ public class PostListServiceImpl implements PostListService {
         }
 
         List<Post> postContent = posts.getContent();
-        if (postContent.isEmpty()) {
-            return Page.empty();
-        }
-
         List<String> authorIds = postContent.stream().map(Post::getAuthorId).distinct().collect(Collectors.toList());
         Map<String, User> authorsMap = userRepository.findAllById(authorIds).stream().collect(Collectors.toMap(User::getUid, user -> user));
 
