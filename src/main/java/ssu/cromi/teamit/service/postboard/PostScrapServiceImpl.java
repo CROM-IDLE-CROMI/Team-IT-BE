@@ -1,0 +1,58 @@
+package ssu.cromi.teamit.service.postboard;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import ssu.cromi.teamit.domain.User;
+import ssu.cromi.teamit.entity.postboard.Post;
+import ssu.cromi.teamit.entity.postboard.PostScrap;
+import ssu.cromi.teamit.entity.postboard.PostScrapId;
+import ssu.cromi.teamit.repository.UserRepository;
+import ssu.cromi.teamit.repository.postboard.PostRepository;
+import ssu.cromi.teamit.repository.postboard.PostScrapRepository;
+
+@Service
+@RequiredArgsConstructor
+public class PostScrapServiceImpl implements PostScrapService {
+
+    private final PostScrapRepository scrapRepository;
+    private final PostRepository postRepository;
+    private final UserRepository userRepository;
+
+    @Override
+    @Transactional
+    public void createScrap(Long postId, String userId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+
+        PostScrapId scrapId = new PostScrapId(userId, postId);
+        if (scrapRepository.existsById(scrapId)) {
+            throw new IllegalStateException("이미 스크랩한 게시글입니다.");
+        }
+
+        PostScrap scrap = PostScrap.builder().user(user).post(post).build();
+        scrapRepository.save(scrap);
+
+        // 게시글의 스크랩 수 1 증가
+        post.setScrapCount(post.getScrapCount() + 1);
+    }
+
+    @Override
+    @Transactional
+    public void deleteScrap(Long postId, String userId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
+
+        PostScrapId scrapId = new PostScrapId(userId, postId);
+        if (!scrapRepository.existsById(scrapId)) {
+            throw new IllegalStateException("스크랩하지 않은 게시글입니다.");
+        }
+
+        scrapRepository.deleteById(scrapId);
+
+        // 게시글의 스크랩 수 1 감소
+        post.setScrapCount(post.getScrapCount() - 1);
+    }
+}
