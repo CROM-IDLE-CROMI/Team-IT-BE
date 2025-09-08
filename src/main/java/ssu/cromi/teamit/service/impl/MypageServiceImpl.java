@@ -3,6 +3,7 @@ package ssu.cromi.teamit.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ssu.cromi.teamit.DTO.mypage.AwardResponse;
 import ssu.cromi.teamit.DTO.mypage.MyRatingResponse;
 import ssu.cromi.teamit.DTO.mypage.MypageResponse;
 import ssu.cromi.teamit.DTO.mypage.StackWithLevel;
@@ -12,10 +13,7 @@ import ssu.cromi.teamit.domain.User;
 import ssu.cromi.teamit.domain.UserProfile;
 import ssu.cromi.teamit.entity.teamup.ProjectMember;
 import ssu.cromi.teamit.entity.teamup.ProjectReview;
-import ssu.cromi.teamit.repository.ProjectReviewRepository;
-import ssu.cromi.teamit.repository.UserProfileRepository;
-import ssu.cromi.teamit.repository.UserRepository;
-import ssu.cromi.teamit.repository.UserStackRepository;
+import ssu.cromi.teamit.repository.*;
 import ssu.cromi.teamit.repository.teamup.ProjectMemberRepository;
 import ssu.cromi.teamit.repository.teamup.ProjectRepository;
 import ssu.cromi.teamit.service.MypageService;
@@ -34,6 +32,7 @@ public class MypageServiceImpl implements MypageService {
     private final ProjectReviewRepository projectReviewRepository;
     private final UserProfileRepository userProfileRepository;
     private final UserStackRepository userStackRepository;
+    private final UserAwardRepository userAwardRepository;
     private final ProjectRepository projectRepository;
 
     @Override
@@ -70,6 +69,15 @@ public class MypageServiceImpl implements MypageService {
                 .findFirst()
                 .map(Position::getTag)
                 .orElse("");
+
+        List<AwardResponse> awards = userAwardRepository.findByUser(user).stream()
+                .map(userAward -> AwardResponse.builder()
+                        .awardName(userAward.getAwardName())
+                        .organization(userAward.getOrganization())
+                        .awardDate(userAward.getAwardDate())
+                        .description(userAward.getDescription())
+                        .build())
+                .collect(Collectors.toList());
         
         return MypageResponse.builder()
                 .nickName(user.getNickName())
@@ -82,7 +90,7 @@ public class MypageServiceImpl implements MypageService {
                 .description(getUserDescription(uid))
                 .projects(projectNames)
                 .stacks(stacks)
-                .prize(getUserPrize(uid))
+                .awards(awards)
                 .stars(averageStars)
                 .build();
     }
@@ -90,12 +98,6 @@ public class MypageServiceImpl implements MypageService {
     private String getUserDescription(String uid) {
         return userProfileRepository.findByUid(uid)
                 .map(UserProfile::getDescription)
-                .orElse("");
-    }
-    
-    private String getUserPrize(String uid) {
-        return userProfileRepository.findByUid(uid)
-                .map(UserProfile::getPrize)
                 .orElse("");
     }
     

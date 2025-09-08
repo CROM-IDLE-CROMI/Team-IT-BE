@@ -4,9 +4,11 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ssu.cromi.teamit.DTO.mypage.AwardResponse;
 import ssu.cromi.teamit.DTO.mypage.MyRatingResponse;
 import ssu.cromi.teamit.DTO.mypage.MypageResponse;
 import ssu.cromi.teamit.DTO.user.ProfileUpdateRequest;
+import ssu.cromi.teamit.DTO.user.UserAwardUpdateRequest;
 import ssu.cromi.teamit.DTO.user.UserStackUpdateRequest;
 import ssu.cromi.teamit.domain.User;
 import ssu.cromi.teamit.entity.UserStack;
@@ -60,5 +62,19 @@ public class MypageController {
         String uid = jwtUtils.getUsernameFromJwt(token.replace("Bearer ", ""));
         List<UserStack> userStacks = userService.getUserStacks(uid);
         return ResponseEntity.ok(userStacks);
+    }
+
+    @PatchMapping("/{uid}/awards")
+    public ResponseEntity<List<AwardResponse>> updateUserAwards(
+            @PathVariable String uid,
+            @Valid @RequestBody UserAwardUpdateRequest request) {
+        List<AwardResponse> updatedAwards = userService.updateUserAwardsAsDto(uid, request);
+        return ResponseEntity.ok(updatedAwards);
+    }
+
+    @GetMapping("/{uid}/awards")
+    public ResponseEntity<List<AwardResponse>> getUserAwards(@PathVariable String uid) {
+        List<AwardResponse> userAwards = userService.getUserAwardsAsDto(uid);
+        return ResponseEntity.ok(userAwards);
     }
 }

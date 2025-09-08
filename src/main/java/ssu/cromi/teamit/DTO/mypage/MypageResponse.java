@@ -19,6 +19,6 @@ public class MypageResponse {
     private String description;
     private List<String> projects;
     private List<StackWithLevel> stacks;
-    private String prize;
+    private List<AwardResponse> awards;
     private double stars;
 }

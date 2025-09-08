@@ -4,15 +4,19 @@ import jakarta.transaction.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ssu.cromi.teamit.DTO.auth.SignupRequest;
+import ssu.cromi.teamit.DTO.mypage.AwardResponse;
 import ssu.cromi.teamit.DTO.user.ProfileUpdateRequest;
+import ssu.cromi.teamit.DTO.user.UserAwardUpdateRequest;
 import ssu.cromi.teamit.DTO.user.UserStackUpdateRequest;
 import ssu.cromi.teamit.domain.Stack;
 import ssu.cromi.teamit.domain.User;
+import ssu.cromi.teamit.entity.UserAward;
 import ssu.cromi.teamit.entity.UserStack;
 import ssu.cromi.teamit.exception.UserNotFoundException;
 import ssu.cromi.teamit.exceptions.DuplicateEmailException;
 import ssu.cromi.teamit.exceptions.DuplicateUsernameException;
 import ssu.cromi.teamit.repository.StackRepository;
+import ssu.cromi.teamit.repository.UserAwardRepository;
 import ssu.cromi.teamit.repository.UserRepository;
 import ssu.cromi.teamit.repository.UserStackRepository;
 import ssu.cromi.teamit.service.UserService;
@@ -21,18 +25,22 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserStackRepository userStackRepository;
+    private final UserAwardRepository userAwardRepository;
     private final StackRepository stackRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository, UserStackRepository userStackRepository, 
-                          StackRepository stackRepository, PasswordEncoder passwordEncoder){
+    public UserServiceImpl(UserRepository userRepository, UserStackRepository userStackRepository,
+                          UserAwardRepository userAwardRepository, StackRepository stackRepository, 
+                          PasswordEncoder passwordEncoder){
         this.userRepository = userRepository;
         this.userStackRepository = userStackRepository;
+        this.userAwardRepository = userAwardRepository;
         this.stackRepository = stackRepository;
         this.passwordEncoder = passwordEncoder;
     }
@@ -132,5 +140,92 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UserNotFoundException("사용자를 찾을 수 없습니다: " + uid));
         
         return userStackRepository.findByUser(user);
+    }
+
+    @Override
+    @Transactional
+    public List<UserAward> updateUserAwards(String uid, UserAwardUpdateRequest request) {
+        User user = userRepository.findByUid(uid)
+                .orElseThrow(() -> new UserNotFoundException("사용자를 찾을 수 없습니다: " + uid));
+
+        // 기존 수상 정보 모두 삭제
+        List<UserAward> existingAwards = userAwardRepository.findByUser(user);
+        userAwardRepository.deleteAll(existingAwards);
+
+        // 새로운 수상 정보 저장
+        List<UserAward> newUserAwards = new ArrayList<>();
+        for (UserAwardUpdateRequest.AwardInfo awardInfo : request.getAwards()) {
+            UserAward userAward = UserAward.builder()
+                    .user(user)
+                    .awardName(awardInfo.getAwardName())
+                    .organization(awardInfo.getOrganization())
+                    .awardDate(awardInfo.getAwardDate())
+                    .description(awardInfo.getDescription())
+                    .build();
+            
+            newUserAwards.add(userAward);
+        }
+
+        return userAwardRepository.saveAll(newUserAwards);
+    }
+
+    @Override
+    public List<UserAward> getUserAwards(String uid) {
+        User user = userRepository.findByUid(uid)
+                .orElseThrow(() -> new UserNotFoundException("사용자를 찾을 수 없습니다: " + uid));
+        
+        return userAwardRepository.findByUser(user);
+    }
+
+    @Override
+    public List<AwardResponse> getUserAwardsAsDto(String uid) {
+        User user = userRepository.findByUid(uid)
+                .orElseThrow(() -> new UserNotFoundException("사용자를 찾을 수 없습니다: " + uid));
+        
+        return userAwardRepository.findByUser(user).stream()
+                .map(userAward -> AwardResponse.builder()
+                        .awardName(userAward.getAwardName())
+                        .organization(userAward.getOrganization())
+                        .awardDate(userAward.getAwardDate())
+                        .description(userAward.getDescription())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public List<AwardResponse> updateUserAwardsAsDto(String uid, UserAwardUpdateRequest request) {
+        User user = userRepository.findByUid(uid)
+                .orElseThrow(() -> new UserNotFoundException("사용자를 찾을 수 없습니다: " + uid));
+
+        // 기존 수상 정보 모두 삭제
+        List<UserAward> existingAwards = userAwardRepository.findByUser(user);
+        userAwardRepository.deleteAll(existingAwards);
+
+        // 새로운 수상 정보 저장
+        List<UserAward> newUserAwards = new ArrayList<>();
+        for (UserAwardUpdateRequest.AwardInfo awardInfo : request.getAwards()) {
+            UserAward userAward = UserAward.builder()
+                    .user(user)
+                    .awardName(awardInfo.getAwardName())
+                    .organization(awardInfo.getOrganization())
+                    .awardDate(awardInfo.getAwardDate())
+                    .description(awardInfo.getDescription())
+                    .build();
+            
+            newUserAwards.add(userAward);
+        }
+
+        List<UserAward> savedAwards = userAwardRepository.saveAll(newUserAwards);
+        
+        // DTO 형태로 변환하여 반환
+        return savedAwards.stream()
+                .map(userAward -> AwardResponse.builder()
+                        .awardName(userAward.getAwardName())
+                        .organization(userAward.getOrganization())
+                        .awardDate(userAward.getAwardDate())
+                        .description(userAward.getDescription())
+                        .build())
+                .collect(Collectors.toList());
     }
 }
