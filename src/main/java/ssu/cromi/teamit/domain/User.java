@@ -36,6 +36,12 @@ public class User {
     private Long point;
     @Column(name = "profile_img", length = 2083)
     private String profileImg;
+    @Column(name = "background_img", length = 2083)
+    private String backgroundImg;
+    @Column(name = "border", length = 2083)
+    private String border;
+    @Column(name = "badge", length = 2083)
+    private String badge;
     @Column(name = "introduction", length = 500)
     private String introduction;
 

@@ -35,4 +35,24 @@ public class ProfileUpdateRequest {
     @Getter
     @Setter
     private String position;
+
+    @Size(max = 2083, message = "프로필 이미지 URL은 2083자 이하여야 합니다")
+    @Getter
+    @Setter
+    private String profileImg;
+
+    @Size(max = 2083, message = "배경 이미지 URL은 2083자 이하여야 합니다")
+    @Getter
+    @Setter
+    private String backgroundImg;
+
+    @Size(max = 2083, message = "테두리 URL은 2083자 이하여야 합니다")
+    @Getter
+    @Setter
+    private String border;
+
+    @Size(max = 2083, message = "뱃지 URL은 2083자 이하여야 합니다")
+    @Getter
+    @Setter
+    private String badge;
 }

@@ -13,4 +13,8 @@ public class ProfileUpdateResponse {
     private String email;
     private String introduction;
     private String position;
+    private String profileImg;
+    private String backgroundImg;
+    private String border;
+    private String badge;
 }

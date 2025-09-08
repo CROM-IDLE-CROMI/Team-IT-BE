@@ -17,6 +17,10 @@ public class MypageResponse {
     private String email;
     private String position;
     private String description;
+    private String profileImg;
+    private String backgroundImg;
+    private String border;
+    private String badge;
     private List<String> projects;
     private List<StackWithLevel> stacks;
     private List<AwardResponse> awards;

@@ -88,6 +88,10 @@ public class UserServiceImpl implements UserService {
         user.setBirthday(request.getBirthday());
         user.setEmail(request.getEmail());
         user.setIntroduction(request.getIntroduction());
+        user.setProfileImg(request.getProfileImg());
+        user.setBackgroundImg(request.getBackgroundImg());
+        user.setBorder(request.getBorder());
+        user.setBadge(request.getBadge());
         
         // position 처리
         if (request.getPosition() != null && !request.getPosition().trim().isEmpty()) {
@@ -117,6 +121,10 @@ public class UserServiceImpl implements UserService {
                 .email(savedUser.getEmail())
                 .introduction(savedUser.getIntroduction())
                 .position(position)
+                .profileImg(savedUser.getProfileImg())
+                .backgroundImg(savedUser.getBackgroundImg())
+                .border(savedUser.getBorder())
+                .badge(savedUser.getBadge())
                 .build();
     }
 
