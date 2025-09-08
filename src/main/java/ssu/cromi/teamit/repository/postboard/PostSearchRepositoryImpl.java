@@ -3,6 +3,7 @@ package ssu.cromi.teamit.repository.postboard;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.querydsl.jpa.JPAExpressions;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -18,7 +19,6 @@ public class PostSearchRepositoryImpl implements PostSearchRepository{
 
     private final JPAQueryFactory queryFactory;
     private final QPost post = QPost.post;
-    private final QUser user = QUser.user;
 
     @Override
     public Page<Post> searchPosts(PostCategory category, String keyword, Pageable pageable) {
@@ -55,12 +55,17 @@ public class PostSearchRepositoryImpl implements PostSearchRepository{
         }
 
         String processedKeyword = keyword.replaceAll("\\s+", "");
+        QUser user = QUser.user;
 
-        // 제목 (띄어쓰기 무시), 내용 (띄어쓰기 무시), 작성자 닉네임
         return Expressions.stringTemplate("function('REPLACE', {0}, ' ', '')", post.title)
                 .containsIgnoreCase(processedKeyword)
                 .or(Expressions.stringTemplate("function('REPLACE', {0}, ' ', '')", post.content)
                         .containsIgnoreCase(processedKeyword))
-                .or(user.nickName.containsIgnoreCase(keyword)); // 닉네임은 띄어쓰기 없이 검색
+                .or(post.authorId.in( // 👈 authorId가 서브쿼리 결과에 포함되는지 확인
+                        JPAExpressions
+                                .select(user.uid)
+                                .from(user)
+                                .where(user.nickName.containsIgnoreCase(keyword))
+                ));
     }
 }
