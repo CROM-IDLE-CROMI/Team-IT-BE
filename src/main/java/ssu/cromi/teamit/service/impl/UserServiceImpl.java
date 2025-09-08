@@ -9,6 +9,7 @@ import ssu.cromi.teamit.DTO.user.ProfileUpdateRequest;
 import ssu.cromi.teamit.DTO.user.ProfileUpdateResponse;
 import ssu.cromi.teamit.DTO.user.UserAwardUpdateRequest;
 import ssu.cromi.teamit.DTO.user.UserStackUpdateRequest;
+import ssu.cromi.teamit.domain.Position;
 import ssu.cromi.teamit.domain.Stack;
 import ssu.cromi.teamit.domain.User;
 import ssu.cromi.teamit.entity.UserAward;
@@ -16,10 +17,7 @@ import ssu.cromi.teamit.entity.UserStack;
 import ssu.cromi.teamit.exception.UserNotFoundException;
 import ssu.cromi.teamit.exceptions.DuplicateEmailException;
 import ssu.cromi.teamit.exceptions.DuplicateUsernameException;
-import ssu.cromi.teamit.repository.StackRepository;
-import ssu.cromi.teamit.repository.UserAwardRepository;
-import ssu.cromi.teamit.repository.UserRepository;
-import ssu.cromi.teamit.repository.UserStackRepository;
+import ssu.cromi.teamit.repository.*;
 import ssu.cromi.teamit.service.UserService;
 
 import java.time.LocalDateTime;
@@ -34,15 +32,17 @@ public class UserServiceImpl implements UserService {
     private final UserStackRepository userStackRepository;
     private final UserAwardRepository userAwardRepository;
     private final StackRepository stackRepository;
+    private final PositionRepository positionRepository;
     private final PasswordEncoder passwordEncoder;
 
     public UserServiceImpl(UserRepository userRepository, UserStackRepository userStackRepository,
-                          UserAwardRepository userAwardRepository, StackRepository stackRepository, 
-                          PasswordEncoder passwordEncoder){
+                          UserAwardRepository userAwardRepository, StackRepository stackRepository,
+                          PositionRepository positionRepository, PasswordEncoder passwordEncoder){
         this.userRepository = userRepository;
         this.userStackRepository = userStackRepository;
         this.userAwardRepository = userAwardRepository;
         this.stackRepository = stackRepository;
+        this.positionRepository = positionRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -88,14 +88,27 @@ public class UserServiceImpl implements UserService {
         user.setEmail(request.getEmail());
         user.setIntroduction(request.getIntroduction());
         
+        // position 처리
+        if (request.getPosition() != null && !request.getPosition().trim().isEmpty()) {
+            Position position = positionRepository.findByTag(request.getPosition())
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 포지션입니다: " + request.getPosition()));
+            user.getPositions().clear();
+            user.getPositions().add(position);
+        }
+        
         User savedUser = userRepository.save(user);
+        
+        String position = savedUser.getPositions().stream()
+                .findFirst()
+                .map(Position::getTag)
+                .orElse("");
         
         return ProfileUpdateResponse.builder()
                 .nickName(savedUser.getNickName())
                 .birthday(savedUser.getBirthday())
                 .email(savedUser.getEmail())
                 .introduction(savedUser.getIntroduction())
-                .position(savedUser.getPosition())
+                .position(position)
                 .build();
     }
 
