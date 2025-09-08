@@ -7,7 +7,9 @@ import org.springframework.web.bind.annotation.*;
 import ssu.cromi.teamit.DTO.mypage.MyRatingResponse;
 import ssu.cromi.teamit.DTO.mypage.MypageResponse;
 import ssu.cromi.teamit.DTO.user.ProfileUpdateRequest;
+import ssu.cromi.teamit.DTO.user.UserStackUpdateRequest;
 import ssu.cromi.teamit.domain.User;
+import ssu.cromi.teamit.entity.UserStack;
 import ssu.cromi.teamit.security.JwtUtils;
 import ssu.cromi.teamit.service.MypageService;
 import ssu.cromi.teamit.service.UserService;
@@ -42,5 +44,14 @@ public class MypageController {
         String uid = jwtUtils.getUsernameFromJwt(token.replace("Bearer ", ""));
         User updatedUser = userService.updateProfile(uid, request);
         return ResponseEntity.ok(updatedUser);
+    }
+
+    @PatchMapping("/stacks")
+    public ResponseEntity<List<UserStack>> updateUserStacks(
+            @Valid @RequestBody UserStackUpdateRequest request,
+            @RequestHeader("Authorization") String token) {
+        String uid = jwtUtils.getUsernameFromJwt(token.replace("Bearer ", ""));
+        List<UserStack> updatedStacks = userService.updateUserStacks(uid, request);
+        return ResponseEntity.ok(updatedStacks);
     }
 }

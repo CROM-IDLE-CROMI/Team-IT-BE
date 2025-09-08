@@ -2,7 +2,11 @@ package ssu.cromi.teamit.service;
 
 import ssu.cromi.teamit.DTO.auth.SignupRequest;
 import ssu.cromi.teamit.DTO.user.ProfileUpdateRequest;
+import ssu.cromi.teamit.DTO.user.UserStackUpdateRequest;
 import ssu.cromi.teamit.domain.User;
+import ssu.cromi.teamit.entity.UserStack;
+
+import java.util.List;
 
 public interface UserService {
     /**
@@ -25,4 +29,9 @@ public interface UserService {
      * 사용자 조회
      */
     User findByUid(String uid);
+
+    /**
+     * 사용자 스택 정보 업데이트
+     */
+    List<UserStack> updateUserStacks(String uid, UserStackUpdateRequest request);
 }

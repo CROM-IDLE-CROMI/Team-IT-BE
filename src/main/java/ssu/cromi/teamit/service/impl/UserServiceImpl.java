@@ -5,23 +5,35 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ssu.cromi.teamit.DTO.auth.SignupRequest;
 import ssu.cromi.teamit.DTO.user.ProfileUpdateRequest;
+import ssu.cromi.teamit.DTO.user.UserStackUpdateRequest;
+import ssu.cromi.teamit.domain.Stack;
 import ssu.cromi.teamit.domain.User;
+import ssu.cromi.teamit.entity.UserStack;
 import ssu.cromi.teamit.exception.UserNotFoundException;
 import ssu.cromi.teamit.exceptions.DuplicateEmailException;
 import ssu.cromi.teamit.exceptions.DuplicateUsernameException;
+import ssu.cromi.teamit.repository.StackRepository;
 import ssu.cromi.teamit.repository.UserRepository;
+import ssu.cromi.teamit.repository.UserStackRepository;
 import ssu.cromi.teamit.service.UserService;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+    private final UserStackRepository userStackRepository;
+    private final StackRepository stackRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder){
+    public UserServiceImpl(UserRepository userRepository, UserStackRepository userStackRepository, 
+                          StackRepository stackRepository, PasswordEncoder passwordEncoder){
         this.userRepository = userRepository;
+        this.userStackRepository = userStackRepository;
+        this.stackRepository = stackRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -74,5 +86,43 @@ public class UserServiceImpl implements UserService {
     public User findByUid(String uid) {
         return userRepository.findByUid(uid)
                 .orElseThrow(() -> new UserNotFoundException("사용자를 찾을 수 없습니다: " + uid));
+    }
+
+    @Override
+    @Transactional
+    public List<UserStack> updateUserStacks(String uid, UserStackUpdateRequest request) {
+        User user = userRepository.findByUid(uid)
+                .orElseThrow(() -> new UserNotFoundException("사용자를 찾을 수 없습니다: " + uid));
+
+        // 대표 스택 개수 검증 (최대 3개)
+        long representativeCount = request.getStacks().stream()
+                .mapToLong(stack -> stack.getIsRepresentative() ? 1 : 0)
+                .sum();
+        
+        if (representativeCount > 3) {
+            throw new IllegalArgumentException("대표 스택은 최대 3개까지만 선택할 수 있습니다.");
+        }
+
+        // 기존 사용자 스택 모두 삭제
+        List<UserStack> existingStacks = userStackRepository.findByUser(user);
+        userStackRepository.deleteAll(existingStacks);
+
+        // 새로운 스택 정보 저장
+        List<UserStack> newUserStacks = new ArrayList<>();
+        for (UserStackUpdateRequest.StackInfo stackInfo : request.getStacks()) {
+            Stack stack = stackRepository.findById(stackInfo.getStackId())
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 스택입니다: " + stackInfo.getStackId()));
+            
+            UserStack userStack = UserStack.builder()
+                    .user(user)
+                    .stack(stack)
+                    .level(stackInfo.getLevel())
+                    .isRepresentative(stackInfo.getIsRepresentative())
+                    .build();
+            
+            newUserStacks.add(userStack);
+        }
+
+        return userStackRepository.saveAll(newUserStacks);
     }
 }
