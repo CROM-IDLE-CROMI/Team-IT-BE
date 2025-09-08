@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import ssu.cromi.teamit.DTO.auth.SignupRequest;
 import ssu.cromi.teamit.DTO.mypage.AwardResponse;
 import ssu.cromi.teamit.DTO.user.ProfileUpdateRequest;
+import ssu.cromi.teamit.DTO.user.ProfileUpdateResponse;
 import ssu.cromi.teamit.DTO.user.UserAwardUpdateRequest;
 import ssu.cromi.teamit.DTO.user.UserStackUpdateRequest;
 import ssu.cromi.teamit.domain.Stack;
@@ -78,7 +79,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public User updateProfile(String uid, ProfileUpdateRequest request) {
+    public ProfileUpdateResponse updateProfile(String uid, ProfileUpdateRequest request) {
         User user = userRepository.findByUid(uid)
                 .orElseThrow(() -> new UserNotFoundException("사용자를 찾을 수 없습니다: " + uid));
         
@@ -87,7 +88,15 @@ public class UserServiceImpl implements UserService {
         user.setEmail(request.getEmail());
         user.setIntroduction(request.getIntroduction());
         
-        return userRepository.save(user);
+        User savedUser = userRepository.save(user);
+        
+        return ProfileUpdateResponse.builder()
+                .nickName(savedUser.getNickName())
+                .birthday(savedUser.getBirthday())
+                .email(savedUser.getEmail())
+                .introduction(savedUser.getIntroduction())
+                .position(savedUser.getPosition())
+                .build();
     }
 
     @Override

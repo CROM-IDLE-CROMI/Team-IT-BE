@@ -8,9 +8,9 @@ import ssu.cromi.teamit.DTO.mypage.AwardResponse;
 import ssu.cromi.teamit.DTO.mypage.MyRatingResponse;
 import ssu.cromi.teamit.DTO.mypage.MypageResponse;
 import ssu.cromi.teamit.DTO.user.ProfileUpdateRequest;
+import ssu.cromi.teamit.DTO.user.ProfileUpdateResponse;
 import ssu.cromi.teamit.DTO.user.UserAwardUpdateRequest;
 import ssu.cromi.teamit.DTO.user.UserStackUpdateRequest;
-import ssu.cromi.teamit.domain.User;
 import ssu.cromi.teamit.entity.UserStack;
 import ssu.cromi.teamit.security.JwtUtils;
 import ssu.cromi.teamit.service.MypageService;
@@ -40,12 +40,12 @@ public class MypageController {
     }
 
     @PatchMapping("/profile")
-    public ResponseEntity<User> updateProfile(
+    public ResponseEntity<ProfileUpdateResponse> updateProfile(
             @Valid @RequestBody ProfileUpdateRequest request,
             @RequestHeader("Authorization") String token) {
         String uid = jwtUtils.getUsernameFromJwt(token.replace("Bearer ", ""));
-        User updatedUser = userService.updateProfile(uid, request);
-        return ResponseEntity.ok(updatedUser);
+        ProfileUpdateResponse response = userService.updateProfile(uid, request);
+        return ResponseEntity.ok(response);
     }
 
     @PatchMapping("/stacks")

@@ -3,6 +3,7 @@ package ssu.cromi.teamit.service;
 import ssu.cromi.teamit.DTO.auth.SignupRequest;
 import ssu.cromi.teamit.DTO.mypage.AwardResponse;
 import ssu.cromi.teamit.DTO.user.ProfileUpdateRequest;
+import ssu.cromi.teamit.DTO.user.ProfileUpdateResponse;
 import ssu.cromi.teamit.DTO.user.UserAwardUpdateRequest;
 import ssu.cromi.teamit.DTO.user.UserStackUpdateRequest;
 import ssu.cromi.teamit.domain.User;
@@ -26,7 +27,7 @@ public interface UserService {
     /**
      * 사용자 프로필 업데이트
      */
-    User updateProfile(String uid, ProfileUpdateRequest request);
+    ProfileUpdateResponse updateProfile(String uid, ProfileUpdateRequest request);
 
     /**
      * 사용자 조회
