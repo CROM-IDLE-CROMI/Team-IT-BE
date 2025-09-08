@@ -64,6 +64,14 @@ public class MypageController {
         return ResponseEntity.ok(userStacks);
     }
 
+    @PostMapping("/{uid}/awards")
+    public ResponseEntity<List<AwardResponse>> createUserAwards(
+            @PathVariable String uid,
+            @Valid @RequestBody UserAwardUpdateRequest request) {
+        List<AwardResponse> createdAwards = userService.updateUserAwardsAsDto(uid, request);
+        return ResponseEntity.ok(createdAwards);
+    }
+
     @PatchMapping("/{uid}/awards")
     public ResponseEntity<List<AwardResponse>> updateUserAwards(
             @PathVariable String uid,
