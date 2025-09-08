@@ -19,19 +19,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     int incrementViewCount(@Param("postId") Long postId);
 
     /**
-     * 특정 카테고리의 모든 게시글을 최신순으로 조회하는 메서드
-     * @param category 조회할 카테고리
-     * @return 정렬된 게시글 목록
-     */
-    List<Post> findByCategoryOrderByCreatedAtDesc(PostCategory category);
-
-    /**
-     * 모든 게시글을 생성 시각의 최신순으로 조회하는 메서드
-     * @return 정렬된 게시글 목록
-     */
-    List<Post> findAllByOrderByCreatedAtDesc();
-
-    /**
      * 특정 카테고리의 게시글을 페이징하여 조회하는 메서드
      * @param category 조회할 카테고리
      * @param pageable 페이징 정보 (페이지 번호, 페이지 크기, 정렬 순서)
