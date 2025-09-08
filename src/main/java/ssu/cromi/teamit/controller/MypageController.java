@@ -54,4 +54,11 @@ public class MypageController {
         List<UserStack> updatedStacks = userService.updateUserStacks(uid, request);
         return ResponseEntity.ok(updatedStacks);
     }
+
+    @GetMapping("/stacks")
+    public ResponseEntity<List<UserStack>> getUserStacks(@RequestHeader("Authorization") String token) {
+        String uid = jwtUtils.getUsernameFromJwt(token.replace("Bearer ", ""));
+        List<UserStack> userStacks = userService.getUserStacks(uid);
+        return ResponseEntity.ok(userStacks);
+    }
 }

@@ -125,4 +125,12 @@ public class UserServiceImpl implements UserService {
 
         return userStackRepository.saveAll(newUserStacks);
     }
+
+    @Override
+    public List<UserStack> getUserStacks(String uid) {
+        User user = userRepository.findByUid(uid)
+                .orElseThrow(() -> new UserNotFoundException("사용자를 찾을 수 없습니다: " + uid));
+        
+        return userStackRepository.findByUser(user);
+    }
 }

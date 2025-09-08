@@ -34,4 +34,9 @@ public interface UserService {
      * 사용자 스택 정보 업데이트
      */
     List<UserStack> updateUserStacks(String uid, UserStackUpdateRequest request);
+
+    /**
+     * 사용자 스택 정보 조회
+     */
+    List<UserStack> getUserStacks(String uid);
 }
