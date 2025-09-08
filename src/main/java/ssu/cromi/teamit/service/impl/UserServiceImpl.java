@@ -20,6 +20,7 @@ import ssu.cromi.teamit.exceptions.DuplicateUsernameException;
 import ssu.cromi.teamit.repository.*;
 import ssu.cromi.teamit.service.UserService;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -103,9 +104,16 @@ public class UserServiceImpl implements UserService {
                 .map(Position::getTag)
                 .orElse("");
         
+        // birthday를 LocalDate로 변환
+        LocalDate birthday = LocalDate.of(
+                savedUser.getBirthday() / 10000,
+                (savedUser.getBirthday() % 10000) / 100,
+                savedUser.getBirthday() % 100
+        );
+        
         return ProfileUpdateResponse.builder()
                 .nickName(savedUser.getNickName())
-                .birthday(savedUser.getBirthday())
+                .birthday(birthday)
                 .email(savedUser.getEmail())
                 .introduction(savedUser.getIntroduction())
                 .position(position)
