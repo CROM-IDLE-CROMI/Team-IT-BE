@@ -5,3 +5,4 @@ public class TokenRefreshException extends RuntimeException {
         super(String.format("Failed for [%s]: %s",token,message));
     }
 }
+

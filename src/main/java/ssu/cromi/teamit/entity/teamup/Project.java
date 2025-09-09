@@ -152,11 +152,9 @@ public class Project {
     @JoinColumn(name = "owner_id")
     private User owner;
 
+
     @Builder.Default
     @OneToMany(mappedBy = "project")
     private List<ProjectMember> projectMembers = new ArrayList<>();
-
-    /* @Builder.Default
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Milestone> milestones = new ArrayList<>(); */
 }
+

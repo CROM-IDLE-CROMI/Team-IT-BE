@@ -85,4 +85,5 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(body);
     }
+
 }
