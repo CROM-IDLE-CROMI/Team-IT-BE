@@ -24,10 +24,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         );
         String roleName = user.getRoles().replaceFirst("^ROLE_", "");
 
-        return org.springframework.security.core.userdetails.User.builder()
-                .username(user.getUid())
-                .password(user.getPassword())
-                .roles(roleName)
-                .build();
+        return ssu.cromi.teamit.security.UserDetailsImpl.build(user);
     }
 }

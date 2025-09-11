@@ -5,7 +5,8 @@ import lombok.Builder;
 import lombok.Getter;
 import ssu.cromi.teamit.entity.enums.Platform;
 import ssu.cromi.teamit.entity.enums.Position;
-import ssu.cromi.teamit.entity.enums.ProjectStatus;
+import ssu.cromi.teamit.entity.enums.Status;
+
 import java.time.LocalDateTime;
 
 @Getter
@@ -18,5 +19,5 @@ public class InProgressProject {
     private final Platform platform;
     private final Position position;
     private final LocalDateTime projectStartDate;
-    private final ProjectStatus progressStatus;
+    private final Status status;
 }
