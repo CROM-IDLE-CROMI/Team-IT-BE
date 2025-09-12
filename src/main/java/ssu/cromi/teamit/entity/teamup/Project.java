@@ -7,6 +7,7 @@ import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 import ssu.cromi.teamit.domain.User;
+import ssu.cromi.teamit.entity.Milestone;
 import ssu.cromi.teamit.entity.enums.*;
 
 import java.time.LocalDateTime;
@@ -152,9 +153,16 @@ public class Project {
     @JoinColumn(name = "owner_id")
     private User owner;
 
-
     @Builder.Default
     @OneToMany(mappedBy = "project")
     private List<ProjectMember> projectMembers = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Milestone> milestones = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "project")
+    private List<ProjectReview> projectReviews = new ArrayList<>();
 }
 

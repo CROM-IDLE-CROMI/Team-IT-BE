@@ -38,3 +38,7 @@ out/
 
 # Local-specific properties
 src/main/resources/application.properties
+
+# Claude Code files
+CLAUDE.md
+.vscode/settings.json
