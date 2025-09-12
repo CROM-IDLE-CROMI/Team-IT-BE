@@ -165,3 +165,4 @@ public class Project {
     @OneToMany(mappedBy = "project")
     private List<ProjectReview> projectReviews = new ArrayList<>();
 }
+

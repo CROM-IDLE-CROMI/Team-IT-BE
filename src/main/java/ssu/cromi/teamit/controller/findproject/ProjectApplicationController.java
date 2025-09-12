@@ -26,6 +26,7 @@ public class ProjectApplicationController {
     ) {
         String applicantId = userDetails.getUid(); // 로그인된 사용자 ID
         projectApplicationService.applyToProject(dto, applicantId, projectId);
+        projectApplicationService.applyToProject(dto, applicantId, projectId);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }
