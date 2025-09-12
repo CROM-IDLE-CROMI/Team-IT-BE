@@ -84,4 +84,6 @@ public class AuthController {
         User user = userDetails.getUser();
         refreshTokenService.deleteByUser(user);
     }
+
 }
+

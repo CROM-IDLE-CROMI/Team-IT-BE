@@ -1,5 +1,6 @@
 package ssu.cromi.teamit.exceptions;
 
+import io.jsonwebtoken.JwtException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -10,7 +11,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-import io.jsonwebtoken.JwtException;
 import ssu.cromi.teamit.DTO.common.ApiResponse;
 
 import java.util.stream.Collectors;
@@ -73,6 +73,17 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                 .headers(headers)
                 .body(body);
     }
+    /** 팀장 삭제 시도 예외 → 400 */
+    @ExceptionHandler(LeaderDeletionException.class)
+    public ResponseEntity<ApiResponse<Void>> handleLeaderDeletion(LeaderDeletionException ex) {
+        ApiResponse<Void> body = ApiResponse.error(
+                "400",
+                ex.getMessage() // 서비스에서 던진 메시지를 그대로 사용
+        );
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(body);
+    }
 
     /** 그 외 예외 → 500 */
     @ExceptionHandler(Exception.class)
@@ -85,4 +96,5 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(body);
     }
+
 }

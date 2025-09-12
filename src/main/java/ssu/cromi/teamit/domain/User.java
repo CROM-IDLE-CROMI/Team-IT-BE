@@ -2,10 +2,12 @@ package ssu.cromi.teamit.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
-
+import ssu.cromi.teamit.entity.UserStack;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 //유저테이블 도메인
@@ -34,6 +36,14 @@ public class User {
     private Long point;
     @Column(name = "profile_img", length = 2083)
     private String profileImg;
+    @Column(name = "background_img", length = 2083)
+    private String backgroundImg;
+    @Column(name = "border", length = 2083)
+    private String border;
+    @Column(name = "badge", length = 2083)
+    private String badge;
+    @Column(name = "introduction", length = 500)
+    private String introduction;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -79,6 +89,9 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "position_id")
     )
     private Set<Position> positions = new HashSet<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<UserStack> userStacks = new ArrayList<>();
 
     public User(String uid, String password, String nickName, String email, Integer birthday) {
         this.uid = uid;
