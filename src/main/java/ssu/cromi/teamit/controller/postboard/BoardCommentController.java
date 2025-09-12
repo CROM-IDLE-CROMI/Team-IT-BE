@@ -6,11 +6,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import ssu.cromi.teamit.DTO.postboard.CommentUpdateRequest;
-import ssu.cromi.teamit.DTO.postboard.PostCommentRequest;
-import ssu.cromi.teamit.DTO.postboard.PostCommentResponse;
+import ssu.cromi.teamit.DTO.postboard.BoardCommentUpdateRequest;
+import ssu.cromi.teamit.DTO.postboard.BoardCommentRequest;
+import ssu.cromi.teamit.DTO.postboard.BoardCommentResponse;
 import ssu.cromi.teamit.security.UserDetailsImpl;
-import ssu.cromi.teamit.service.postboard.PostCommentService;
+import ssu.cromi.teamit.service.postboard.BoardCommentService;
 
 import java.util.List;
 
@@ -19,21 +19,21 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PostCommentController {
 
-    private final PostCommentService commentService;
+    private final BoardCommentService commentService;
 
     @PostMapping
     public ResponseEntity<Void> createComment(
             @PathVariable Long postId,
             @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @Valid @RequestBody PostCommentRequest dto) {
+            @Valid @RequestBody BoardCommentRequest dto) {
         String writerId = userDetails.getUid();
         commentService.createComment(postId, writerId, dto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping
-    public ResponseEntity<List<PostCommentResponse>> getComments(@PathVariable Long postId) {
-        List<PostCommentResponse> comments = commentService.getCommentsByPostId(postId);
+    public ResponseEntity<List<BoardCommentResponse>> getComments(@PathVariable Long postId) {
+        List<BoardCommentResponse> comments = commentService.getCommentsByPostId(postId);
         return ResponseEntity.ok(comments);
     }
 
@@ -42,7 +42,7 @@ public class PostCommentController {
             @PathVariable Long postId,
             @PathVariable Long commentId,
             @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @Valid @RequestBody CommentUpdateRequest dto) {
+            @Valid @RequestBody BoardCommentUpdateRequest dto) {
         String currentUserId = userDetails.getUid();
         commentService.updateComment(commentId, currentUserId, dto);
         return ResponseEntity.ok().build();

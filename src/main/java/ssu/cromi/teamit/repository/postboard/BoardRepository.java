@@ -5,12 +5,12 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import ssu.cromi.teamit.entity.postboard.Post;
+import ssu.cromi.teamit.entity.postboard.Board;
 
 @Repository
-public interface PostRepository extends JpaRepository<Post, Long>, PostSearchRepository {
+public interface PostRepository extends JpaRepository<Board, Long>, PostSearchRepository {
     @Modifying
-    @Query("UPDATE Post p SET p.viewCount = p.viewCount + 1 WHERE p.id = :postId")
+    @Query("UPDATE Board p SET p.viewCount = p.viewCount + 1 WHERE p.id = :postId")
     int incrementViewCount(@Param("postId") Long postId);
 
 }

@@ -5,7 +5,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import ssu.cromi.teamit.entity.enums.PostCategory;
-import ssu.cromi.teamit.entity.postboard.Post;
 
 @Getter
 @NoArgsConstructor

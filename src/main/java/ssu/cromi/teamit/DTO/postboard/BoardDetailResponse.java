@@ -3,7 +3,7 @@ package ssu.cromi.teamit.DTO.postboard;
 import lombok.Builder;
 import lombok.Getter;
 import ssu.cromi.teamit.domain.User;
-import ssu.cromi.teamit.entity.postboard.Post;
+import ssu.cromi.teamit.entity.postboard.Board;
 import java.time.LocalDateTime;
 
 @Getter
@@ -22,22 +22,22 @@ public class PostDetailResponse {
 
     private final String authorId;
     private final String authorNickname;
-    private final String writerProfileImageUrl; // 추가된 필드
+    private final String authorProfileImageUrl; // 추가된 필드
 
-    public static PostDetailResponse of(Post post, User author) {
+    public static PostDetailResponse of(Board board, User author) {
         return PostDetailResponse.builder()
-                .postId(post.getId())
-                .title(post.getTitle())
-                .content(post.getContent())
-                .category(post.getCategory().getDisplayName())
-                .viewCount(post.getViewCount())
-                .likeCount(post.getLikeCount())
-                .scrapCount(post.getScrapCount())
-                .createdAt(post.getCreatedAt())
-                .updatedAt(post.getUpdatedAt())
+                .postId(board.getId())
+                .title(board.getTitle())
+                .content(board.getContent())
+                .category(board.getCategory().getDisplayName())
+                .viewCount(board.getViewCount())
+                .likeCount(board.getLikeCount())
+                .scrapCount(board.getScrapCount())
+                .createdAt(board.getCreatedAt())
+                .updatedAt(board.getUpdatedAt())
                 .authorId(author.getUid())
                 .authorNickname(author.getNickName())
-                .writerProfileImageUrl(author.getProfileImg())
+                .authorProfileImageUrl(author.getProfileImg())
                 .build();
     }
 }

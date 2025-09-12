@@ -9,7 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import ssu.cromi.teamit.entity.enums.PostCategory;
-import ssu.cromi.teamit.entity.postboard.Post;
+import ssu.cromi.teamit.entity.postboard.Board;
 import ssu.cromi.teamit.entity.postboard.QPost;
 import ssu.cromi.teamit.domain.QUser;
 import java.util.List;
@@ -21,8 +21,8 @@ public class PostSearchRepositoryImpl implements PostSearchRepository{
     private final QPost post = QPost.post;
 
     @Override
-    public Page<Post> searchPosts(PostCategory category, String keyword, Pageable pageable) {
-        List<Post> content = queryFactory
+    public Page<Board> searchPosts(PostCategory category, String keyword, Pageable pageable) {
+        List<Board> content = queryFactory
                 .selectFrom(post)
                 .where(
                         categoryEq(category),

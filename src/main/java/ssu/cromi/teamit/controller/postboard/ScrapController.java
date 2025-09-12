@@ -6,14 +6,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import ssu.cromi.teamit.security.UserDetailsImpl;
-import ssu.cromi.teamit.service.postboard.PostScrapService;
+import ssu.cromi.teamit.service.postboard.ScrapService;
 
 @RestController
 @RequestMapping("/api/posts/{postId}/scrap")
 @RequiredArgsConstructor
 public class PostScrapController {
 
-    private final PostScrapService scrapService;
+    private final ScrapService scrapService;
 
     @PostMapping
     public ResponseEntity<Void> createScrap(

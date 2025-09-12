@@ -3,7 +3,7 @@ package ssu.cromi.teamit.DTO.postboard;
 import lombok.Builder;
 import lombok.Getter;
 import ssu.cromi.teamit.domain.User;
-import ssu.cromi.teamit.entity.postboard.Post;
+import ssu.cromi.teamit.entity.postboard.Board;
 import java.time.LocalDateTime;
 
 @Getter
@@ -17,18 +17,18 @@ public class PostListResponse {
     private final int likeCount;
     private final LocalDateTime createdAt;
     private final String authorNickname;
-    private String writerProfileImageUrl;
+    private String authorProfileImageUrl;
 
-    public static PostListResponse of(Post post, User author) {
+    public static PostListResponse of(Board board, User author) {
         return PostListResponse.builder()
-                .postId(post.getId())
-                .title(post.getTitle())
-                .category(post.getCategory().getDisplayName())
-                .viewCount(post.getViewCount())
-                .likeCount(post.getLikeCount())
-                .createdAt(post.getCreatedAt())
+                .postId(board.getId())
+                .title(board.getTitle())
+                .category(board.getCategory().getDisplayName())
+                .viewCount(board.getViewCount())
+                .likeCount(board.getLikeCount())
+                .createdAt(board.getCreatedAt())
                 .authorNickname(author.getNickName())
-                .writerProfileImageUrl(author.getProfileImg())
+                .authorProfileImageUrl(author.getProfileImg())
                 .build();
     }
 }
