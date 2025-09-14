@@ -9,6 +9,8 @@ import ssu.cromi.teamit.DTO.postboard.BoardCommentRequest;
 import ssu.cromi.teamit.DTO.postboard.BoardCommentResponse;
 import ssu.cromi.teamit.entity.postboard.Board;
 import ssu.cromi.teamit.entity.postboard.BoardComment;
+import ssu.cromi.teamit.exception.BoardNotFoundException;
+import ssu.cromi.teamit.exception.CommentNotFoundException;
 import ssu.cromi.teamit.repository.UserRepository;
 import ssu.cromi.teamit.repository.postboard.BoardCommentRepository;
 import ssu.cromi.teamit.repository.postboard.BoardRepository;
@@ -30,12 +32,12 @@ public class BoardCommentServiceImpl implements BoardCommentService {
     @Transactional
     public void createComment(Long postId, String writerId, BoardCommentRequest dto) {
         Board board = boardRepository.findById(postId)
-                .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다."));
+                .orElseThrow(() -> new BoardNotFoundException("게시글이 존재하지 않습니다. id=" + postId));
 
         BoardComment parentComment = null;
         if (dto.getParentCommentId() != null) {
             parentComment = commentRepository.findById(dto.getParentCommentId())
-                    .orElseThrow(() -> new IllegalArgumentException("부모 댓글이 존재하지 않습니다."));
+                    .orElseThrow(() -> new CommentNotFoundException("부모 댓글이 존재하지 않습니다."));
         }
 
         BoardComment comment = BoardComment.builder()
@@ -75,7 +77,7 @@ public class BoardCommentServiceImpl implements BoardCommentService {
     @Transactional
     public void updateComment(Long commentId, String currentUserId, BoardCommentUpdateRequest dto) {
         BoardComment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 댓글을 찾을 수 없습니다."));
+                .orElseThrow(() -> new CommentNotFoundException("해당 댓글을 찾을 수 없습니다. id=" + commentId));
 
         if (!comment.getWriterId().equals(currentUserId)) {
             throw new SecurityException("댓글을 수정할 권한이 없습니다.");
@@ -87,7 +89,7 @@ public class BoardCommentServiceImpl implements BoardCommentService {
     @Transactional
     public void deleteComment(Long commentId, String currentUserId) {
         BoardComment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 댓글을 찾을 수 없습니다."));
+                .orElseThrow(() -> new CommentNotFoundException("해당 댓글을 찾을 수 없습니다. id=" + commentId));
 
         if (!comment.getWriterId().equals(currentUserId)) {
             throw new SecurityException("댓글을 삭제할 권한이 없습니다.");
@@ -99,7 +101,7 @@ public class BoardCommentServiceImpl implements BoardCommentService {
     @Transactional
     public void addLike(Long commentId) {
         BoardComment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 댓글을 찾을 수 없습니다."));
+                .orElseThrow(() -> new CommentNotFoundException("해당 댓글을 찾을 수 없습니다. id=" + commentId));
         comment.setLikeCount(comment.getLikeCount() + 1);
     }
 
