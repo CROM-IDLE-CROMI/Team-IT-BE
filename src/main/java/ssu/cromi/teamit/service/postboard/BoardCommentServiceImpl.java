@@ -37,7 +37,7 @@ public class BoardCommentServiceImpl implements BoardCommentService {
         BoardComment parentComment = null;
         if (dto.getParentCommentId() != null) {
             parentComment = commentRepository.findById(dto.getParentCommentId())
-                    .orElseThrow(() -> new CommentNotFoundException("부모 댓글이 존재하지 않습니다."));
+                    .orElseThrow(() -> new CommentNotFoundException("부모 댓글이 존재하지 않습니다. id=" + dto.getParentCommentId()));
         }
 
         BoardComment comment = BoardComment.builder()
