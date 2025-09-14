@@ -29,13 +29,13 @@ public class ScrapServiceImpl implements ScrapService {
     @Transactional
     public void createScrap(Long postId, String userId) {
         Board board = boardRepository.findById(postId)
-                .orElseThrow(() -> new BoardNotFoundException("존재하지 않는 게시글입니다."));
+                .orElseThrow(() -> new BoardNotFoundException("존재하지 않는 게시글입니다. id=" + postId));
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("존재하지 않는 사용자입니다."));
+                .orElseThrow(() -> new UserNotFoundException("존재하지 않는 사용자입니다. id=" + userId));
 
         ScrapId scrapId = new ScrapId(userId, postId);
         if (scrapRepository.existsById(scrapId)) {
-            throw new ScrapAlreadyExistsException("이미 스크랩한 게시글입니다.");
+            throw new ScrapAlreadyExistsException("이미 스크랩한 게시글입니다. id=" + scrapId);
         }
 
         Scrap scrap = Scrap.builder().user(user).board(board).build();
@@ -49,11 +49,11 @@ public class ScrapServiceImpl implements ScrapService {
     @Transactional
     public void deleteScrap(Long postId, String userId) {
         Board board = boardRepository.findById(postId)
-                .orElseThrow(() -> new BoardNotFoundException("존재하지 않는 게시글입니다."));
+                .orElseThrow(() -> new BoardNotFoundException("존재하지 않는 게시글입니다. id=" + postId));
 
         ScrapId scrapId = new ScrapId(userId, postId);
         if (!scrapRepository.existsById(scrapId)) {
-            throw new ScrapNotFoundException("스크랩하지 않은 게시글입니다.");
+            throw new ScrapNotFoundException("스크랩하지 않은 게시글입니다. id=" + scrapId);
         }
 
         scrapRepository.deleteById(scrapId);
