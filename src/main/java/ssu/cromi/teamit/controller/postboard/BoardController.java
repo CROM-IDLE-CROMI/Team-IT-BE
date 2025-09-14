@@ -88,7 +88,7 @@ public class BoardController {
             @RequestParam(value = "keyword", required = false) String keyword,
             @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
 
-        Page<BoardListResponse> postPage = boardListService.getPosts(category, keyword, pageable);
+        Page<BoardListResponse> postPage = boardListService.getBoards(category, keyword, pageable);
 
         return ResponseEntity.ok(
                 new ApiResponse<>(200, "게시글 목록이 성공적으로 조회되었습니다.", PageResponse.of(postPage))

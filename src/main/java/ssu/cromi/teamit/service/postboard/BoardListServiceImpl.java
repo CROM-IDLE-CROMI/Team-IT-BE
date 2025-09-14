@@ -24,7 +24,7 @@ public class BoardListServiceImpl implements BoardListService {
     private final UserRepository userRepository;
 
     @Override
-    public Page<BoardListResponse> getPosts(BoardCategory category, String keyword, Pageable pageable) {
+    public Page<BoardListResponse> getBoards(BoardCategory category, String keyword, Pageable pageable) {
 
         Page<Board> posts = boardRepository.searchBoards(category, keyword, pageable);
 
