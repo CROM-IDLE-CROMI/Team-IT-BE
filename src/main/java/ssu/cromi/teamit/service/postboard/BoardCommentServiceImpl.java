@@ -4,14 +4,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ssu.cromi.teamit.domain.User;
-import ssu.cromi.teamit.DTO.postboard.CommentUpdateRequest;
-import ssu.cromi.teamit.DTO.postboard.PostCommentRequest;
-import ssu.cromi.teamit.DTO.postboard.PostCommentResponse;
-import ssu.cromi.teamit.entity.postboard.Post;
-import ssu.cromi.teamit.entity.postboard.PostComment;
+import ssu.cromi.teamit.DTO.postboard.BoardCommentUpdateRequest;
+import ssu.cromi.teamit.DTO.postboard.BoardCommentRequest;
+import ssu.cromi.teamit.DTO.postboard.BoardCommentResponse;
+import ssu.cromi.teamit.entity.postboard.Board;
+import ssu.cromi.teamit.entity.postboard.BoardComment;
 import ssu.cromi.teamit.repository.UserRepository;
-import ssu.cromi.teamit.repository.postboard.PostCommentRepository;
-import ssu.cromi.teamit.repository.postboard.PostRepository;
+import ssu.cromi.teamit.repository.postboard.BoardCommentRepository;
+import ssu.cromi.teamit.repository.postboard.BoardRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,26 +20,26 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class PostCommentServiceImpl implements PostCommentService {
+public class BoardCommentServiceImpl implements BoardCommentService {
 
-    private final PostCommentRepository commentRepository;
-    private final PostRepository postRepository;
+    private final BoardCommentRepository commentRepository;
+    private final BoardRepository boardRepository;
     private final UserRepository userRepository;
 
     @Override
     @Transactional
-    public void createComment(Long postId, String writerId, PostCommentRequest dto) {
-        Post post = postRepository.findById(postId)
+    public void createComment(Long postId, String writerId, BoardCommentRequest dto) {
+        Board board = boardRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다."));
 
-        PostComment parentComment = null;
+        BoardComment parentComment = null;
         if (dto.getParentCommentId() != null) {
             parentComment = commentRepository.findById(dto.getParentCommentId())
                     .orElseThrow(() -> new IllegalArgumentException("부모 댓글이 존재하지 않습니다."));
         }
 
-        PostComment comment = PostComment.builder()
-                .post(post)
+        BoardComment comment = BoardComment.builder()
+                .board(board)
                 .writerId(writerId)
                 .content(dto.getContent())
                 .parentComment(parentComment)
@@ -50,22 +50,22 @@ public class PostCommentServiceImpl implements PostCommentService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<PostCommentResponse> getCommentsByPostId(Long postId) {
-        List<PostComment> allComments = commentRepository.findAllByPostId(postId);
+    public List<BoardCommentResponse> getCommentsByPostId(Long postId) {
+        List<BoardComment> allComments = commentRepository.findAllByBoardId(postId);
 
         Map<String, User> userMap = userRepository.findAllById(
-                allComments.stream().map(PostComment::getWriterId).collect(Collectors.toSet())
+                allComments.stream().map(BoardComment::getWriterId).collect(Collectors.toSet())
         ).stream().collect(Collectors.toMap(User::getUid, u -> u));
 
-        Map<Long, List<PostCommentResponse>> replyMap = allComments.stream()
+        Map<Long, List<BoardCommentResponse>> replyMap = allComments.stream()
                 .filter(c -> c.getParentComment() != null)
                 .map(c -> toDto(c, userMap.get(c.getWriterId()), null))
-                .collect(Collectors.groupingBy(PostCommentResponse::getParentCommentId));
+                .collect(Collectors.groupingBy(BoardCommentResponse::getParentCommentId));
 
         return allComments.stream()
                 .filter(c -> c.getParentComment() == null)
                 .map(parent -> {
-                    List<PostCommentResponse> replies = replyMap.getOrDefault(parent.getId(), new ArrayList<>());
+                    List<BoardCommentResponse> replies = replyMap.getOrDefault(parent.getId(), new ArrayList<>());
                     return toDto(parent, userMap.get(parent.getWriterId()), replies);
                 })
                 .collect(Collectors.toList());
@@ -73,8 +73,8 @@ public class PostCommentServiceImpl implements PostCommentService {
 
     @Override
     @Transactional
-    public void updateComment(Long commentId, String currentUserId, CommentUpdateRequest dto) {
-        PostComment comment = commentRepository.findById(commentId)
+    public void updateComment(Long commentId, String currentUserId, BoardCommentUpdateRequest dto) {
+        BoardComment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 댓글을 찾을 수 없습니다."));
 
         if (!comment.getWriterId().equals(currentUserId)) {
@@ -86,7 +86,7 @@ public class PostCommentServiceImpl implements PostCommentService {
     @Override
     @Transactional
     public void deleteComment(Long commentId, String currentUserId) {
-        PostComment comment = commentRepository.findById(commentId)
+        BoardComment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 댓글을 찾을 수 없습니다."));
 
         if (!comment.getWriterId().equals(currentUserId)) {
@@ -98,15 +98,15 @@ public class PostCommentServiceImpl implements PostCommentService {
     @Override
     @Transactional
     public void addLike(Long commentId) {
-        PostComment comment = commentRepository.findById(commentId)
+        BoardComment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 댓글을 찾을 수 없습니다."));
         comment.setLikeCount(comment.getLikeCount() + 1);
     }
 
-    private PostCommentResponse toDto(PostComment entity, User user, List<PostCommentResponse> replies) {
-        return PostCommentResponse.builder()
+    private BoardCommentResponse toDto(BoardComment entity, User user, List<BoardCommentResponse> replies) {
+        return BoardCommentResponse.builder()
                 .commentId(entity.getId())
-                .postId(entity.getPost().getId())
+                .postId(entity.getBoard().getId())
                 .writerId(entity.getWriterId())
                 .writerNickname(user != null ? user.getNickName() : "알 수 없음")
                 .writerProfileImageUrl(user != null ? user.getProfileImg() : null)

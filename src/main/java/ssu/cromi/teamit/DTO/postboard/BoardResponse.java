@@ -5,7 +5,7 @@ import ssu.cromi.teamit.entity.postboard.Board;
 import java.time.LocalDateTime;
 
 @Getter
-public class PostResponse {
+public class BoardResponse {
 
     private final Long id;
     private final String authorId;
@@ -17,7 +17,7 @@ public class PostResponse {
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
 
-    public PostResponse(Board board) {
+    public BoardResponse(Board board) {
         this.id = board.getId();
         this.authorId = board.getAuthorId();
         this.title = board.getTitle();

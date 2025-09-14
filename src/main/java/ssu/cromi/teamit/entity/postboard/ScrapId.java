@@ -8,7 +8,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-public class PostScrapId implements Serializable {
+public class ScrapId implements Serializable {
     private String user;
-    private Long post;
+    private Long board;
 }

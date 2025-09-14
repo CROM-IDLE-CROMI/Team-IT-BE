@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Builder
-public class PostDetailResponse {
+public class BoardDetailResponse {
 
     private final Long postId;
     private final String title;
@@ -19,13 +19,27 @@ public class PostDetailResponse {
     private final int scrapCount;
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
-
     private final String authorId;
     private final String authorNickname;
-    private final String authorProfileImageUrl; // 추가된 필드
+    private final String authorProfileImageUrl;
 
-    public static PostDetailResponse of(Board board, User author) {
-        return PostDetailResponse.builder()
+    public static BoardDetailResponse of(Board board, User author) {
+
+        String authorId;
+        String authorNickname;
+        String authorProfileImageUrl;
+
+        if (author != null) {
+            authorId = author.getUid();
+            authorNickname = author.getNickName();
+            authorProfileImageUrl = author.getProfileImg();
+        } else {
+            authorId = null;
+            authorNickname = null;
+            authorProfileImageUrl = null;
+        }
+
+        return BoardDetailResponse.builder()
                 .postId(board.getId())
                 .title(board.getTitle())
                 .content(board.getContent())
@@ -35,9 +49,9 @@ public class PostDetailResponse {
                 .scrapCount(board.getScrapCount())
                 .createdAt(board.getCreatedAt())
                 .updatedAt(board.getUpdatedAt())
-                .authorId(author.getUid())
-                .authorNickname(author.getNickName())
-                .authorProfileImageUrl(author.getProfileImg())
+                .authorId(authorId)
+                .authorNickname(authorNickname)
+                .authorProfileImageUrl(authorProfileImageUrl )
                 .build();
     }
 }

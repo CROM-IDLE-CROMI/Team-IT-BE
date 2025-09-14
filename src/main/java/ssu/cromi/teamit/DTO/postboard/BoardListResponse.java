@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Builder
-public class PostListResponse {
+public class BoardListResponse {
 
     private final Long postId;
     private final String title;
@@ -19,8 +19,8 @@ public class PostListResponse {
     private final String authorNickname;
     private String authorProfileImageUrl;
 
-    public static PostListResponse of(Board board, User author) {
-        return PostListResponse.builder()
+    public static BoardListResponse of(Board board, User author) {
+        return BoardListResponse.builder()
                 .postId(board.getId())
                 .title(board.getTitle())
                 .category(board.getCategory().getDisplayName())

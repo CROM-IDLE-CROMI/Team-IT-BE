@@ -4,11 +4,11 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import ssu.cromi.teamit.entity.enums.PostCategory;
+import ssu.cromi.teamit.entity.enums.BoardCategory;
 
 @Getter
 @NoArgsConstructor
-public class PostCreateRequest {
+public class BoardCreateRequest {
 
     @NotBlank(message = "제목은 필수 항목입니다.")
     private String title;
@@ -17,5 +17,5 @@ public class PostCreateRequest {
     private String content;
 
     @NotNull(message = "카테고리는 필수 항목입니다.")
-    private PostCategory category;
+    private BoardCategory category;
 }

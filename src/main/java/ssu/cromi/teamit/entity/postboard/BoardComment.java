@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-public class PostComment {
+public class BoardComment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,7 +21,7 @@ public class PostComment {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id", nullable = false)
-    private Post post;
+    private Board board;
 
     @Column(name = "writer_id", nullable = false, length = 50)
     private String writerId;
@@ -31,11 +31,11 @@ public class PostComment {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
-    private PostComment parentComment;
+    private BoardComment parentComment;
 
     @Builder.Default
     @OneToMany(mappedBy = "parentComment", orphanRemoval = true, cascade = CascadeType.ALL)
-    private List<PostComment> children = new ArrayList<>();
+    private List<BoardComment> children = new ArrayList<>();
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
