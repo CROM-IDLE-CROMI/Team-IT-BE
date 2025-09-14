@@ -26,16 +26,16 @@ public class ProjectDetailServiceImpl implements ProjectDetailService {
         // 조회수 증가 (벌크 업데이트 방식)
         int updated = projectRepository.incrementViewCount(projectId);
         if (updated == 0) {
-            throw new ProjectNotFoundException("해당 프로젝트가 존재하지 않습니다.");
+            throw new ProjectNotFoundException("해당 프로젝트가 존재하지 않습니다. id= " + projectId);
         }
 
         // 프로젝트 조회
         Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new ProjectNotFoundException("해당 프로젝트가 존재하지 않습니다."));
+                .orElseThrow(() -> new ProjectNotFoundException("해당 프로젝트가 존재하지 않습니다. id= " + projectId));
 
         // 작성자 정보 조회
         User user = userRepository.findById(project.getCreatorId())
-                .orElseThrow(() -> new IllegalArgumentException("작성자 정보를 찾을 수 없습니다."));
+                .orElseThrow(() -> new SecurityException("작성자 정보를 찾을 수 없습니다."));
 
         // 3. 응답 DTO 조립
         return ProjectDetailResponseDto.builder()
