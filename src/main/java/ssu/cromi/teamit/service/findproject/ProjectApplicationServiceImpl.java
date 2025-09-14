@@ -25,7 +25,7 @@ public class ProjectApplicationServiceImpl implements ProjectApplicationService 
     public void applyToProject(ProjectApplicationRequestDto dto, String applicantId, Long projectId) {
         // 1. 프로젝트 존재 여부 확인
         Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new ProjectNotFoundException("해당하는 프로젝트를 찾을 수 없습니다."));
+                .orElseThrow(() -> new ProjectNotFoundException("해당하는 프로젝트를 찾을 수 없습니다. id=" + projectId));
 
         // 2. 지원서 엔티티 생성
         ProjectApplication application = ProjectApplication.builder()
