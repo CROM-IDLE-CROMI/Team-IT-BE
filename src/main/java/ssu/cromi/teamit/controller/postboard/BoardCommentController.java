@@ -15,9 +15,9 @@ import ssu.cromi.teamit.service.postboard.BoardCommentService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/posts/{postId}/comments")
+@RequestMapping("/api/board/{postId}/comments")
 @RequiredArgsConstructor
-public class PostCommentController {
+public class BoardCommentController {
 
     private final BoardCommentService commentService;
 

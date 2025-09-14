@@ -9,9 +9,9 @@ import ssu.cromi.teamit.security.UserDetailsImpl;
 import ssu.cromi.teamit.service.postboard.ScrapService;
 
 @RestController
-@RequestMapping("/api/posts/{postId}/scrap")
+@RequestMapping("/api/board/{postId}/scrap")
 @RequiredArgsConstructor
-public class PostScrapController {
+public class ScrapController {
 
     private final ScrapService scrapService;
 
@@ -32,6 +32,6 @@ public class PostScrapController {
 
         String userId = userDetails.getUid();
         scrapService.deleteScrap(postId, userId);
-        return ResponseEntity.noContent().build(); // 204 No Content
+        return ResponseEntity.noContent().build();
     }
 }

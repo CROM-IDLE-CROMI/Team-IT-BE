@@ -1,8 +1,8 @@
 package ssu.cromi.teamit.service.postboard;
 
-import ssu.cromi.teamit.DTO.postboard.PostDetailResponse;
+import ssu.cromi.teamit.DTO.postboard.BoardDetailResponse;
 
-public interface PostDetailService {
+public interface BoardDetailService {
 
-    PostDetailResponse getPostDetail(Long postId);
+    BoardDetailResponse getBoardDetail(Long postId);
 }

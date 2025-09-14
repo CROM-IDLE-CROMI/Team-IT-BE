@@ -12,8 +12,8 @@ import java.time.LocalDateTime;
 @Table(name = "scraps")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@IdClass(PostScrapId.class) // 복합키 클래스 지정
-public class PostScrap {
+@IdClass(ScrapId.class) // 복합키 클래스 지정
+public class Scrap {
 
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
@@ -23,7 +23,7 @@ public class PostScrap {
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
-    private Post post;
+    private Board board;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -34,8 +34,8 @@ public class PostScrap {
     }
 
     @Builder
-    public PostScrap(User user, Post post) {
+    public Scrap(User user, Board board) {
         this.user = user;
-        this.post = post;
+        this.board = board;
     }
 }

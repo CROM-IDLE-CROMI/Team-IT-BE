@@ -8,20 +8,20 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import ssu.cromi.teamit.entity.enums.PostCategory;
+import ssu.cromi.teamit.entity.enums.BoardCategory;
 import ssu.cromi.teamit.entity.postboard.Board;
-import ssu.cromi.teamit.entity.postboard.QPost;
+import ssu.cromi.teamit.entity.postboard.QBoard;
 import ssu.cromi.teamit.domain.QUser;
 import java.util.List;
 
 @RequiredArgsConstructor
-public class PostSearchRepositoryImpl implements PostSearchRepository{
+public class BoardSearchRepositoryImpl implements BoardSearchRepository {
 
     private final JPAQueryFactory queryFactory;
-    private final QPost post = QPost.post;
+    private final QBoard post = QBoard.board;
 
     @Override
-    public Page<Board> searchPosts(PostCategory category, String keyword, Pageable pageable) {
+    public Page<Board> searchBoards(BoardCategory category, String keyword, Pageable pageable) {
         List<Board> content = queryFactory
                 .selectFrom(post)
                 .where(
@@ -45,7 +45,7 @@ public class PostSearchRepositoryImpl implements PostSearchRepository{
         return new PageImpl<>(content, pageable, total != null ? total : 0L);
     }
 
-    private BooleanExpression categoryEq(PostCategory category) {
+    private BooleanExpression categoryEq(BoardCategory category) {
         return category != null ? post.category.eq(category) : null;
     }
 

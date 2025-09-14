@@ -2,7 +2,7 @@ package ssu.cromi.teamit.entity.postboard;
 
 import jakarta.persistence.*;
 import lombok.*;
-import ssu.cromi.teamit.entity.enums.PostCategory;
+import ssu.cromi.teamit.entity.enums.BoardCategory;
 import ssu.cromi.teamit.entity.enums.WritingStatus;
 import java.time.LocalDateTime;
 
@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-public class Post {
+public class Board {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,7 +35,7 @@ public class Post {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "category", nullable = false)
-    private PostCategory category;
+    private BoardCategory category;
 
     @Builder.Default
     @Column(name = "view_count", nullable = false)

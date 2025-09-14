@@ -24,9 +24,9 @@ import org.springframework.data.web.PageableDefault;
 import ssu.cromi.teamit.DTO.postboard.BoardResponse;
 
 @RestController
-@RequestMapping("/api/posts")
+@RequestMapping("/api/board")
 @RequiredArgsConstructor
-public class PostController {
+public class BoardController {
     private final BoardService boardService;
     private final BoardDetailService boardDetailService;
     private final BoardListService boardListService;
@@ -37,7 +37,7 @@ public class PostController {
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         String UserId = userDetails.getUid();
-        Board createdBoard = boardService.createPost(requestDto, UserId);
+        Board createdBoard = boardService.createBoard(requestDto, UserId);
 
         BoardResponse responseDto = new BoardResponse(createdBoard);
 
@@ -53,7 +53,7 @@ public class PostController {
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         String userId = userDetails.getUid();
-        Board updatedBoard = boardService.updatePost(postId, requestDto, userId);
+        Board updatedBoard = boardService.updateBoard(postId, requestDto, userId);
         BoardResponse responseDto = new BoardResponse(updatedBoard);
 
         return ResponseEntity.ok(
@@ -67,7 +67,7 @@ public class PostController {
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         String userId = userDetails.getUid();
-        boardService.deletePost(postId, userId);
+        boardService.deleteBoard(postId, userId);
 
         return ResponseEntity.ok(
                 new ApiResponse<>(200, "게시글이 성공적으로 삭제되었습니다.", null)
@@ -76,7 +76,7 @@ public class PostController {
 
     @GetMapping("/{postId}")
     public ResponseEntity<ApiResponse<BoardDetailResponse>> getPostById(@PathVariable Long postId) {
-        BoardDetailResponse responseDto = boardDetailService.getPostDetail(postId);
+        BoardDetailResponse responseDto = boardDetailService.getBoardDetail(postId);
         return ResponseEntity.ok(
                 new ApiResponse<>(200, "게시글이 성공적으로 조회되었습니다.", responseDto)
         );

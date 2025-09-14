@@ -8,7 +8,7 @@ import java.util.List;
 
 @Getter
 @Builder
-public class PostCommentResponse {
+public class BoardCommentResponse {
     private Long commentId;
     private Long postId;
     private String writerId;
@@ -20,5 +20,5 @@ public class PostCommentResponse {
     private int likeCount;
 
     @Builder.Default
-    private List<PostCommentResponse> replies = new ArrayList<>();
+    private List<BoardCommentResponse> replies = new ArrayList<>();
 }

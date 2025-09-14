@@ -1,15 +1,13 @@
 package ssu.cromi.teamit.DTO.postboard;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import ssu.cromi.teamit.entity.enums.PostCategory;
+import ssu.cromi.teamit.entity.enums.BoardCategory;
 
 @Getter
 @NoArgsConstructor
-public class PostUpdateRequest {
+public class BoardUpdateRequest {
     private String title;
     private String content;
-    private PostCategory category;
+    private BoardCategory category;
 }
