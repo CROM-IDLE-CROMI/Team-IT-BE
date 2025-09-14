@@ -8,6 +8,8 @@ import ssu.cromi.teamit.DTO.findproject.ProjectCommentRequestDto;
 import ssu.cromi.teamit.DTO.findproject.ProjectCommentResponseDto;
 import ssu.cromi.teamit.entity.findproject.ProjectComment;
 import ssu.cromi.teamit.entity.teamup.Project;
+import ssu.cromi.teamit.exception.CommentNotFoundException;
+import ssu.cromi.teamit.exception.ProjectNotFoundException;
 import ssu.cromi.teamit.repository.findproject.ProjectCommentRepository;
 import ssu.cromi.teamit.repository.teamup.ProjectRepository;
 import ssu.cromi.teamit.repository.UserRepository;
@@ -62,13 +64,13 @@ public class ProjectCommentServiceImpl implements ProjectCommentService {
     public void createComment(Long projectId, String writerId, ProjectCommentRequestDto dto) {
         // 1. 프로젝트 조회
         Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new IllegalArgumentException("프로젝트가 존재하지 않습니다."));
+                .orElseThrow(() -> new ProjectNotFoundException("프로젝트가 존재하지 않습니다. id=" + projectId));
 
         // 2. 부모 댓글 조회 (대댓글일 경우)
         ProjectComment parentComment = null;
         if (dto.getParentCommentId() != null) {
             parentComment = commentRepository.findById(dto.getParentCommentId())
-                    .orElseThrow(() -> new IllegalArgumentException("부모 댓글이 존재하지 않습니다."));
+                    .orElseThrow(() -> new CommentNotFoundException("부모 댓글이 존재하지 않습니다. id=" + dto.getParentCommentId()));
         }
 
         // 3. 댓글 엔티티 생성
@@ -88,7 +90,7 @@ public class ProjectCommentServiceImpl implements ProjectCommentService {
     public void updateComment(Long commentId, String currentUserId, CommentUpdateRequestDto dto) {
         // 1. 댓글 조회
         ProjectComment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 댓글을 찾을 수 없습니다."));
+                .orElseThrow(() -> new CommentNotFoundException("해당 댓글을 찾을 수 없습니다. id=" + commentId));
 
         // 2. 권한 확인 (현재 사용자와 댓글 작성자가 동일한지)
         if (!comment.getWriterId().equals(currentUserId)) {
@@ -104,7 +106,7 @@ public class ProjectCommentServiceImpl implements ProjectCommentService {
     public void deleteComment(Long commentId, String currentUserId) {
         // 1. 댓글 조회
         ProjectComment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 댓글을 찾을 수 없습니다."));
+                .orElseThrow(() -> new CommentNotFoundException("해당 댓글을 찾을 수 없습니다. id= " + commentId));
 
         // 2. 권한 확인
         if (!comment.getWriterId().equals(currentUserId)) {
