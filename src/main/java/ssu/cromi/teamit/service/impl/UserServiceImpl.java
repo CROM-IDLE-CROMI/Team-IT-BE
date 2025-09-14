@@ -281,4 +281,29 @@ public class UserServiceImpl implements UserService {
                         .build())
                 .collect(Collectors.toList());
     }
+
+    @Override
+    @Transactional
+    public User processKakaoUser(Long kakaoId, String email, String nickname, String profileImage) {
+        // 카카오 ID로 기존 사용자 찾기 (kakao_{kakaoId} 형태로 uid 생성)
+        String kakaoUid = "kakao_" + kakaoId;
+
+        return userRepository.findByUid(kakaoUid)
+                .orElseGet(() -> {
+                    // 신규 사용자 생성
+                    User newUser = User.builder()
+                            .uid(kakaoUid)
+                            .password(passwordEncoder.encode("OAUTH_USER")) // OAuth 사용자는 임시 패스워드
+                            .nickName(nickname != null ? nickname : "카카오사용자" + kakaoId)
+                            .email(email != null ? email : "")
+                            .emailVerified(email != null)
+                            .birthday(0) // 기본값, 추후 설정 가능
+                            .point(1000L) // 신규 가입 포인트
+                            .profileImg(profileImage)
+                            .roles("ROLE_USER")
+                            .build();
+
+                    return userRepository.save(newUser);
+                });
+    }
 }

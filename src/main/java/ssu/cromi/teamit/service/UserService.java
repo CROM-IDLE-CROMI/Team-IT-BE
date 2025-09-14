@@ -59,4 +59,9 @@ public interface UserService {
      * 사용자 수상 정보 조회 (DTO 형태)
      */
     List<AwardResponse> getUserAwardsAsDto(String uid);
+
+    /**
+     * 카카오 OAuth2 사용자 처리 (회원가입 또는 로그인)
+     */
+    User processKakaoUser(Long kakaoId, String email, String nickname, String profileImage);
 }
