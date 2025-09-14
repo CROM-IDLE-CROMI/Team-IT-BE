@@ -1,5 +1,6 @@
 package ssu.cromi.teamit.service;
 
+import ssu.cromi.teamit.DTO.auth.KakaoProfileCompleteRequest;
 import ssu.cromi.teamit.DTO.auth.SignupRequest;
 import ssu.cromi.teamit.DTO.mypage.AwardResponse;
 import ssu.cromi.teamit.DTO.user.*;
@@ -64,4 +65,14 @@ public interface UserService {
      * 카카오 OAuth2 사용자 처리 (회원가입 또는 로그인)
      */
     User processKakaoUser(Long kakaoId, String email, String nickname, String profileImage);
+
+    /**
+     * 프로필 완성도 체크 (카카오 로그인 사용자용)
+     */
+    boolean isProfileComplete(String uid);
+
+    /**
+     * 카카오 사용자 프로필 완성 (추가 정보 입력)
+     */
+    User completeKakaoProfile(String currentUid, KakaoProfileCompleteRequest request);
 }
