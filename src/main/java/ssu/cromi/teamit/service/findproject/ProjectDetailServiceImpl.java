@@ -10,6 +10,7 @@ import ssu.cromi.teamit.entity.enums.Category;
 import ssu.cromi.teamit.entity.enums.Platform;
 import ssu.cromi.teamit.entity.enums.Status;
 import ssu.cromi.teamit.exception.ProjectNotFoundException;
+import ssu.cromi.teamit.exception.UserNotFoundException;
 import ssu.cromi.teamit.repository.teamup.ProjectRepository;
 import ssu.cromi.teamit.repository.UserRepository;
 
@@ -35,7 +36,7 @@ public class ProjectDetailServiceImpl implements ProjectDetailService {
 
         // 작성자 정보 조회
         User user = userRepository.findById(project.getCreatorId())
-                .orElseThrow(() -> new SecurityException("작성자 정보를 찾을 수 없습니다."));
+                .orElseThrow(() -> new UserNotFoundException("작성자 정보를 찾을 수 없습니다."));
 
         // 3. 응답 DTO 조립
         return ProjectDetailResponseDto.builder()
