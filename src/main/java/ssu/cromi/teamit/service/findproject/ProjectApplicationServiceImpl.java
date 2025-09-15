@@ -22,7 +22,7 @@ public class ProjectApplicationServiceImpl implements ProjectApplicationService 
 
     @Override
     @Transactional
-    public void applyToProject(ProjectApplicationRequestDto dto, String applicantId, Long projectId) {
+    public ProjectApplication applyToProject(ProjectApplicationRequestDto dto, String applicantId, Long projectId) {
         // 1. 프로젝트 존재 여부 확인
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException("해당하는 프로젝트를 찾을 수 없습니다. id=" + projectId));
@@ -38,6 +38,6 @@ public class ProjectApplicationServiceImpl implements ProjectApplicationService 
                 .requirements(dto.getRequirements())
                 .createdAt(LocalDateTime.now())
                 .build();
-        projectApplicationRepository.save(application);
+        return projectApplicationRepository.save(application);
     }
 }
