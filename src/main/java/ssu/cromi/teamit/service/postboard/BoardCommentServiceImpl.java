@@ -3,6 +3,7 @@ package ssu.cromi.teamit.service.postboard;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ssu.cromi.teamit.DTO.postboard.CommentLikeResponse;
 import ssu.cromi.teamit.domain.User;
 import ssu.cromi.teamit.DTO.postboard.BoardCommentUpdateRequest;
 import ssu.cromi.teamit.DTO.postboard.BoardCommentRequest;
@@ -30,7 +31,7 @@ public class BoardCommentServiceImpl implements BoardCommentService {
 
     @Override
     @Transactional
-    public void createComment(Long postId, String writerId, BoardCommentRequest dto) {
+    public BoardComment createComment(Long postId, String writerId, BoardCommentRequest dto) {
         Board board = boardRepository.findById(postId)
                 .orElseThrow(() -> new BoardNotFoundException("게시글이 존재하지 않습니다. id=" + postId));
 
@@ -47,7 +48,7 @@ public class BoardCommentServiceImpl implements BoardCommentService {
                 .parentComment(parentComment)
                 .build();
 
-        commentRepository.save(comment);
+        return commentRepository.save(comment);
     }
 
     @Override
@@ -61,21 +62,23 @@ public class BoardCommentServiceImpl implements BoardCommentService {
 
         Map<Long, List<BoardCommentResponse>> replyMap = allComments.stream()
                 .filter(c -> c.getParentComment() != null)
-                .map(c -> toDto(c, userMap.get(c.getWriterId()), null))
+                // toDto(...) -> BoardCommentResponse.from(...) 으로 수정
+                .map(c -> BoardCommentResponse.from(c, userMap.get(c.getWriterId()), null))
                 .collect(Collectors.groupingBy(BoardCommentResponse::getParentCommentId));
 
         return allComments.stream()
                 .filter(c -> c.getParentComment() == null)
                 .map(parent -> {
                     List<BoardCommentResponse> replies = replyMap.getOrDefault(parent.getId(), new ArrayList<>());
-                    return toDto(parent, userMap.get(parent.getWriterId()), replies);
+                    // toDto(...) -> BoardCommentResponse.from(...) 으로 수정
+                    return BoardCommentResponse.from(parent, userMap.get(parent.getWriterId()), replies);
                 })
                 .collect(Collectors.toList());
     }
 
     @Override
     @Transactional
-    public void updateComment(Long commentId, String currentUserId, BoardCommentUpdateRequest dto) {
+    public BoardComment updateComment(Long commentId, String currentUserId, BoardCommentUpdateRequest dto) {
         BoardComment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new CommentNotFoundException("해당 댓글을 찾을 수 없습니다. id=" + commentId));
 
@@ -83,6 +86,7 @@ public class BoardCommentServiceImpl implements BoardCommentService {
             throw new SecurityException("댓글을 수정할 권한이 없습니다.");
         }
         comment.updateContent(dto.getContent());
+        return comment;
     }
 
     @Override
@@ -99,24 +103,10 @@ public class BoardCommentServiceImpl implements BoardCommentService {
 
     @Override
     @Transactional
-    public void addLike(Long commentId) {
+    public CommentLikeResponse addLike(Long commentId) {
         BoardComment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new CommentNotFoundException("해당 댓글을 찾을 수 없습니다. id=" + commentId));
         comment.setLikeCount(comment.getLikeCount() + 1);
-    }
-
-    private BoardCommentResponse toDto(BoardComment entity, User user, List<BoardCommentResponse> replies) {
-        return BoardCommentResponse.builder()
-                .commentId(entity.getId())
-                .postId(entity.getBoard().getId())
-                .writerId(entity.getWriterId())
-                .writerNickname(user != null ? user.getNickName() : "알 수 없음")
-                .writerProfileImageUrl(user != null ? user.getProfileImg() : null)
-                .content(entity.getContent())
-                .parentCommentId(entity.getParentComment() != null ? entity.getParentComment().getId() : null)
-                .createdAt(entity.getCreatedAt())
-                .likeCount(entity.getLikeCount())
-                .replies(replies != null ? replies : new ArrayList<>())
-                .build();
+        return new CommentLikeResponse(commentId, comment.getLikeCount());
     }
 }
