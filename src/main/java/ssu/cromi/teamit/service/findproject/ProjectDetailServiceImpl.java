@@ -6,9 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ssu.cromi.teamit.DTO.findproject.ProjectDetailResponseDto;
 import ssu.cromi.teamit.entity.teamup.Project;
 import ssu.cromi.teamit.domain.User;
-import ssu.cromi.teamit.entity.enums.Category;
-import ssu.cromi.teamit.entity.enums.Platform;
-import ssu.cromi.teamit.entity.enums.Status;
+import ssu.cromi.teamit.entity.enums.*;
 import ssu.cromi.teamit.exception.ProjectNotFoundException;
 import ssu.cromi.teamit.exception.UserNotFoundException;
 import ssu.cromi.teamit.repository.teamup.ProjectRepository;
@@ -39,39 +37,6 @@ public class ProjectDetailServiceImpl implements ProjectDetailService {
                 .orElseThrow(() -> new UserNotFoundException("작성자 정보를 찾을 수 없습니다."));
 
         // 3. 응답 DTO 조립
-        return ProjectDetailResponseDto.builder()
-                .projectId(project.getId())
-                .title(project.getTitle())
-                .projectName(project.getProjectName())
-                .creatorId(project.getCreatorId())
-                .createdAt(project.getCreatedAt())
-                .memberNum(project.getMemberNum())
-                .validFrom(project.getValidFrom())
-                .validTo(project.getValidTo())
-                .platform(project.getPlatform().name())
-                .platformDetail(
-                        project.getPlatform() == Platform.ETC ? project.getPlatformDetail() : null)
-                .recruitPositions(project.getRecruitPositions())
-                .requireStack(project.getRequireStack())
-                .category(project.getCategory().name())
-                .categoryDetail(
-                        project.getCategory() == Category.ETC ? project.getCategoryDetail() : null)
-                .startDate(project.getStartDate())
-                .endDate(project.getEndDate())
-                .expectedStartDate(project.getExpectedStartDate())
-                .projectStatus(project.getStatus().name())
-                .statusDetail(
-                        project.getStatus() == Status.ETC ? project.getStatusDetail() : null)
-                .ideaExplain(project.getIdeaExplain())
-                .meetingApproach(project.getMeetingApproach().name())
-                .locations(project.getLocations())
-                .minRequest(project.getMinRequest())
-                .applicantQuestions(project.getApplicantQuestions())
-                .viewCount(project.getViewCount())
-
-                .creatorId(project.getCreatorId())
-                .creatorNickname(user.getNickName())
-                .creatorProfileImageUrl(user.getProfileImg())
-                .build();
+        return ProjectDetailResponseDto.from(project, user);
     }
 }

@@ -31,7 +31,7 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
     @Transactional
-    public Long createTeam(CreateTeamRequestDto dto, String userId) {
+    public Project createTeam(CreateTeamRequestDto dto, String userId) {
 
         User owner = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("해당 ID의 사용자를 찾을 수 없습니다: " + userId));
@@ -108,6 +108,6 @@ public class TeamServiceImpl implements TeamService {
 
         projectMemberRepository.save(leader);
 
-        return saved.getId();
+        return saved;
     }
 }
