@@ -15,12 +15,14 @@ import ssu.cromi.teamit.entity.Milestone;
 import ssu.cromi.teamit.entity.enums.MemberRole;
 import ssu.cromi.teamit.entity.enums.Position;
 import ssu.cromi.teamit.entity.enums.Status;
+import ssu.cromi.teamit.entity.findproject.ProjectApplication;
 import ssu.cromi.teamit.entity.teamup.Project;
 import ssu.cromi.teamit.entity.teamup.ProjectMember;
 import ssu.cromi.teamit.exceptions.LeaderDeletionException;
 import ssu.cromi.teamit.repository.MilestoneRepository;
 import ssu.cromi.teamit.repository.StackRepository;
 import ssu.cromi.teamit.repository.UserRepository;
+import ssu.cromi.teamit.repository.findproject.ProjectApplicationRepository;
 import ssu.cromi.teamit.repository.teamup.ProjectMemberRepository;
 import ssu.cromi.teamit.repository.teamup.ProjectRepository;
 import ssu.cromi.teamit.service.MyProjectService;
@@ -44,6 +46,7 @@ public class MyProjectServiceImpl implements MyProjectService{
     private final ProjectMemberRepository projectMemberRepository;
     private final ProjectRepository projectRepository;
     private final StackRepository stackRepository;
+    private final ProjectApplicationRepository projectApplicationRepository;
 
     @Override
     public List<InProgressProject> getInProgressProjects(String uid){
@@ -393,7 +396,32 @@ public class MyProjectServiceImpl implements MyProjectService{
         Status newStatus = EnumValidator.parseEnum(Status.class, requestDto.getStatus(), "status");
         project.setStatus(newStatus);
         
-        log.info("프로젝트(ID: {}) 상태를 {}로 변경했습니다. 변경자: {}", 
+        log.info("프로젝트(ID: {}) 상태를 {}로 변경했습니다. 변경자: {}",
                 projectId, newStatus.getDisplayName(), uid);
+    }
+
+    @Override
+    public List<ProjectApplication> getProjectApplications(Long projectId) {
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new EntityNotFoundException("해당 ID의 프로젝트를 찾을 수 없습니다: " + projectId));
+
+        return projectApplicationRepository.findByProjectId(projectId);
+    }
+
+    @Override
+    @Transactional
+    public void deleteProjectApplication(Long projectId, Long applicationId) {
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new EntityNotFoundException("해당 ID의 프로젝트를 찾을 수 없습니다: " + projectId));
+
+        ProjectApplication application = projectApplicationRepository.findById(applicationId)
+                .orElseThrow(() -> new EntityNotFoundException("해당 ID의 지원서를 찾을 수 없습니다: " + applicationId));
+
+        if (!application.getProject().getId().equals(projectId)) {
+            throw new IllegalArgumentException("지원서가 해당 프로젝트에 속하지 않습니다.");
+        }
+
+        projectApplicationRepository.delete(application);
+        log.info("프로젝트(ID: {})의 지원서(ID: {})를 삭제했습니다.", projectId, applicationId);
     }
 }
