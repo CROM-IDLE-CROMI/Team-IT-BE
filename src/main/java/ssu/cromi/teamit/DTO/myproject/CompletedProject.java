@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import ssu.cromi.teamit.entity.enums.Category;
 import ssu.cromi.teamit.entity.enums.Position;
+import ssu.cromi.teamit.entity.enums.Status;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -19,5 +20,5 @@ public class CompletedProject {
     private final List<String> requireStack;
     private final Category type;
     private final LocalDateTime projectStartDate;
-    private final boolean isCompleted;
+    private final Status status;
 }

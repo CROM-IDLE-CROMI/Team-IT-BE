@@ -25,4 +25,5 @@ public class JwtResponse {
 
     public JwtResponse(String newAccess, long jwtExpirationMs, String token) {
     }
+
 }

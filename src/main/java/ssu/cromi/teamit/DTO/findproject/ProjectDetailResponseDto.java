@@ -2,6 +2,11 @@ package ssu.cromi.teamit.DTO.findproject;
 
 import lombok.Builder;
 import lombok.Getter;
+import ssu.cromi.teamit.entity.enums.Category;
+import ssu.cromi.teamit.entity.enums.Platform;
+import ssu.cromi.teamit.entity.enums.Status;
+import ssu.cromi.teamit.domain.User;
+import ssu.cromi.teamit.entity.teamup.Project;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -51,4 +56,41 @@ public class ProjectDetailResponseDto {
     private String creatorId; // 팀장 ID
     private String creatorNickname; // 팀장 닉네임
     private String creatorProfileImageUrl; // 프로필 이미지
+
+    public static ProjectDetailResponseDto from(Project project, User creator) {
+        return ProjectDetailResponseDto.builder()
+                .projectId(project.getId())
+                .title(project.getTitle())
+                .projectName(project.getProjectName())
+                .creatorId(project.getCreatorId())
+                .createdAt(project.getCreatedAt())
+                .memberNum(project.getMemberNum())
+                .validFrom(project.getValidFrom())
+                .validTo(project.getValidTo())
+                .platform(project.getPlatform().name())
+                .platformDetail(
+                        project.getPlatform() == Platform.ETC ? project.getPlatformDetail() : null)
+                .recruitPositions(project.getRecruitPositions())
+                .requireStack(project.getRequireStack())
+                .category(project.getCategory().name())
+                .categoryDetail(
+                        project.getCategory() == Category.ETC ? project.getCategoryDetail() : null)
+                .startDate(project.getStartDate())
+                .endDate(project.getEndDate())
+                .expectedStartDate(project.getExpectedStartDate())
+                .projectStatus(project.getStatus().name())
+                .statusDetail(
+                        project.getStatus() == Status.ETC ? project.getStatusDetail() : null)
+                .ideaExplain(project.getIdeaExplain())
+                .meetingApproach(project.getMeetingApproach().name())
+                .locations(project.getLocations())
+                .minRequest(project.getMinRequest())
+                .applicantQuestions(project.getApplicantQuestions())
+                .viewCount(project.getViewCount())
+
+                .creatorId(project.getCreatorId())
+                .creatorNickname(creator.getNickName())
+                .creatorProfileImageUrl(creator.getProfileImg())
+                .build();
+    }
 }
