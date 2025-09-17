@@ -27,7 +27,7 @@ public class ScrapServiceImpl implements ScrapService {
 
     @Override
     @Transactional
-    public void createScrap(Long postId, String userId) {
+    public Scrap createScrap(Long postId, String userId) {
         Board board = boardRepository.findById(postId)
                 .orElseThrow(() -> new BoardNotFoundException("존재하지 않는 게시글입니다. id=" + postId));
         User user = userRepository.findById(userId)
@@ -43,6 +43,8 @@ public class ScrapServiceImpl implements ScrapService {
 
         // 게시글의 스크랩 수 1 증가
         board.setScrapCount(board.getScrapCount() + 1);
+
+        return scrap;
     }
 
     @Override
