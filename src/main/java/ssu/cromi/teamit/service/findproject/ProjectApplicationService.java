@@ -1,6 +1,7 @@
 package ssu.cromi.teamit.service.findproject;
 
 import ssu.cromi.teamit.DTO.findproject.ProjectApplicationRequestDto;
+import ssu.cromi.teamit.entity.findproject.ProjectApplication;
 
 public interface ProjectApplicationService {
 
@@ -10,5 +11,5 @@ public interface ProjectApplicationService {
      * @param applicantId 로그인 사용자 ID
      * @param projectId 지원할 프로젝트 ID
      */
-    void applyToProject(ProjectApplicationRequestDto dto, String applicantId, Long projectId);
+    ProjectApplication applyToProject(ProjectApplicationRequestDto dto, String applicantId, Long projectId);
 }

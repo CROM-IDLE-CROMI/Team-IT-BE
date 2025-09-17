@@ -6,5 +6,5 @@ import ssu.cromi.teamit.DTO.postboard.BoardListResponse;
 import ssu.cromi.teamit.entity.enums.BoardCategory;
 
 public interface BoardListService {
-    Page<BoardListResponse> getPosts(BoardCategory category, String keyword, Pageable pageable);
+    Page<BoardListResponse> getBoards(BoardCategory category, String keyword, Pageable pageable);
 }

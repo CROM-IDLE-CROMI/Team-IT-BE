@@ -21,7 +21,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
-import ssu.cromi.teamit.DTO.postboard.BoardResponse;
+
+import ssu.cromi.teamit.service.impl.UserServiceImpl;
+
+import ssu.cromi.teamit.domain.User;
+import org.springframework.http.HttpStatus;
+
 
 @RestController
 @RequestMapping("/api/board")
@@ -30,31 +35,35 @@ public class BoardController {
     private final BoardService boardService;
     private final BoardDetailService boardDetailService;
     private final BoardListService boardListService;
+    private final UserServiceImpl userService;
 
     @PostMapping
-    public ResponseEntity<ApiResponse<BoardResponse>> createPost(
+    public ResponseEntity<ApiResponse<BoardDetailResponse>> createPost(
             @Valid @RequestBody BoardCreateRequest requestDto,
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         String UserId = userDetails.getUid();
         Board createdBoard = boardService.createBoard(requestDto, UserId);
 
-        BoardResponse responseDto = new BoardResponse(createdBoard);
+        User author = userService.findByUid(UserId);
+        BoardDetailResponse responseDto = BoardDetailResponse.of(createdBoard, author);
 
-        return ResponseEntity.ok(
-                new ApiResponse<>(200, "게시글이 성공적으로 등록되었습니다.", responseDto)
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                new ApiResponse<>(201, "게시글이 성공적으로 등록되었습니다.", responseDto)
         );
     }
 
     @PatchMapping("/{postId}") // 게시글 수정
-    public ResponseEntity<ApiResponse<BoardResponse>> updatePost(
+    public ResponseEntity<ApiResponse<BoardDetailResponse>> updatePost(
             @PathVariable Long postId,
             @Valid @RequestBody BoardUpdateRequest requestDto,
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         String userId = userDetails.getUid();
         Board updatedBoard = boardService.updateBoard(postId, requestDto, userId);
-        BoardResponse responseDto = new BoardResponse(updatedBoard);
+
+        User author = userService.findByUid(userId);
+        BoardDetailResponse responseDto = BoardDetailResponse.of(updatedBoard, author);
 
         return ResponseEntity.ok(
                 new ApiResponse<>(200, "게시글이 성공적으로 수정되었습니다.", responseDto)
@@ -88,7 +97,7 @@ public class BoardController {
             @RequestParam(value = "keyword", required = false) String keyword,
             @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
 
-        Page<BoardListResponse> postPage = boardListService.getPosts(category, keyword, pageable);
+        Page<BoardListResponse> postPage = boardListService.getBoards(category, keyword, pageable);
 
         return ResponseEntity.ok(
                 new ApiResponse<>(200, "게시글 목록이 성공적으로 조회되었습니다.", PageResponse.of(postPage))

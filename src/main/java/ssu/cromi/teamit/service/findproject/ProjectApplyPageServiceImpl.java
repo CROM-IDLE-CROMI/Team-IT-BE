@@ -27,11 +27,11 @@ public class ProjectApplyPageServiceImpl implements ProjectApplyPageService {
     public ProjectApplyPageResponseDto getApplicationPage(Long projectId) {
         // 1. 프로젝트 조회
         Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new ProjectNotFoundException("해당 프로젝트가 존재하지 않습니다."));
+                .orElseThrow(() -> new ProjectNotFoundException("해당 프로젝트가 존재하지 않습니다. id=" + projectId));
 
         // 2. 작성자 정보 조회
         User user = userRepository.findById(project.getCreatorId())
-                .orElseThrow(() -> new UserNotFoundException("작성자 정보가 존재하지 않습니다."));
+                .orElseThrow(() -> new UserNotFoundException("작성자 정보가 존재하지 않습니다. id=" + project.getCreatorId()));
 
         // 3. projectDetail DTO 구성
         ProjectDetailResponseDto projectDetail = ProjectDetailResponseDto.builder()

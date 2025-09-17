@@ -8,6 +8,8 @@ import ssu.cromi.teamit.DTO.postboard.BoardUpdateRequest;
 import ssu.cromi.teamit.entity.enums.WritingStatus;
 import ssu.cromi.teamit.entity.postboard.Board;
 import ssu.cromi.teamit.repository.postboard.BoardRepository;
+import ssu.cromi.teamit.exception.BoardNotFoundException;
+
 
 @Service
 @RequiredArgsConstructor
@@ -33,7 +35,7 @@ public class BoardServiceImpl implements BoardService {
     @Transactional
     public Board updateBoard(Long postId, BoardUpdateRequest requestDto, String currentUserId) {
         Board board = boardRepository.findById(postId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 게시글을 찾을 수 없습니다. id=" + postId));
+                .orElseThrow(() -> new BoardNotFoundException("해당 게시글을 찾을 수 없습니다. id=" + postId));
 
         if (!board.getAuthorId().equals(currentUserId)) {
             throw new SecurityException("게시글을 수정할 권한이 없습니다.");

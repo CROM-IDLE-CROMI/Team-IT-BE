@@ -1,7 +1,8 @@
 package ssu.cromi.teamit.service.teamup;
 
 import ssu.cromi.teamit.DTO.teamup.CreateTeamRequestDto;
+import ssu.cromi.teamit.entity.teamup.Project;
 
 public interface TeamService {
-    Long createTeam(CreateTeamRequestDto requestDto, String userId);
+    Project createTeam(CreateTeamRequestDto requestDto, String userId);
 }

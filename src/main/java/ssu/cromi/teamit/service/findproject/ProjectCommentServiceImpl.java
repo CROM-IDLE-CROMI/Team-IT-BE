@@ -8,6 +8,8 @@ import ssu.cromi.teamit.DTO.findproject.ProjectCommentRequestDto;
 import ssu.cromi.teamit.DTO.findproject.ProjectCommentResponseDto;
 import ssu.cromi.teamit.entity.findproject.ProjectComment;
 import ssu.cromi.teamit.entity.teamup.Project;
+import ssu.cromi.teamit.exception.CommentNotFoundException;
+import ssu.cromi.teamit.exception.ProjectNotFoundException;
 import ssu.cromi.teamit.repository.findproject.ProjectCommentRepository;
 import ssu.cromi.teamit.repository.teamup.ProjectRepository;
 import ssu.cromi.teamit.repository.UserRepository;
@@ -40,16 +42,18 @@ public class ProjectCommentServiceImpl implements ProjectCommentService {
 
         // 3. 대댓글만 필터링 후 부모ID로 그룹핑
         Map<Long, List<ProjectCommentResponseDto>> replyMap = allComments.stream()
-                .filter(c -> c.getParentComment() != null)
-                .map(c -> toDto(c, userMap.get(c.getWriterId()), null))
+                .filter(comment -> comment.getParentComment() != null)
+                .map(comment -> ProjectCommentResponseDto.from(comment, userMap.get(comment.getWriterId()), null))
                 .collect(Collectors.groupingBy(ProjectCommentResponseDto::getParentCommentId));
 
         // 4. 부모댓글 DTO 생성 & 대댓글 붙이기
         return allComments.stream()
-                .filter(c -> c.getParentComment() == null)
-                .map(parent -> {
-                    List<ProjectCommentResponseDto> replies = replyMap.getOrDefault(parent.getId(), new ArrayList<>());
-                    return toDto(parent, userMap.get(parent.getWriterId()), replies);
+                .filter(comment -> comment.getParentComment() == null)
+                .map(parentComment -> {
+                    // 부모 댓글에 해당하는 대댓글 목록을 replyMap에서 찾아옵니다.
+                    List<ProjectCommentResponseDto> replies = replyMap.getOrDefault(parentComment.getId(), new ArrayList<>());
+                    // 부모 댓글과 대댓글 목록을 합쳐 최종 DTO를 생성합니다.
+                    return ProjectCommentResponseDto.from(parentComment, userMap.get(parentComment.getWriterId()), replies);
                 })
                 .collect(Collectors.toList());
     }
@@ -59,16 +63,16 @@ public class ProjectCommentServiceImpl implements ProjectCommentService {
      */
     @Override
     @Transactional
-    public void createComment(Long projectId, String writerId, ProjectCommentRequestDto dto) {
+    public ProjectComment createComment(Long projectId, String writerId, ProjectCommentRequestDto dto) {
         // 1. 프로젝트 조회
         Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new IllegalArgumentException("프로젝트가 존재하지 않습니다."));
+                .orElseThrow(() -> new ProjectNotFoundException("프로젝트가 존재하지 않습니다. id=" + projectId));
 
         // 2. 부모 댓글 조회 (대댓글일 경우)
         ProjectComment parentComment = null;
         if (dto.getParentCommentId() != null) {
             parentComment = commentRepository.findById(dto.getParentCommentId())
-                    .orElseThrow(() -> new IllegalArgumentException("부모 댓글이 존재하지 않습니다."));
+                    .orElseThrow(() -> new CommentNotFoundException("부모 댓글이 존재하지 않습니다. id=" + dto.getParentCommentId()));
         }
 
         // 3. 댓글 엔티티 생성
@@ -80,15 +84,15 @@ public class ProjectCommentServiceImpl implements ProjectCommentService {
                 .build();
 
         // 4. 저장
-        commentRepository.save(comment);
+        return commentRepository.save(comment);
     }
 
     @Override
     @Transactional
-    public void updateComment(Long commentId, String currentUserId, CommentUpdateRequestDto dto) {
+    public ProjectComment updateComment(Long commentId, String currentUserId, CommentUpdateRequestDto dto) {
         // 1. 댓글 조회
         ProjectComment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 댓글을 찾을 수 없습니다."));
+                .orElseThrow(() -> new CommentNotFoundException("해당 댓글을 찾을 수 없습니다. id=" + commentId));
 
         // 2. 권한 확인 (현재 사용자와 댓글 작성자가 동일한지)
         if (!comment.getWriterId().equals(currentUserId)) {
@@ -97,6 +101,7 @@ public class ProjectCommentServiceImpl implements ProjectCommentService {
 
         // 3. 내용 수정
         comment.updateContent(dto.getContent());
+        return comment;
     }
 
     @Override
@@ -104,7 +109,7 @@ public class ProjectCommentServiceImpl implements ProjectCommentService {
     public void deleteComment(Long commentId, String currentUserId) {
         // 1. 댓글 조회
         ProjectComment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 댓글을 찾을 수 없습니다."));
+                .orElseThrow(() -> new CommentNotFoundException("해당 댓글을 찾을 수 없습니다. id= " + commentId));
 
         // 2. 권한 확인
         if (!comment.getWriterId().equals(currentUserId)) {
@@ -115,21 +120,4 @@ public class ProjectCommentServiceImpl implements ProjectCommentService {
         commentRepository.delete(comment);
     }
 
-    /**
-     * 댓글 엔티티 -> DTO 변환
-     */
-    private ProjectCommentResponseDto toDto(ProjectComment entity, User user, List<ProjectCommentResponseDto> replies) {
-        return ProjectCommentResponseDto.builder()
-                .id(entity.getId())
-                .projectId(entity.getProject().getId())
-                .writerId(entity.getWriterId())
-                .writerNickname(user != null ? user.getNickName() : "알 수 없음")
-                .writerProfileImageUrl(user != null ? user.getProfileImg() : null)
-                .content(entity.getContent())
-                .parentCommentId(entity.getParentComment() != null ? entity.getParentComment().getId() : null)
-                .createdAt(entity.getCreatedAt())
-                .updatedAt(entity.getUpdatedAt())
-                .replies(replies != null ? replies : new ArrayList<>())
-                .build();
-    }
 }

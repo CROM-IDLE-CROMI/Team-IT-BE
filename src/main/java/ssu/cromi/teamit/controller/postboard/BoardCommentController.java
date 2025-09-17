@@ -9,8 +9,13 @@ import org.springframework.web.bind.annotation.*;
 import ssu.cromi.teamit.DTO.postboard.BoardCommentUpdateRequest;
 import ssu.cromi.teamit.DTO.postboard.BoardCommentRequest;
 import ssu.cromi.teamit.DTO.postboard.BoardCommentResponse;
+import ssu.cromi.teamit.entity.postboard.BoardComment;
 import ssu.cromi.teamit.security.UserDetailsImpl;
 import ssu.cromi.teamit.service.postboard.BoardCommentService;
+import ssu.cromi.teamit.service.impl.UserServiceImpl;
+import ssu.cromi.teamit.domain.User;
+import ssu.cromi.teamit.response.ApiResponse;
+import ssu.cromi.teamit.DTO.postboard.CommentLikeResponse;
 
 import java.util.List;
 
@@ -20,15 +25,20 @@ import java.util.List;
 public class BoardCommentController {
 
     private final BoardCommentService commentService;
+    private final UserServiceImpl userService;
 
     @PostMapping
-    public ResponseEntity<Void> createComment(
+    public ResponseEntity<ApiResponse<BoardCommentResponse>> createComment(
             @PathVariable Long postId,
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @Valid @RequestBody BoardCommentRequest dto) {
         String writerId = userDetails.getUid();
         commentService.createComment(postId, writerId, dto);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        BoardComment createdComment = commentService.createComment(postId, writerId, dto);
+        User writer = userService.findByUid(writerId);
+        BoardCommentResponse responseDto = BoardCommentResponse.from(createdComment, writer, null);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new ApiResponse<>(201, "댓글이 성공적으로 등록되었습니다.", responseDto));
     }
 
     @GetMapping
@@ -38,14 +48,17 @@ public class BoardCommentController {
     }
 
     @PatchMapping("/{commentId}")
-    public ResponseEntity<Void> updateComment(
+    public ResponseEntity<ApiResponse<BoardCommentResponse>> updateComment(
             @PathVariable Long postId,
             @PathVariable Long commentId,
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @Valid @RequestBody BoardCommentUpdateRequest dto) {
         String currentUserId = userDetails.getUid();
-        commentService.updateComment(commentId, currentUserId, dto);
-        return ResponseEntity.ok().build();
+        BoardComment updatedComment = commentService.updateComment(commentId, currentUserId, dto);
+        User writer = userService.findByUid(currentUserId);
+        BoardCommentResponse responseDto = BoardCommentResponse.from(updatedComment, writer, null);
+        return ResponseEntity.ok(
+                new ApiResponse<>(200, "댓글이 성공적으로 수정되었습니다.", responseDto));
     }
 
     @DeleteMapping("/{commentId}")
@@ -59,11 +72,12 @@ public class BoardCommentController {
     }
 
     @PostMapping("/{commentId}/like")
-    public ResponseEntity<Void> addCommentLike(
+    public ResponseEntity<ApiResponse<CommentLikeResponse>> addCommentLike(
             @PathVariable Long postId,
             @PathVariable Long commentId,
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        commentService.addLike(commentId);
-        return ResponseEntity.ok().build();
+        CommentLikeResponse responseDto = commentService.addLike(commentId);
+        return ResponseEntity.ok(
+                new ApiResponse<>(200, "좋아요가 반영되었습니다.", responseDto));
     }
 }
