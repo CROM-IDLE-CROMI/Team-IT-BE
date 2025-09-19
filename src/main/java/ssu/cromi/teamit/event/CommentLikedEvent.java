@@ -7,10 +7,8 @@ import ssu.cromi.teamit.domain.User;
 @Getter
 public class CommentLikedEvent {
     private final BoardComment comment;
-    private final User liker; // 좋아요 누른 사람
 
-    public CommentLikedEvent(BoardComment comment, User liker) {
+    public CommentLikedEvent(BoardComment comment) {
         this.comment = comment;
-        this.liker = liker;
     }
 }

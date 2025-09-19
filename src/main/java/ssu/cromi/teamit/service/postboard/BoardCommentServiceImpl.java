@@ -113,14 +113,14 @@ public class BoardCommentServiceImpl implements BoardCommentService {
 
     @Override
     @Transactional
-    public CommentLikeResponse addLike(Long commentId, String likerId) {
+    public CommentLikeResponse addLike(Long commentId) {
         BoardComment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new CommentNotFoundException("해당 댓글을 찾을 수 없습니다. id=" + commentId));
-        User liker = userRepository.findById(likerId)
-                .orElseThrow(() -> new UserNotFoundException("작성자 정보를 찾을 수 없습니다."));
+
 
         comment.setLikeCount(comment.getLikeCount() + 1);
-        eventPublisher.publishEvent(new CommentLikedEvent(comment, liker));
+
+        eventPublisher.publishEvent(new CommentLikedEvent(comment));
 
         return new CommentLikeResponse(commentId, comment.getLikeCount());
     }
