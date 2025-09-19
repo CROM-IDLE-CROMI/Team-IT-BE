@@ -15,7 +15,6 @@ public class BoardDetailResponse {
     private final String content;
     private final String category;
     private final int viewCount;
-    private final int likeCount;
     private final int scrapCount;
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
@@ -45,7 +44,6 @@ public class BoardDetailResponse {
                 .content(board.getContent())
                 .category(board.getCategory().getDisplayName())
                 .viewCount(board.getViewCount())
-                .likeCount(board.getLikeCount())
                 .scrapCount(board.getScrapCount())
                 .createdAt(board.getCreatedAt())
                 .updatedAt(board.getUpdatedAt())
