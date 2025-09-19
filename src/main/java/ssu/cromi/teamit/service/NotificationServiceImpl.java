@@ -33,9 +33,10 @@ public class NotificationServiceImpl implements NotificationService {
         User recipient = userRepository.findById(recipientId)
                 .orElseThrow(() -> new UserNotFoundException("알림을 받을 사용자를 찾을 수 없습니다."));
 
-        String message = "회원님의 댓글에 새로운 답글이 달렸습니다.";
-
+        String boardTitle = reply.getBoard().getTitle();
         Long targetPostId = reply.getBoard().getId();
+
+        String message = String.format("회원님의 '%s' 게시글의 댓글에 답글이 달렸습니다.", boardTitle);
 
         Notification notification = Notification.builder()
                 .recipient(recipient)
