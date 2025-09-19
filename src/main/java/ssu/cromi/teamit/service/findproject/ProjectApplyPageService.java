@@ -4,4 +4,5 @@ import ssu.cromi.teamit.DTO.findproject.ProjectApplyPageResponseDto;
 
 public interface ProjectApplyPageService {
     ProjectApplyPageResponseDto getApplicationPage(Long projectId);
+    ProjectApplyPageResponseDto getApplicationPageWithUserData(Long projectId, String applicantId);
 }
