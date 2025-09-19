@@ -32,7 +32,7 @@ public class Project {
     @Column(name = "creator_id", nullable = false, length = 50)
     private String creatorId; // 작성자 아이디
 
-    @Column(name = "owner_id", nullable = false, length = 50)
+    @Column(name = "owner_id", nullable = false, length = 50, insertable = false, updatable = false)
     private String ownerId; // 팀장 아이디
 
     // 작성중, 임시저장, 작성완료
