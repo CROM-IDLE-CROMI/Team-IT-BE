@@ -91,6 +91,10 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     }
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request){
-        return "/v1/auth/refresh".equals(request.getServletPath());
+        String path = request.getServletPath();
+        return path.startsWith("/v1/auth/") ||
+               path.startsWith("/swagger-ui/") ||
+               path.startsWith("/v3/api-docs/") ||
+               path.equals("/");
     }
 }
