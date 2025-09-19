@@ -6,6 +6,6 @@ import ssu.cromi.teamit.entity.postboard.Scrap;
 
 public interface NotificationService {
     void createNotificationForReply(BoardComment reply);
-    /* void createNotificationForBoardScrap(Scrap scrap);
-    void createNotificationForCommentLike(BoardComment comment, User liker);*/
+    void createNotificationForBoardScrap(Scrap scrap);
+    // void createNotificationForCommentLike(BoardComment comment, User liker);*/
 }

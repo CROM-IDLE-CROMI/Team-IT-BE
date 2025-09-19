@@ -20,11 +20,12 @@ public class NotificationListener {
         notificationService.createNotificationForReply(event.getReply());
     }
 
-    /* @EventListener
+    // 스크랩 이벤트 처리
+    @EventListener
     public void handleBoardScrapped(BoardScrappedEvent event) {
         notificationService.createNotificationForBoardScrap(event.getScrap());
     }
-
+/*
     // 게시물 댓글에 좋아요 이벤트를 처리
     @EventListener
     public void handleCommentLiked(CommentLikedEvent event) {
