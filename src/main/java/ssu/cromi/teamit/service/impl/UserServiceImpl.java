@@ -8,6 +8,7 @@ import ssu.cromi.teamit.DTO.mypage.AwardResponse;
 import ssu.cromi.teamit.DTO.user.*;
 import ssu.cromi.teamit.domain.Position;
 import ssu.cromi.teamit.domain.Stack;
+import ssu.cromi.teamit.domain.StackLevel;
 import ssu.cromi.teamit.domain.User;
 import ssu.cromi.teamit.entity.UserAward;
 import ssu.cromi.teamit.entity.UserStack;
@@ -31,16 +32,19 @@ public class UserServiceImpl implements UserService {
     private final UserAwardRepository userAwardRepository;
     private final StackRepository stackRepository;
     private final PositionRepository positionRepository;
+    private final OragnizationRepository organizationRepository;
     private final PasswordEncoder passwordEncoder;
 
     public UserServiceImpl(UserRepository userRepository, UserStackRepository userStackRepository,
                           UserAwardRepository userAwardRepository, StackRepository stackRepository,
-                          PositionRepository positionRepository, PasswordEncoder passwordEncoder){
+                          PositionRepository positionRepository, OragnizationRepository organizationRepository,
+                          PasswordEncoder passwordEncoder){
         this.userRepository = userRepository;
         this.userStackRepository = userStackRepository;
         this.userAwardRepository = userAwardRepository;
         this.stackRepository = stackRepository;
         this.positionRepository = positionRepository;
+        this.organizationRepository = organizationRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -280,5 +284,138 @@ public class UserServiceImpl implements UserService {
                         .description(userAward.getDescription())
                         .build())
                 .collect(Collectors.toList());
+    }
+
+    // @Override
+    // @Transactional
+    // public User processKakaoUser(Long kakaoId, String email, String nickname, String profileImage) {
+    //     // 카카오 ID로 기존 사용자 찾기 (kakao_{kakaoId} 형태로 uid 생성)
+    //     String kakaoUid = "kakao_" + kakaoId;
+
+    //     return userRepository.findByUid(kakaoUid)
+    //             .orElseGet(() -> {
+    //                 // 신규 사용자 생성
+    //                 User newUser = User.builder()
+    //                         .uid(kakaoUid)
+    //                         .password(passwordEncoder.encode("OAUTH_USER")) // OAuth 사용자는 임시 패스워드
+    //                         .nickName(nickname != null ? nickname : "카카오사용자" + kakaoId)
+    //                         .email(email != null ? email : "")
+    //                         .emailVerified(email != null)
+    //                         .birthday(0) // 기본값, 추후 설정 가능
+    //                         .point(1000L) // 신규 가입 포인트
+    //                         .profileImg(profileImage)
+    //                         .roles("ROLE_USER")
+    //                         .build();
+
+    //                 return userRepository.save(newUser);
+    //             });
+    // }
+
+    // @Override
+    // public boolean isProfileComplete(String uid) {
+    //     User user = userRepository.findByUid(uid)
+    //             .orElseThrow(() -> new UserNotFoundException("사용자를 찾을 수 없습니다: " + uid));
+
+    //     // 카카오 로그인 사용자가 아니면 완성된 것으로 간주
+    //     if (!uid.startsWith("kakao_")) {
+    //         return true;
+    //     }
+
+    //     // 필수 정보 체크
+    //     boolean hasCustomUid = !uid.startsWith("kakao_"); // 사용자 정의 uid 설정 여부
+    //     boolean hasStacks = !user.getStacks().isEmpty(); // 기술 스택 선택 여부
+    //     boolean hasPositions = !user.getPositions().isEmpty(); // 포지션 선택 여부
+    //     boolean hasValidBirthday = user.getBirthday() != null && user.getBirthday() > 0; // 생일 설정 여부
+
+    //     return hasCustomUid && hasStacks && hasPositions && hasValidBirthday;
+    // }
+
+    // @Override
+    // @Transactional
+    // public User completeKakaoProfile(String currentUid, KakaoProfileCompleteRequest request) {
+    //     // 현재 카카오 사용자 조회
+    //     User user = userRepository.findByUid(currentUid)
+    //             .orElseThrow(() -> new UserNotFoundException("사용자를 찾을 수 없습니다: " + currentUid));
+
+    //     // 카카오 사용자가 아니면 예외
+    //     if (!currentUid.startsWith("kakao_")) {
+    //         throw new IllegalArgumentException("카카오 로그인 사용자만 프로필 완성이 가능합니다.");
+    //     }
+
+    //     // 새로운 사용자 정의 UID 중복 확인
+    //     if (userRepository.existsByUid(request.getCustomUid())) {
+    //         throw new DuplicateUsernameException("이미 사용중인 아이디입니다: " + request.getCustomUid());
+    //     }
+
+    //     // 1. 기본 정보 업데이트
+    //     user.setUid(request.getCustomUid());
+    //     user.setBirthday(request.getBirthday());
+    //     if (request.getIntroduction() != null) {
+    //         user.setIntroduction(request.getIntroduction());
+    //     }
+
+    //     // 2. 포지션 설정
+    //     user.getPositions().clear();
+    //     for (String positionTag : request.getPositions()) {
+    //         Position position = positionRepository.findByTag(positionTag)
+    //                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 포지션입니다: " + positionTag));
+    //         user.getPositions().add(position);
+    //     }
+
+    //     // 3. 조직 설정 (선택사항)
+    //     if (request.getOrganizations() != null && !request.getOrganizations().isEmpty()) {
+    //         user.getOrganizations().clear();
+    //         for (String orgName : request.getOrganizations()) {
+    //             Organization organization = organizationRepository.findByName(orgName)
+    //                     .orElseGet(() -> {
+    //                         // 존재하지 않는 조직이면 새로 생성
+    //                         Organization newOrg = new Organization(orgName);
+    //                         return organizationRepository.save(newOrg);
+    //                     });
+    //             user.getOrganizations().add(organization);
+    //         }
+    //     }
+
+    //     // 4. 기존 스택 삭제
+    //     List<UserStack> existingStacks = userStackRepository.findByUser(user);
+    //     userStackRepository.deleteAll(existingStacks);
+
+    //     // 5. 새로운 스택 설정
+    //     List<UserStack> newUserStacks = new ArrayList<>();
+    //     long representativeCount = request.getStacks().stream()
+    //             .mapToLong(stack -> stack.getIsRepresentative() ? 1 : 0)
+    //             .sum();
+
+    //     if (representativeCount > 3) {
+    //         throw new IllegalArgumentException("대표 스택은 최대 3개까지만 선택할 수 있습니다.");
+    //     }
+
+    //     for (KakaoProfileCompleteRequest.StackInfo stackInfo : request.getStacks()) {
+    //         Stack stack = stackRepository.findById(stackInfo.getStackId())
+    //                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 스택입니다: " + stackInfo.getStackId()));
+
+    //         UserStack userStack = UserStack.builder()
+    //                 .user(user)
+    //                 .stack(stack)
+    //                 .level(convertIntegerToStackLevel(stackInfo.getLevel()))
+    //                 .isRepresentative(stackInfo.getIsRepresentative())
+    //                 .build();
+
+    //         newUserStacks.add(userStack);
+    //     }
+
+    //     userStackRepository.saveAll(newUserStacks);
+
+    //     // 6. 사용자 저장
+    //     return userRepository.save(user);
+    // }
+
+    private StackLevel convertIntegerToStackLevel(Integer level) {
+        return switch (level) {
+            case 1, 2 -> StackLevel.low;
+            case 3 -> StackLevel.middle;
+            case 4, 5 -> StackLevel.high;
+            default -> throw new IllegalArgumentException("스택 레벨은 1~5 사이여야 합니다: " + level);
+        };
     }
 }

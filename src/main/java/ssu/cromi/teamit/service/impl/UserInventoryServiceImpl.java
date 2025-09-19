@@ -51,7 +51,7 @@ public class UserInventoryServiceImpl implements UserInventoryService {
     private InventoryItemResponse convertToResponse(UserInventory inventory) {
         return InventoryItemResponse.builder()
                 .inventoryId(inventory.getId())
-                .itemId(inventory.getItemId())
+                .itemId(inventory.getItem().getId())
                 .itemName(inventory.getItem().getItemName())
                 .itemType(inventory.getItem().getItemType())
                 .itemUrl(inventory.getItem().getItemUrl())
