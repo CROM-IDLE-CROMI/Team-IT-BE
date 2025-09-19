@@ -65,7 +65,12 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         String path = request.getServletPath();
         return path.startsWith("/v1/auth/") ||
                path.startsWith("/swagger-ui/") ||
+               path.equals("/swagger-ui.html") ||
                path.startsWith("/v3/api-docs/") ||
-               path.equals("/");
+               path.startsWith("/swagger-resources/") ||
+               path.startsWith("/webjars/") ||
+               path.equals("/") ||
+               path.equals("/favicon.ico") ||
+               path.equals("/error");
     }
 }
