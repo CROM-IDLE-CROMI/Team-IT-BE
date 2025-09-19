@@ -33,7 +33,7 @@ public class TeamServiceImpl implements TeamService {
     @Transactional
     public Project createTeam(CreateTeamRequestDto dto, String userId) {
 
-        User owner = userRepository.findById(userId)
+        User owner = userRepository.findByUid(userId)
                 .orElseThrow(() -> new UserNotFoundException("해당 ID의 사용자를 찾을 수 없습니다: " + userId));
 
         Platform       platform       = parseEnum(Platform.class,       dto.getPlatform(),        "platform");
