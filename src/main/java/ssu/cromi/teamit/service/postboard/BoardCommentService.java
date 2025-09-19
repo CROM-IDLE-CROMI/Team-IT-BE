@@ -13,5 +13,5 @@ public interface BoardCommentService {
     List<BoardCommentResponse> getCommentsByPostId(Long postId);
     BoardComment updateComment(Long commentId, String currentUserId, BoardCommentUpdateRequest dto);
     void deleteComment(Long commentId, String currentUserId);
-    CommentLikeResponse addLike(Long commentId);
+    CommentLikeResponse addLike(Long commentId, String likerId);
 }
