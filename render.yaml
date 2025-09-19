@@ -1,0 +1,32 @@
+services:
+  - type: web
+    name: teamit-app
+    env: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: SPRING_DATASOURCE_URL
+        fromDatabase:
+          name: teamit-db
+          property: connectionString
+      - key: SPRING_DATASOURCE_USERNAME
+        fromDatabase:
+          name: teamit-db
+          property: user
+      - key: SPRING_DATASOURCE_PASSWORD
+        fromDatabase:
+          name: teamit-db
+          property: password
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRATION_ACCESS
+        value: "3600000"
+      - key: JWT_EXPIRATION_REFRESH
+        value: "604800000"
+
+databases:
+  - name: teamit-db
+    databaseName: teamit
+    user: teamit_user
