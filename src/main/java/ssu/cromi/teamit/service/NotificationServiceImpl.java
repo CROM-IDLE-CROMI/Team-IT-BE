@@ -11,6 +11,7 @@ import ssu.cromi.teamit.entity.postboard.Scrap;
 import ssu.cromi.teamit.exception.UserNotFoundException;
 import ssu.cromi.teamit.repository.NotificationRepository;
 import ssu.cromi.teamit.repository.UserRepository;
+import java.lang.String;
 
 @Service
 @RequiredArgsConstructor
@@ -46,27 +47,32 @@ public class NotificationServiceImpl implements NotificationService {
                 .build();
         notificationRepository.save(notification);
     }
-/*
+
+    // 게시글 스크랩
     @Override
     @Transactional
     public void createNotificationForBoardScrap(Scrap scrap) {
-        User recipient = scrap.getBoard().getWriter(); // 게시글 작성자
-        User sender = scrap.getUser(); // 스크랩한 사람
-        if (recipient.equals(sender)) return;
+        String recipientId = scrap.getBoard().getAuthorId();
 
-        String message = String.format("'%s'님이 회원님의 게시글을 스크랩했습니다.", sender.getNickName());
-        String url = "/board/" + scrap.getBoard().getId();
+        User recipient = userRepository.findById(recipientId)
+                .orElseThrow(() -> new UserNotFoundException("알림을 받을 사용자를 찾을 수 없습니다.")); // 게시글 작성자
+
+        User sender = scrap.getUser(); // 스크랩한 사람
+
+        if (recipient.equals(sender)) return; //
+
+        String message = String.format("회원님의 '%s' 게시글이 스크랩 되었습니다.", scrap.getBoard().getTitle());
 
         Notification notification = Notification.builder()
                 .recipient(recipient)
                 .notificationType(BoardNotificationType.POST_SCRAPPED)
                 .message(message)
-                .relatedUrl(url)
                 .targetId(scrap.getBoard().getId())
                 .build();
+
         notificationRepository.save(notification);
     }
-
+/*
     @Override
     @Transactional
     public void createNotificationForCommentLike(BoardComment comment, User liker) {
