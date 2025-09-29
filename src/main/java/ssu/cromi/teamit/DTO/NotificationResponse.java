@@ -3,7 +3,7 @@ package ssu.cromi.teamit.DTO;
 import lombok.Builder;
 import lombok.Getter;
 import ssu.cromi.teamit.entity.Notification;
-import ssu.cromi.teamit.entity.enums.BoardNotificationType;
+import ssu.cromi.teamit.entity.enums.NotificationType;
 
 import java.time.LocalDateTime;
 
@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 public class NotificationResponse {
 
     private final Long notificationId;
-    private final BoardNotificationType notificationType; // 알람 종류
+    private final NotificationType notificationType; // 알람 종류
     private final Long targetId;                          // 대상 ID
     private final String message;
     private final boolean isRead;

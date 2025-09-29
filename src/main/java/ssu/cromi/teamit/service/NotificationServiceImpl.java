@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ssu.cromi.teamit.DTO.NotificationResponse;
 import ssu.cromi.teamit.domain.User;
 import ssu.cromi.teamit.entity.Notification;
-import ssu.cromi.teamit.entity.enums.BoardNotificationType;
+import ssu.cromi.teamit.entity.enums.NotificationType;
 import ssu.cromi.teamit.entity.postboard.BoardComment;
 import ssu.cromi.teamit.entity.postboard.Scrap;
 import ssu.cromi.teamit.exception.UserNotFoundException;
@@ -44,7 +44,7 @@ public class NotificationServiceImpl implements NotificationService {
 
         Notification notification = Notification.builder()
                 .recipient(recipient)
-                .notificationType(BoardNotificationType.NEW_REPLY_ON_COMMENT)
+                .notificationType(NotificationType.NEW_REPLY_ON_COMMENT)
                 .message(message)
                 .targetId(targetPostId)
                 .build();
@@ -68,7 +68,7 @@ public class NotificationServiceImpl implements NotificationService {
 
         Notification notification = Notification.builder()
                 .recipient(recipient)
-                .notificationType(BoardNotificationType.POST_SCRAPPED)
+                .notificationType(NotificationType.POST_SCRAPPED)
                 .message(message)
                 .targetId(scrap.getBoard().getId())
                 .build();
@@ -90,7 +90,7 @@ public class NotificationServiceImpl implements NotificationService {
 
         Notification notification = Notification.builder()
                 .recipient(recipient)
-                .notificationType(BoardNotificationType.COMMENT_LIKED)
+                .notificationType(NotificationType.COMMENT_LIKED)
                 .message(message)
                 .targetId(comment.getBoard().getId())
                 .build();
@@ -105,14 +105,14 @@ public class NotificationServiceImpl implements NotificationService {
 
 
         // 좋아요/댓글에 해당하는 알림 종류
-        List<BoardNotificationType> boardNotificationTypes = List.of(
-                BoardNotificationType.POST_SCRAPPED,
-                BoardNotificationType.NEW_COMMENT_ON_POST,
-                BoardNotificationType.NEW_REPLY_ON_COMMENT,
-                BoardNotificationType.COMMENT_LIKED
+        List<NotificationType> notificationTypes = List.of(
+                NotificationType.POST_SCRAPPED,
+                NotificationType.NEW_COMMENT_ON_POST,
+                NotificationType.NEW_REPLY_ON_COMMENT,
+                NotificationType.COMMENT_LIKED
         );
 
-        return notificationRepository.findByRecipientAndNotificationTypeInOrderByCreatedAtDesc(user, boardNotificationTypes)
+        return notificationRepository.findByRecipientAndNotificationTypeInOrderByCreatedAtDesc(user, notificationTypes)
                 .stream()
                 .map(NotificationResponse::from)
                 .collect(Collectors.toList());

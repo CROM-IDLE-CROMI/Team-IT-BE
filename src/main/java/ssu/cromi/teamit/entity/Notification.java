@@ -3,7 +3,8 @@ package ssu.cromi.teamit.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import ssu.cromi.teamit.domain.User;
-import ssu.cromi.teamit.entity.enums.BoardNotificationType;
+import ssu.cromi.teamit.entity.enums.NotificationType;
+
 import java.time.LocalDateTime;
 
 @Entity
@@ -23,7 +24,7 @@ public class Notification {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "notification_type", nullable = false)
-    private BoardNotificationType notificationType; // 알람 종류
+    private NotificationType notificationType; // 알람 종류
 
     @Column(nullable = false)
     private String message; // 알람 메시지
