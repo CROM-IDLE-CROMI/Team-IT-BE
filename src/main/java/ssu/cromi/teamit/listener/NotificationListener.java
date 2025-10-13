@@ -7,6 +7,7 @@ import ssu.cromi.teamit.event.BoardScrappedEvent;
 import ssu.cromi.teamit.event.CommentLikedEvent;
 import ssu.cromi.teamit.event.CommentReplyEvent;
 import ssu.cromi.teamit.service.NotificationService;
+import ssu.cromi.teamit.event.ProjectAppliedEvent;
 
 @Component
 @RequiredArgsConstructor
@@ -30,5 +31,11 @@ public class NotificationListener {
     @EventListener
     public void handleCommentLiked(CommentLikedEvent event) {
         notificationService.createNotificationForCommentLike(event.getComment());
+    }
+
+    // 프로젝트 지원을 처리
+    @EventListener
+    public void handleProjectApplication(ProjectAppliedEvent event) {
+        notificationService.createNotificationForApplication(event.getApplication());
     }
 }

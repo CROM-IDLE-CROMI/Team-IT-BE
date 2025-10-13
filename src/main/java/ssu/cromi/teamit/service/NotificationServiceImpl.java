@@ -7,6 +7,7 @@ import ssu.cromi.teamit.DTO.NotificationResponse;
 import ssu.cromi.teamit.domain.User;
 import ssu.cromi.teamit.entity.Notification;
 import ssu.cromi.teamit.entity.enums.NotificationType;
+import ssu.cromi.teamit.entity.findproject.ProjectApplication;
 import ssu.cromi.teamit.entity.postboard.BoardComment;
 import ssu.cromi.teamit.entity.postboard.Scrap;
 import ssu.cromi.teamit.exception.UserNotFoundException;
@@ -124,5 +125,28 @@ public class NotificationServiceImpl implements NotificationService {
                 .orElseThrow(() -> new UserNotFoundException("사용자를 찾을 수 없습니다."));
 
         long deletedCount = notificationRepository.deleteByIdAndRecipient(notificationId, user);
+    }
+
+    // 프로젝트 지원서 알람
+    @Override
+    @Transactional
+    public void createNotificationForApplication(ProjectApplication application) {
+
+        User recipient = application.getProject().getOwner();
+
+        User sender = userRepository.findById(application.getApplicantId())
+                .orElseThrow(() -> new UserNotFoundException("지원자 정보를 찾을 수 없습니다."));
+
+        String message = String.format("'%s'님이 '%s' 프로젝트에 지원했습니다.",
+                sender.getNickName(), application.getProject().getProjectName());
+
+        Notification notification = Notification.builder()
+                .recipient(recipient)
+                .notificationType(NotificationType.PROJECT_APPLICATION)
+                .message(message)
+                .targetId(application.getId())
+                .build();
+
+        notificationRepository.save(notification);
     }
 }
