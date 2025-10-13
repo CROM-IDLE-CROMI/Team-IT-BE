@@ -1,5 +1,7 @@
 package ssu.cromi.teamit.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import ssu.cromi.teamit.domain.User;
 import ssu.cromi.teamit.entity.Notification;
@@ -14,4 +16,6 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
 
     // 특정 알림 삭제
     long deleteByIdAndRecipient(Long notificationId, User recipient);
+
+    Page<Notification> findByRecipientAndNotificationTypeIn(User recipient, List<NotificationType> types, Pageable pageable);
 }
