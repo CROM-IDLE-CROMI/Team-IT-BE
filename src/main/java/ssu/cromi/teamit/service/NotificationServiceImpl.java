@@ -188,4 +188,39 @@ public class NotificationServiceImpl implements NotificationService {
 
         notificationRepository.save(notification);
     }
+
+    // 팀원으로 초대 (지원서 합격)
+    @Override
+    @Transactional
+    public void createNotificationForNewMember(Project project, User addedUser) {
+        User recipient = addedUser; // 알람 받을 사람 = 새로 추가된 멤버
+        String message = String.format("축하합니다! '%s' 프로젝트에 팀원으로 합류하셨습니다.", project.getProjectName());
+
+        Notification notification = Notification.builder()
+                .recipient(recipient)
+                .notificationType(NotificationType.ADDED_TO_PROJECT)
+                .message(message)
+                .targetId(project.getId())
+                .build();
+        notificationRepository.save(notification);
+    }
+
+    @Override
+    @Transactional
+    public void createNotificationForApplicationRejection(ProjectApplication application) {
+        // 알람 받을 사람 = 지원자
+        User recipient = userRepository.findById(application.getApplicantId())
+                .orElseThrow(() -> new UserNotFoundException("지원자 정보를 찾을 수 없습니다."));
+
+        String message = String.format("아쉽게도 '%s' 프로젝트와 함께하지 못하게 되었습니다.",
+                application.getProject().getProjectName());
+
+        Notification notification = Notification.builder()
+                .recipient(recipient)
+                .notificationType(NotificationType.APPLICATION_DELETED)
+                .message(message)
+                .targetId(application.getProject().getId())
+                .build();
+        notificationRepository.save(notification);
+    }
 }

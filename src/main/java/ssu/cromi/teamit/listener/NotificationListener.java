@@ -3,13 +3,8 @@ package ssu.cromi.teamit.listener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
-import ssu.cromi.teamit.event.LeadershipDelegatedEvent;
-import ssu.cromi.teamit.event.BoardScrappedEvent;
-import ssu.cromi.teamit.event.CommentLikedEvent;
-import ssu.cromi.teamit.event.CommentReplyEvent;
+import ssu.cromi.teamit.event.*;
 import ssu.cromi.teamit.service.NotificationService;
-import ssu.cromi.teamit.event.ProjectAppliedEvent;
-import ssu.cromi.teamit.event.MemberRemovedEvent;
 
 @Component
 @RequiredArgsConstructor
@@ -51,5 +46,17 @@ public class NotificationListener {
     @EventListener
     public void handleLeadershipDelegation(LeadershipDelegatedEvent event) {
         notificationService.createNotificationForNewLeader(event.getProject(), event.getNewLeader());
+    }
+
+    // 멤버 추가
+    @EventListener
+    public void handleMemberAdded(MemberAddedEvent event) {
+        notificationService.createNotificationForNewMember(event.getProject(), event.getAddedUser());
+    }
+
+    // 지원서 거절
+    @EventListener
+    public void handleApplicationRejection(ApplicationRejectedEvent event) {
+        notificationService.createNotificationForApplicationRejection(event.getApplication());
     }
 }

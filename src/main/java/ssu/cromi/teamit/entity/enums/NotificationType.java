@@ -9,8 +9,8 @@ public enum NotificationType {
 
     // 프로젝트 관련
     PROJECT_APPLICATION,     // 새로운 지원서 등록
-    APPLICATION_ACCEPTED,    // 지원서 합격
-    APPLICATION_REJECTED,     // 지원서 탈락
+    ADDED_TO_PROJECT,    // 지원서 합격 (프로젝트에 멤버로 추가)
+    APPLICATION_DELETED,     // 지원서 탈락 (팀장이 지원서 삭제)
 
     MEMBER_REMOVED_FROM_PROJECT, // 프로젝트 멤버 삭제
     LEADER_DELEGATED // 팀장으로 임명

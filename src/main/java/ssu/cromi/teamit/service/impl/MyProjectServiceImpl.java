@@ -18,6 +18,8 @@ import ssu.cromi.teamit.entity.enums.Status;
 import ssu.cromi.teamit.entity.findproject.ProjectApplication;
 import ssu.cromi.teamit.entity.teamup.Project;
 import ssu.cromi.teamit.entity.teamup.ProjectMember;
+import ssu.cromi.teamit.event.ApplicationRejectedEvent;
+import ssu.cromi.teamit.event.MemberAddedEvent;
 import ssu.cromi.teamit.exceptions.LeaderDeletionException;
 import ssu.cromi.teamit.repository.MilestoneRepository;
 import ssu.cromi.teamit.repository.StackRepository;
@@ -232,6 +234,7 @@ public class MyProjectServiceImpl implements MyProjectService{
                 .build();
 
         ProjectMember savedMember = projectMemberRepository.save(newMember);
+        eventPublisher.publishEvent(new MemberAddedEvent(project, user));
 
         return ProjectMemberResponse.from(savedMember);
     }
@@ -430,6 +433,8 @@ public class MyProjectServiceImpl implements MyProjectService{
         if (!application.getProject().getId().equals(projectId)) {
             throw new IllegalArgumentException("지원서가 해당 프로젝트에 속하지 않습니다.");
         }
+
+        eventPublisher.publishEvent(new ApplicationRejectedEvent(application));
 
         projectApplicationRepository.delete(application);
         log.info("프로젝트(ID: {})의 지원서(ID: {})를 삭제했습니다.", projectId, applicationId);
