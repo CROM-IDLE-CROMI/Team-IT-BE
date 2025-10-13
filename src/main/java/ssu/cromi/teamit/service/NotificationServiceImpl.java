@@ -10,6 +10,7 @@ import ssu.cromi.teamit.entity.enums.NotificationType;
 import ssu.cromi.teamit.entity.findproject.ProjectApplication;
 import ssu.cromi.teamit.entity.postboard.BoardComment;
 import ssu.cromi.teamit.entity.postboard.Scrap;
+import ssu.cromi.teamit.entity.teamup.Project;
 import ssu.cromi.teamit.exception.UserNotFoundException;
 import ssu.cromi.teamit.repository.NotificationRepository;
 import ssu.cromi.teamit.repository.UserRepository;
@@ -145,6 +146,25 @@ public class NotificationServiceImpl implements NotificationService {
                 .notificationType(NotificationType.PROJECT_APPLICATION)
                 .message(message)
                 .targetId(application.getId())
+                .build();
+
+        notificationRepository.save(notification);
+    }
+
+    // 멤버 삭제
+    @Override
+    @Transactional
+    public void createNotificationForMemberRemoval(Project project, User removedUser) {
+        // 알람 받을 사람 = 삭제된 멤버
+        User recipient = removedUser;
+
+        String message = String.format("'%s' 프로젝트에서 제외되었습니다.", project.getProjectName());
+
+        Notification notification = Notification.builder()
+                .recipient(recipient)
+                .notificationType(NotificationType.MEMBER_REMOVED_FROM_PROJECT)
+                .message(message)
+                .targetId(project.getId()) // 프로젝트 ID를 targetId로 저장
                 .build();
 
         notificationRepository.save(notification);

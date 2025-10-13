@@ -8,6 +8,7 @@ import ssu.cromi.teamit.event.CommentLikedEvent;
 import ssu.cromi.teamit.event.CommentReplyEvent;
 import ssu.cromi.teamit.service.NotificationService;
 import ssu.cromi.teamit.event.ProjectAppliedEvent;
+import ssu.cromi.teamit.event.MemberRemovedEvent;
 
 @Component
 @RequiredArgsConstructor
@@ -37,5 +38,11 @@ public class NotificationListener {
     @EventListener
     public void handleProjectApplication(ProjectAppliedEvent event) {
         notificationService.createNotificationForApplication(event.getApplication());
+    }
+
+    // 멤버 삭제 이벤트를 처리
+    @EventListener
+    public void handleMemberRemoval(MemberRemovedEvent event) {
+        notificationService.createNotificationForMemberRemoval(event.getProject(), event.getRemovedUser());
     }
 }
