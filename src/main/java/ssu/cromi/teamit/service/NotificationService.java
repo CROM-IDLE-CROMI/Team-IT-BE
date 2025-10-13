@@ -1,6 +1,7 @@
 package ssu.cromi.teamit.service;
 
 import ssu.cromi.teamit.DTO.NotificationResponse;
+import ssu.cromi.teamit.entity.findproject.ProjectComment;
 import ssu.cromi.teamit.entity.postboard.BoardComment;
 import ssu.cromi.teamit.entity.postboard.Scrap;
 import ssu.cromi.teamit.entity.findproject.ProjectApplication;
@@ -24,4 +25,6 @@ public interface NotificationService {
 
     void createNotificationForNewMember(Project project, User addedUser);
     void createNotificationForApplicationRejection(ProjectApplication application);
+
+    void createNotificationForNewProjectComment(ProjectComment comment);
 }

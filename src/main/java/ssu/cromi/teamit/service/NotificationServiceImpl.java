@@ -8,6 +8,7 @@ import ssu.cromi.teamit.domain.User;
 import ssu.cromi.teamit.entity.Notification;
 import ssu.cromi.teamit.entity.enums.NotificationType;
 import ssu.cromi.teamit.entity.findproject.ProjectApplication;
+import ssu.cromi.teamit.entity.findproject.ProjectComment;
 import ssu.cromi.teamit.entity.postboard.BoardComment;
 import ssu.cromi.teamit.entity.postboard.Scrap;
 import ssu.cromi.teamit.entity.teamup.Project;
@@ -221,6 +222,34 @@ public class NotificationServiceImpl implements NotificationService {
                 .message(message)
                 .targetId(application.getProject().getId())
                 .build();
+        notificationRepository.save(notification);
+    }
+
+    // 내 프로젝트에 댓글 달림
+    @Override
+    @Transactional
+    public void createNotificationForNewProjectComment(ProjectComment comment) {
+        // 알람 받을 사람 = 프로젝트 팀장
+        User recipient = comment.getProject().getOwner();
+        // 댓글 쓴 사람
+        User sender = userRepository.findById(comment.getWriterId())
+                .orElseThrow(() -> new UserNotFoundException("사용자를 찾을 수 없습니다."));
+
+        // 자기 자신의 프로젝트에 댓글을 쓴 경우 알람을 보내지 않음
+        if (recipient.equals(sender)) {
+            return;
+        }
+
+        String message = String.format("'%s'님이 '%s' 프로젝트에 새로운 댓글을 남겼습니다.",
+                sender.getNickName(), comment.getProject().getProjectName());
+
+        Notification notification = Notification.builder()
+                .recipient(recipient)
+                .notificationType(NotificationType.NEW_COMMENT_ON_PROJECT)
+                .message(message)
+                .targetId(comment.getProject().getId()) // 프로젝트 ID를 targetId로 저장
+                .build();
+
         notificationRepository.save(notification);
     }
 }

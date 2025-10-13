@@ -13,5 +13,7 @@ public enum NotificationType {
     APPLICATION_DELETED,     // 지원서 탈락 (팀장이 지원서 삭제)
 
     MEMBER_REMOVED_FROM_PROJECT, // 프로젝트 멤버 삭제
-    LEADER_DELEGATED // 팀장으로 임명
+    LEADER_DELEGATED, // 팀장으로 임명
+
+    NEW_COMMENT_ON_PROJECT // 내 프로젝트 글에 새로운 댓글 등록
 }

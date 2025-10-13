@@ -5,6 +5,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import ssu.cromi.teamit.event.*;
 import ssu.cromi.teamit.service.NotificationService;
+import ssu.cromi.teamit.event.ProjectCommentCreatedEvent;
 
 @Component
 @RequiredArgsConstructor
@@ -58,5 +59,11 @@ public class NotificationListener {
     @EventListener
     public void handleApplicationRejection(ApplicationRejectedEvent event) {
         notificationService.createNotificationForApplicationRejection(event.getApplication());
+    }
+
+    // 내 프로젝트 댓글 생성
+    @EventListener
+    public void handleNewCommentOnProject(ProjectCommentCreatedEvent event) {
+        notificationService.createNotificationForNewProjectComment(event.getComment());
     }
 }
