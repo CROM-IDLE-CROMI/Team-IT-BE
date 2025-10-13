@@ -169,4 +169,23 @@ public class NotificationServiceImpl implements NotificationService {
 
         notificationRepository.save(notification);
     }
+
+    // 팀장 위임
+    @Override
+    @Transactional
+    public void createNotificationForNewLeader(Project project, User newLeader) {
+        // 알람 받을 사람 = 새로 임명된 팀장
+        User recipient = newLeader;
+
+        String message = String.format("'%s' 프로젝트의 새로운 팀장으로 임명되었습니다.", project.getProjectName());
+
+        Notification notification = Notification.builder()
+                .recipient(recipient)
+                .notificationType(NotificationType.LEADER_DELEGATED)
+                .message(message)
+                .targetId(project.getId()) // 프로젝트 ID를 targetId로 저장
+                .build();
+
+        notificationRepository.save(notification);
+    }
 }

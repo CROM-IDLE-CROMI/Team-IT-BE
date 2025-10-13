@@ -12,5 +12,6 @@ public enum NotificationType {
     APPLICATION_ACCEPTED,    // 지원서 합격
     APPLICATION_REJECTED,     // 지원서 탈락
 
-    MEMBER_REMOVED_FROM_PROJECT // 프로젝트 멤버 삭제
+    MEMBER_REMOVED_FROM_PROJECT, // 프로젝트 멤버 삭제
+    LEADER_DELEGATED // 팀장으로 임명
 }

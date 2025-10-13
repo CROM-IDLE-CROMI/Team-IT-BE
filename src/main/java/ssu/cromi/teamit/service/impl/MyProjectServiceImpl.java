@@ -29,6 +29,7 @@ import ssu.cromi.teamit.service.MyProjectService;
 import ssu.cromi.teamit.util.EnumValidator;
 import org.springframework.context.ApplicationEventPublisher;
 import ssu.cromi.teamit.event.MemberRemovedEvent;
+import ssu.cromi.teamit.event.LeadershipDelegatedEvent;
 
 import java.lang.reflect.Constructor;
 import java.time.LocalDate;
@@ -380,6 +381,8 @@ public class MyProjectServiceImpl implements MyProjectService{
                 projectId, 
                 currentLeader != null ? currentLeader.getUserId() : "none", 
                 newLeaderUserId);
+
+        eventPublisher.publishEvent(new LeadershipDelegatedEvent(project, newOwner));
     }
 
     @Override

@@ -19,4 +19,6 @@ public interface NotificationService {
 
     void createNotificationForApplication(ProjectApplication application);
     void createNotificationForMemberRemoval(Project project, User removedUser);
+
+    void createNotificationForNewLeader(Project project, User newLeader);
 }
