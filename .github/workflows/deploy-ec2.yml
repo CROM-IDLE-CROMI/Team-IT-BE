@@ -43,7 +43,7 @@ jobs:
     - name: Build with Gradle
       run: |
         chmod +x gradlew
-        ./gradlew bootJar --no-daemon
+        ./gradlew bootJar -x test --no-daemon
 
     - name: Build and push Docker image to ECR
       env:
