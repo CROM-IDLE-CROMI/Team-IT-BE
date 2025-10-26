@@ -35,6 +35,11 @@ jobs:
         distribution: 'temurin'
         cache: 'gradle'
 
+    - name: Create application-secret.yml
+      run: |
+        mkdir -p src/main/resources
+        echo "${{ secrets.TEAMIT_SECRET_YML }}" > src/main/resources/application-secret.properties
+
     - name: Build with Gradle
       run: |
         chmod +x gradlew
