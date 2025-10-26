@@ -71,7 +71,7 @@ jobs:
             'docker pull $ECR_REGISTRY/$ECR_REPOSITORY:latest',
             'docker stop team-it-app || true',
             'docker rm team-it-app || true',
-            'docker run -d --name team-it-app -p 8080:8080 $ECR_REGISTRY/$ECR_REPOSITORY:latest',
+            'docker run -d --name team-it-app -p 8080:8080 --env-file /home/ec2-user/team-it-config/.env $ECR_REGISTRY/$ECR_REPOSITORY:latest',
             'docker image prune -f'
           ]" \
           --region ${{ env.AWS_REGION }}
