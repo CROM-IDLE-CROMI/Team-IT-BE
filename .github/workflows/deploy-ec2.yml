@@ -40,10 +40,11 @@ jobs:
         mkdir -p src/main/resources
         echo "${{ secrets.TEAMIT_SECRET_YML }}" > src/main/resources/application-secret.properties
 
+    - name: Make gradlew executable
+      run: chmod +x gradlew
+
     - name: Build with Gradle
-      run: |
-        chmod +x gradlew
-        ./gradlew bootJar -x test --no-daemon
+      run: ./gradlew bootJar -x test --no-daemon
 
     - name: Build and push Docker image to ECR
       env:

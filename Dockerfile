@@ -1,22 +1,3 @@
-# Build stage
-FROM eclipse-temurin:21-jdk AS build
-
-WORKDIR /app
-
-# Copy gradle wrapper and dependencies
-COPY gradlew gradlew.bat ./
-COPY gradle gradle/
-COPY build.gradle settings.gradle ./
-
-# Download dependencies (cached layer)
-RUN chmod +x gradlew && ./gradlew dependencies --no-daemon
-
-# Copy source code
-COPY src src/
-
-# Build application
-RUN ./gradlew bootJar --no-daemon
-
 # Runtime stage
 FROM eclipse-temurin:21-jre
 
@@ -25,8 +6,8 @@ WORKDIR /app
 # Create non-root user for security
 RUN groupadd -r appuser && useradd -r -g appuser appuser
 
-# Copy built jar from build stage
-COPY --from=build /app/build/libs/Team-IT-0.0.1-SNAPSHOT.jar app.jar
+# Copy pre-built jar from GitHub Actions
+COPY build/libs/Team-IT-0.0.1-SNAPSHOT.jar app.jar
 
 # Change ownership to non-root user
 RUN chown -R appuser:appuser /app

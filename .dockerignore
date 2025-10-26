@@ -4,7 +4,9 @@
 .gitattributes
 
 # Build output
-build/
+build/*
+!build/libs/
+!build/libs/*.jar
 target/
 out/
 *.class
