@@ -18,6 +18,8 @@ import ssu.cromi.teamit.entity.enums.Status;
 import ssu.cromi.teamit.entity.findproject.ProjectApplication;
 import ssu.cromi.teamit.entity.teamup.Project;
 import ssu.cromi.teamit.entity.teamup.ProjectMember;
+import ssu.cromi.teamit.event.ApplicationRejectedEvent;
+import ssu.cromi.teamit.event.MemberAddedEvent;
 import ssu.cromi.teamit.exceptions.LeaderDeletionException;
 import ssu.cromi.teamit.repository.MilestoneRepository;
 import ssu.cromi.teamit.repository.StackRepository;
@@ -27,6 +29,9 @@ import ssu.cromi.teamit.repository.teamup.ProjectMemberRepository;
 import ssu.cromi.teamit.repository.teamup.ProjectRepository;
 import ssu.cromi.teamit.service.MyProjectService;
 import ssu.cromi.teamit.util.EnumValidator;
+import org.springframework.context.ApplicationEventPublisher;
+import ssu.cromi.teamit.event.MemberRemovedEvent;
+import ssu.cromi.teamit.event.LeadershipDelegatedEvent;
 
 import java.lang.reflect.Constructor;
 import java.time.LocalDate;
@@ -47,6 +52,7 @@ public class MyProjectServiceImpl implements MyProjectService{
     private final ProjectRepository projectRepository;
     private final StackRepository stackRepository;
     private final ProjectApplicationRepository projectApplicationRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Override
     public List<InProgressProject> getInProgressProjects(String uid){
@@ -228,6 +234,7 @@ public class MyProjectServiceImpl implements MyProjectService{
                 .build();
 
         ProjectMember savedMember = projectMemberRepository.save(newMember);
+        eventPublisher.publishEvent(new MemberAddedEvent(project, user));
 
         return ProjectMemberResponse.from(savedMember);
     }
@@ -299,7 +306,9 @@ public class MyProjectServiceImpl implements MyProjectService{
         }
         User user = member.getUser();
         List<Milestone> assignedMilestones = milestoneRepository.findByProjectIdAndAssignee(projectId,user);
-        
+
+        User removedUser = member.getUser(); // 삭제할 유저 저장
+
         // 프로젝트 리더를 찾아서 마일스톤 재할당
         User projectLeader = project.getProjectMembers().stream()
                 .filter(m -> m.getRole() == MemberRole.LEADER)
@@ -313,6 +322,8 @@ public class MyProjectServiceImpl implements MyProjectService{
 
         projectMemberRepository.delete(member);
         log.info("프로젝트(ID : {})에서 멤버(ID: {})를 삭제했습니다.", projectId, userId);
+
+        eventPublisher.publishEvent(new MemberRemovedEvent(project, removedUser)); // 멤버 삭제 후 이벤트 발생
     }
 
     @Override
@@ -373,6 +384,8 @@ public class MyProjectServiceImpl implements MyProjectService{
                 projectId, 
                 currentLeader != null ? currentLeader.getUserId() : "none", 
                 newLeaderUserId);
+
+        eventPublisher.publishEvent(new LeadershipDelegatedEvent(project, newOwner));
     }
 
     @Override
@@ -420,6 +433,8 @@ public class MyProjectServiceImpl implements MyProjectService{
         if (!application.getProject().getId().equals(projectId)) {
             throw new IllegalArgumentException("지원서가 해당 프로젝트에 속하지 않습니다.");
         }
+
+        eventPublisher.publishEvent(new ApplicationRejectedEvent(application));
 
         projectApplicationRepository.delete(application);
         log.info("프로젝트(ID: {})의 지원서(ID: {})를 삭제했습니다.", projectId, applicationId);

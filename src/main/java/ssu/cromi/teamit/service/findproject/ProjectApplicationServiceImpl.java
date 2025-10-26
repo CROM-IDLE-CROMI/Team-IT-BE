@@ -4,12 +4,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import org.springframework.context.ApplicationEventPublisher;
 import ssu.cromi.teamit.exception.ProjectNotFoundException;
 import ssu.cromi.teamit.DTO.findproject.ProjectApplicationRequestDto;
 import ssu.cromi.teamit.entity.teamup.Project;
 import ssu.cromi.teamit.entity.findproject.ProjectApplication;
 import ssu.cromi.teamit.repository.findproject.ProjectApplicationRepository;
 import ssu.cromi.teamit.repository.teamup.ProjectRepository;
+import ssu.cromi.teamit.event.ProjectAppliedEvent;
 
 import java.time.LocalDateTime;
 
@@ -17,6 +19,7 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class ProjectApplicationServiceImpl implements ProjectApplicationService {
 
+    private final ApplicationEventPublisher eventPublisher; // 이벤트 발행
     private final ProjectApplicationRepository projectApplicationRepository;
     private final ProjectRepository projectRepository;
 
@@ -38,6 +41,10 @@ public class ProjectApplicationServiceImpl implements ProjectApplicationService 
                 .requirements(dto.getRequirements())
                 .createdAt(LocalDateTime.now())
                 .build();
-        return projectApplicationRepository.save(application);
+
+        ProjectApplication savedApplication = projectApplicationRepository.save(application);
+        eventPublisher.publishEvent(new ProjectAppliedEvent(savedApplication)); // 이벤트 발행
+        
+        return savedApplication;
     }
 }
