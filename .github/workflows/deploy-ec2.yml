@@ -74,3 +74,6 @@ jobs:
             'docker image prune -f'
           ]" \
           --region ${{ env.AWS_REGION }}
+        
+        
+        
