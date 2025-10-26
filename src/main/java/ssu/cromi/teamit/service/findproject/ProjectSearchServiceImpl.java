@@ -2,12 +2,20 @@ package ssu.cromi.teamit.service.findproject;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ssu.cromi.teamit.DTO.findproject.ProjectSearchRequestDto;
 import ssu.cromi.teamit.DTO.findproject.ProjectSummaryResponseDto;
+import ssu.cromi.teamit.domain.User;
+import ssu.cromi.teamit.entity.teamup.Project;
+import ssu.cromi.teamit.repository.UserRepository;
 import ssu.cromi.teamit.repository.teamup.ProjectRepository;
+
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -15,6 +23,7 @@ import ssu.cromi.teamit.repository.teamup.ProjectRepository;
 public class ProjectSearchServiceImpl implements ProjectSearchService {
 
     private final ProjectRepository projectRepository;
+    private final UserRepository userRepository;
 
     /**
      * Controller로부터 검색 조건(DTO)과 페이징 정보를 받아
@@ -22,11 +31,27 @@ public class ProjectSearchServiceImpl implements ProjectSearchService {
      */
     @Override
     public Page<ProjectSummaryResponseDto> searchProjects(ProjectSearchRequestDto searchDto, Pageable pageable) {
-        // Repository를 호출하여 조건에 맞는 Project 엔티티 목록을 Page 형태로 받는다
-        // 이 때 ProjectRepositoryImpl의 QueryDSL 코드가 실행
-        return projectRepository.searchProjects(searchDto, pageable)
-                // Stream의 map 기능을 이용해 Page<Project>를 Page<ProjectSummaryResponseDto>로 변환
-                // ProjectSummaryResponseDto::from 메서드가 각 Project 엔티티를 DTO로 변환
-                .map(ProjectSummaryResponseDto::from);
+
+        Page<Project> projectPage = projectRepository.searchProjects(searchDto, pageable);
+
+        List<Project> projects = projectPage.getContent();
+        if (projects.isEmpty()) {
+            return Page.empty(pageable);
+        }
+
+        Map<String, User> userMap = userRepository.findAllById(
+                projects.stream()
+                        .map(Project::getCreatorId)
+                        .collect(Collectors.toSet())
+        ).stream().collect(Collectors.toMap(User::getUid, u -> u));
+
+        List<ProjectSummaryResponseDto> dtoList = projects.stream()
+                .map(project -> {
+                    User creator = userMap.get(project.getCreatorId());
+                    return ProjectSummaryResponseDto.from(project, creator);
+                })
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(dtoList, pageable, projectPage.getTotalElements());
     }
 }

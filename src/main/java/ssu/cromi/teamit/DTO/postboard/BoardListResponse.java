@@ -25,7 +25,6 @@ public class BoardListResponse {
                 .title(board.getTitle())
                 .category(board.getCategory().getDisplayName())
                 .viewCount(board.getViewCount())
-                .likeCount(board.getLikeCount())
                 .createdAt(board.getCreatedAt())
                 .authorNickname(author.getNickName())
                 .authorProfileImageUrl(author.getProfileImg())

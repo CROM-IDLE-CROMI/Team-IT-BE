@@ -42,10 +42,6 @@ public class Board {
     private int viewCount = 0;
 
     @Builder.Default
-    @Column(name = "like_count", nullable = false)
-    private int likeCount = 0;
-
-    @Builder.Default
     @Column(name = "scrap_count", nullable = false)
     private int scrapCount = 0;
 

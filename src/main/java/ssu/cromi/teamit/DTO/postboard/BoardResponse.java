@@ -13,7 +13,6 @@ public class BoardResponse {
     private final String content;
     private final String category;
     private final int viewCount;
-    private final int likeCount;
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
 
@@ -24,7 +23,6 @@ public class BoardResponse {
         this.content = board.getContent();
         this.category = board.getCategory().getDisplayName();
         this.viewCount = board.getViewCount();
-        this.likeCount = board.getLikeCount();
         this.createdAt = board.getCreatedAt();
         this.updatedAt = board.getUpdatedAt();
     }

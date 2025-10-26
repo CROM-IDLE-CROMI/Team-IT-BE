@@ -20,7 +20,7 @@ import ssu.cromi.teamit.DTO.postboard.CommentLikeResponse;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/board/{postId}/comments")
+@RequestMapping("/v1/board/{postId}/comments")
 @RequiredArgsConstructor
 public class BoardCommentController {
 
@@ -71,7 +71,7 @@ public class BoardCommentController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/{commentId}/like")
+    /* @PostMapping("/{commentId}/like")
     public ResponseEntity<ApiResponse<CommentLikeResponse>> addCommentLike(
             @PathVariable Long postId,
             @PathVariable Long commentId,
@@ -79,5 +79,5 @@ public class BoardCommentController {
         CommentLikeResponse responseDto = commentService.addLike(commentId);
         return ResponseEntity.ok(
                 new ApiResponse<>(200, "좋아요가 반영되었습니다.", responseDto));
-    }
+    }*/
 }

@@ -1,12 +1,14 @@
 package ssu.cromi.teamit.service.postboard;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ssu.cromi.teamit.domain.User;
 import ssu.cromi.teamit.entity.postboard.Board;
 import ssu.cromi.teamit.entity.postboard.Scrap;
 import ssu.cromi.teamit.entity.postboard.ScrapId;
+import ssu.cromi.teamit.event.BoardScrappedEvent;
 import ssu.cromi.teamit.repository.UserRepository;
 import ssu.cromi.teamit.repository.postboard.BoardRepository;
 import ssu.cromi.teamit.repository.postboard.ScrapRepository;
@@ -15,11 +17,11 @@ import ssu.cromi.teamit.exception.ScrapAlreadyExistsException;
 import ssu.cromi.teamit.exception.ScrapNotFoundException;
 import ssu.cromi.teamit.exception.UserNotFoundException;
 
-
-
 @Service
 @RequiredArgsConstructor
 public class ScrapServiceImpl implements ScrapService {
+
+    private final ApplicationEventPublisher eventPublisher;
 
     private final ScrapRepository scrapRepository;
     private final BoardRepository boardRepository;
@@ -39,12 +41,13 @@ public class ScrapServiceImpl implements ScrapService {
         }
 
         Scrap scrap = Scrap.builder().user(user).board(board).build();
-        scrapRepository.save(scrap);
+        Scrap savedScrap = scrapRepository.save(scrap);
 
         // 게시글의 스크랩 수 1 증가
         board.setScrapCount(board.getScrapCount() + 1);
 
-        return scrap;
+        eventPublisher.publishEvent(new BoardScrappedEvent(savedScrap));
+        return savedScrap;
     }
 
     @Override

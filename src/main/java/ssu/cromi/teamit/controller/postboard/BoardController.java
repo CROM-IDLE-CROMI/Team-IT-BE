@@ -29,7 +29,7 @@ import org.springframework.http.HttpStatus;
 
 
 @RestController
-@RequestMapping("/api/board")
+@RequestMapping("/v1/board")
 @RequiredArgsConstructor
 public class BoardController {
     private final BoardService boardService;
