@@ -3,6 +3,7 @@ package ssu.cromi.teamit.service.impl;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -15,12 +16,18 @@ import ssu.cromi.teamit.entity.Milestone;
 import ssu.cromi.teamit.entity.enums.MemberRole;
 import ssu.cromi.teamit.entity.enums.Position;
 import ssu.cromi.teamit.entity.enums.Status;
+import ssu.cromi.teamit.entity.findproject.ProjectApplication;
 import ssu.cromi.teamit.entity.teamup.Project;
 import ssu.cromi.teamit.entity.teamup.ProjectMember;
+import ssu.cromi.teamit.event.ApplicationRejectedEvent;
+import ssu.cromi.teamit.event.LeadershipDelegatedEvent;
+import ssu.cromi.teamit.event.MemberAddedEvent;
+import ssu.cromi.teamit.event.MemberRemovedEvent;
 import ssu.cromi.teamit.exceptions.LeaderDeletionException;
 import ssu.cromi.teamit.repository.MilestoneRepository;
 import ssu.cromi.teamit.repository.StackRepository;
 import ssu.cromi.teamit.repository.UserRepository;
+import ssu.cromi.teamit.repository.findproject.ProjectApplicationRepository;
 import ssu.cromi.teamit.repository.teamup.ProjectMemberRepository;
 import ssu.cromi.teamit.repository.teamup.ProjectRepository;
 import ssu.cromi.teamit.service.MyProjectService;
@@ -44,6 +51,8 @@ public class MyProjectServiceImpl implements MyProjectService{
     private final ProjectMemberRepository projectMemberRepository;
     private final ProjectRepository projectRepository;
     private final StackRepository stackRepository;
+    private final ProjectApplicationRepository projectApplicationRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Override
     public List<InProgressProject> getInProgressProjects(String uid){
@@ -225,6 +234,7 @@ public class MyProjectServiceImpl implements MyProjectService{
                 .build();
 
         ProjectMember savedMember = projectMemberRepository.save(newMember);
+        eventPublisher.publishEvent(new MemberAddedEvent(project, user));
 
         return ProjectMemberResponse.from(savedMember);
     }
@@ -239,7 +249,7 @@ public class MyProjectServiceImpl implements MyProjectService{
                 .orElseThrow(() -> new EntityNotFoundException("해당 프로젝트에서 멤버를 찾을 수 없습니다: " + userId));
 
         Position newPosition = EnumValidator.parseEnum(Position.class, requestDto.getPosition(), "position");
-        
+
         // 기술스택 처리 (없으면 자동 생성)
         Set<Stack> projectStacks = new HashSet<>();
         if (requestDto.getTechStacks() != null && !requestDto.getTechStacks().isEmpty()) {
@@ -249,14 +259,14 @@ public class MyProjectServiceImpl implements MyProjectService{
                 projectStacks.add(stack);
             }
         }
-        
+
         ProjectMember updatedMember = ProjectMember.builder()
                 .id(member.getId())
                 .project(member.getProject())
                 .userId(member.getUserId())
                 .user(member.getUser())
-                .role(requestDto.getRole() != null ? 
-                    EnumValidator.parseEnum(MemberRole.class, requestDto.getRole(), "role") : 
+                .role(requestDto.getRole() != null ?
+                    EnumValidator.parseEnum(MemberRole.class, requestDto.getRole(), "role") :
                     member.getRole())
                 .position(newPosition)
                 .projectStacks(projectStacks)
@@ -275,7 +285,7 @@ public class MyProjectServiceImpl implements MyProjectService{
             Stack newStack = constructor.newInstance();
             newStack.setTag(stackTag);
             newStack.setIcon(stackTag.toLowerCase() + "-icon.png");
-            
+
             Stack savedStack = stackRepository.save(newStack);
             log.info("새로운 기술스택 자동 생성: {}", stackTag);
             return savedStack;
@@ -296,20 +306,24 @@ public class MyProjectServiceImpl implements MyProjectService{
         }
         User user = member.getUser();
         List<Milestone> assignedMilestones = milestoneRepository.findByProjectIdAndAssignee(projectId,user);
-        
+
+        User removedUser = member.getUser(); // 삭제할 유저 저장
+
         // 프로젝트 리더를 찾아서 마일스톤 재할당
         User projectLeader = project.getProjectMembers().stream()
                 .filter(m -> m.getRole() == MemberRole.LEADER)
                 .findFirst()
                 .map(ProjectMember::getUser)
                 .orElse(project.getOwner()); // 리더가 없으면 프로젝트 소유자에게 할당
-        
+
         for(Milestone milestone : assignedMilestones){
             milestone.setAssignee(projectLeader);
         }
 
         projectMemberRepository.delete(member);
         log.info("프로젝트(ID : {})에서 멤버(ID: {})를 삭제했습니다.", projectId, userId);
+
+        eventPublisher.publishEvent(new MemberRemovedEvent(project, removedUser)); // 멤버 삭제 후 이벤트 발생
     }
 
     @Override
@@ -319,7 +333,7 @@ public class MyProjectServiceImpl implements MyProjectService{
                 .orElseThrow(() -> new EntityNotFoundException("해당 ID의 프로젝트를 찾을 수 없습니다: " + projectId));
 
         String newLeaderUserId = requestDto.getNewLeaderUserId();
-        
+
         // 새로운 팀장이 될 멤버가 프로젝트에 참여 중인지 확인
         ProjectMember newLeaderMember = projectMemberRepository.findByProjectIdAndUserId(projectId, newLeaderUserId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 프로젝트 멤버가 아닙니다: " + newLeaderUserId));
@@ -366,10 +380,12 @@ public class MyProjectServiceImpl implements MyProjectService{
         project.setOwner(newOwner);
         projectRepository.save(project);
 
-        log.info("프로젝트(ID: {})의 팀장 권한을 {}에서 {}로 위임했습니다.", 
-                projectId, 
-                currentLeader != null ? currentLeader.getUserId() : "none", 
+        log.info("프로젝트(ID: {})의 팀장 권한을 {}에서 {}로 위임했습니다.",
+                projectId,
+                currentLeader != null ? currentLeader.getUserId() : "none",
                 newLeaderUserId);
+
+        eventPublisher.publishEvent(new LeadershipDelegatedEvent(project, newOwner));
     }
 
     @Override
@@ -377,23 +393,50 @@ public class MyProjectServiceImpl implements MyProjectService{
     public void updateProjectStatus(Long projectId, String uid, ProjectStatusUpdateRequest requestDto) {
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new EntityNotFoundException("해당 ID의 프로젝트를 찾을 수 없습니다: " + projectId));
-        
+
         User user = userRepository.findById(uid)
                 .orElseThrow(() -> new EntityNotFoundException("해당 ID의 사용자를 찾을 수 없습니다: " + uid));
-        
+
         // 팀장 권한 확인
         ProjectMember member = projectMemberRepository.findByProjectIdAndUserId(projectId, uid)
                 .orElseThrow(() -> new IllegalArgumentException("해당 프로젝트의 멤버가 아닙니다: " + uid));
-        
+
         if (member.getRole() != MemberRole.LEADER) {
             throw new IllegalArgumentException("프로젝트 상태 변경은 팀장만 가능합니다.");
         }
-        
+
         // Status enum 검증 및 변경
         Status newStatus = EnumValidator.parseEnum(Status.class, requestDto.getStatus(), "status");
         project.setStatus(newStatus);
-        
-        log.info("프로젝트(ID: {}) 상태를 {}로 변경했습니다. 변경자: {}", 
+
+        log.info("프로젝트(ID: {}) 상태를 {}로 변경했습니다. 변경자: {}",
                 projectId, newStatus.getDisplayName(), uid);
+    }
+
+    @Override
+    public List<ProjectApplication> getProjectApplications(Long projectId) {
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new EntityNotFoundException("해당 ID의 프로젝트를 찾을 수 없습니다: " + projectId));
+
+        return projectApplicationRepository.findByProjectId(projectId);
+    }
+
+    @Override
+    @Transactional
+    public void deleteProjectApplication(Long projectId, Long applicationId) {
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new EntityNotFoundException("해당 ID의 프로젝트를 찾을 수 없습니다: " + projectId));
+
+        ProjectApplication application = projectApplicationRepository.findById(applicationId)
+                .orElseThrow(() -> new EntityNotFoundException("해당 ID의 지원서를 찾을 수 없습니다: " + applicationId));
+
+        if (!application.getProject().getId().equals(projectId)) {
+            throw new IllegalArgumentException("지원서가 해당 프로젝트에 속하지 않습니다.");
+        }
+
+        eventPublisher.publishEvent(new ApplicationRejectedEvent(application));
+
+        projectApplicationRepository.delete(application);
+        log.info("프로젝트(ID: {})의 지원서(ID: {})를 삭제했습니다.", projectId, applicationId);
     }
 }

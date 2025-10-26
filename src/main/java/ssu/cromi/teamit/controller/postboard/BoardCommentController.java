@@ -6,21 +6,21 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import ssu.cromi.teamit.DTO.postboard.BoardCommentUpdateRequest;
 import ssu.cromi.teamit.DTO.postboard.BoardCommentRequest;
 import ssu.cromi.teamit.DTO.postboard.BoardCommentResponse;
-import ssu.cromi.teamit.entity.postboard.BoardComment;
-import ssu.cromi.teamit.security.UserDetailsImpl;
-import ssu.cromi.teamit.service.postboard.BoardCommentService;
-import ssu.cromi.teamit.service.impl.UserServiceImpl;
-import ssu.cromi.teamit.domain.User;
-import ssu.cromi.teamit.response.ApiResponse;
+import ssu.cromi.teamit.DTO.postboard.BoardCommentUpdateRequest;
 import ssu.cromi.teamit.DTO.postboard.CommentLikeResponse;
+import ssu.cromi.teamit.domain.User;
+import ssu.cromi.teamit.entity.postboard.BoardComment;
+import ssu.cromi.teamit.response.ApiResponse;
+import ssu.cromi.teamit.security.UserDetailsImpl;
+import ssu.cromi.teamit.service.impl.UserServiceImpl;
+import ssu.cromi.teamit.service.postboard.BoardCommentService;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/board/{postId}/comments")
+@RequestMapping("/v1/board/{postId}/comments")
 @RequiredArgsConstructor
 public class BoardCommentController {
 

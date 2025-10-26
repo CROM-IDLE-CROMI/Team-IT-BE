@@ -26,4 +26,8 @@ public class Organization {
 
     protected Organization() {}
 
+    public Organization(String name) {
+        this.name = name;
+    }
+
 }

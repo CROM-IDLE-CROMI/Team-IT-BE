@@ -6,8 +6,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,18 +13,14 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
-import ssu.cromi.teamit.domain.RefreshToken;
-import ssu.cromi.teamit.exceptions.TokenRefreshException;
-import ssu.cromi.teamit.service.RefreshTokenService;
 import ssu.cromi.teamit.service.impl.UserDetailsServiceImpl;
+
 import java.io.IOException;
 
 @Component
 public class AuthTokenFilter extends OncePerRequestFilter {
     private static final Logger logger = LoggerFactory.getLogger(AuthTokenFilter.class);
     private final JwtUtils jwtUtils;
-    @Lazy
-    private RefreshTokenService refreshTokenService;
     private final UserDetailsServiceImpl userDetailsService;
 
     public AuthTokenFilter(JwtUtils jwtUtils, UserDetailsServiceImpl userDetailsService){
@@ -38,27 +32,8 @@ public class AuthTokenFilter extends OncePerRequestFilter {
             throws ServletException, IOException{
         try{
             String accessToken = parseJwt(request);
-            // 1) Access Token 유효한 경우
             if (accessToken != null && jwtUtils.isValidToken(accessToken)) {
                 authenticateWithToken(accessToken, request);
-            }
-            // 2) 만료된 경우 → Refresh Token으로 재발행
-            else if(accessToken != null && jwtUtils.isTokenExpired(accessToken)) {
-                String refreshToken = parseRefreshToken(request);
-                if (refreshToken != null) {
-                    RefreshToken stored = refreshTokenService.findByToken(refreshToken)
-                            .orElseThrow(() -> new TokenRefreshException(
-                                    refreshToken, "RefreshToken이 없습니다"));
-                    refreshTokenService.verifyExpiration(stored);
-                    // 새 Access Token 발행
-                    String newAccess = jwtUtils.refreshAccessToken(refreshToken);
-
-                    // 응답 헤더에 새 토큰 세팅
-                    response.setHeader("Authorization", "Bearer " + newAccess);
-
-                    // 새 토큰으로 인증 컨텍스트 설정
-                    authenticateWithToken(newAccess, request);
-                }
             }
         }
         catch (Exception e){
@@ -84,13 +59,17 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
         SecurityContextHolder.getContext().setAuthentication(auth);
     }
-    /** Refresh Token 추출 */
-    private String parseRefreshToken(HttpServletRequest request) {
-        String header = request.getHeader("Refresh-Token");
-        return StringUtils.hasText(header) ? header : null;
-    }
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request){
-        return "/v1/auth/refresh".equals(request.getServletPath());
+        String path = request.getServletPath();
+        return path.startsWith("/v1/auth/") ||
+               path.startsWith("/swagger-ui/") ||
+               path.equals("/swagger-ui.html") ||
+               path.startsWith("/v3/api-docs/") ||
+               path.startsWith("/swagger-resources/") ||
+               path.startsWith("/webjars/") ||
+               path.equals("/") ||
+               path.equals("/favicon.ico") ||
+               path.equals("/error");
     }
 }

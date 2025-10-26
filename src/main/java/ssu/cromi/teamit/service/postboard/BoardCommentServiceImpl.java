@@ -1,15 +1,18 @@
 package ssu.cromi.teamit.service.postboard;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ssu.cromi.teamit.DTO.postboard.CommentLikeResponse;
-import ssu.cromi.teamit.domain.User;
-import ssu.cromi.teamit.DTO.postboard.BoardCommentUpdateRequest;
 import ssu.cromi.teamit.DTO.postboard.BoardCommentRequest;
 import ssu.cromi.teamit.DTO.postboard.BoardCommentResponse;
+import ssu.cromi.teamit.DTO.postboard.BoardCommentUpdateRequest;
+import ssu.cromi.teamit.DTO.postboard.CommentLikeResponse;
+import ssu.cromi.teamit.domain.User;
 import ssu.cromi.teamit.entity.postboard.Board;
 import ssu.cromi.teamit.entity.postboard.BoardComment;
+import ssu.cromi.teamit.event.CommentLikedEvent;
+import ssu.cromi.teamit.event.CommentReplyEvent;
 import ssu.cromi.teamit.exception.BoardNotFoundException;
 import ssu.cromi.teamit.exception.CommentNotFoundException;
 import ssu.cromi.teamit.repository.UserRepository;
@@ -24,6 +27,8 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class BoardCommentServiceImpl implements BoardCommentService {
+
+    private final ApplicationEventPublisher eventPublisher; // 이벤트 발생 감지
 
     private final BoardCommentRepository commentRepository;
     private final BoardRepository boardRepository;
@@ -48,7 +53,13 @@ public class BoardCommentServiceImpl implements BoardCommentService {
                 .parentComment(parentComment)
                 .build();
 
-        return commentRepository.save(comment);
+        BoardComment savedComment = commentRepository.save(comment);
+
+        if (savedComment.getParentComment() != null) {
+            eventPublisher.publishEvent(new CommentReplyEvent(savedComment));
+        }
+
+        return savedComment;
     }
 
     @Override
@@ -62,7 +73,6 @@ public class BoardCommentServiceImpl implements BoardCommentService {
 
         Map<Long, List<BoardCommentResponse>> replyMap = allComments.stream()
                 .filter(c -> c.getParentComment() != null)
-                // toDto(...) -> BoardCommentResponse.from(...) 으로 수정
                 .map(c -> BoardCommentResponse.from(c, userMap.get(c.getWriterId()), null))
                 .collect(Collectors.groupingBy(BoardCommentResponse::getParentCommentId));
 
@@ -70,7 +80,6 @@ public class BoardCommentServiceImpl implements BoardCommentService {
                 .filter(c -> c.getParentComment() == null)
                 .map(parent -> {
                     List<BoardCommentResponse> replies = replyMap.getOrDefault(parent.getId(), new ArrayList<>());
-                    // toDto(...) -> BoardCommentResponse.from(...) 으로 수정
                     return BoardCommentResponse.from(parent, userMap.get(parent.getWriterId()), replies);
                 })
                 .collect(Collectors.toList());
@@ -106,7 +115,12 @@ public class BoardCommentServiceImpl implements BoardCommentService {
     public CommentLikeResponse addLike(Long commentId) {
         BoardComment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new CommentNotFoundException("해당 댓글을 찾을 수 없습니다. id=" + commentId));
+
+
         comment.setLikeCount(comment.getLikeCount() + 1);
+
+        eventPublisher.publishEvent(new CommentLikedEvent(comment));
+
         return new CommentLikeResponse(commentId, comment.getLikeCount());
     }
 }

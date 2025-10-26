@@ -1,23 +1,22 @@
 package ssu.cromi.teamit.service.teamup;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.List;
-import java.util.stream.Collectors;
-
 import ssu.cromi.teamit.DTO.teamup.CreateTeamRequestDto;
 import ssu.cromi.teamit.domain.User;
+import ssu.cromi.teamit.entity.enums.*;
 import ssu.cromi.teamit.entity.teamup.Project;
 import ssu.cromi.teamit.entity.teamup.ProjectMember;
-import ssu.cromi.teamit.entity.enums.*;
 import ssu.cromi.teamit.exception.InvalidEnumValueException;
 import ssu.cromi.teamit.exception.UserNotFoundException;
 import ssu.cromi.teamit.repository.UserRepository;
-import ssu.cromi.teamit.repository.teamup.ProjectRepository;
 import ssu.cromi.teamit.repository.teamup.ProjectMemberRepository;
+import ssu.cromi.teamit.repository.teamup.ProjectRepository;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static ssu.cromi.teamit.util.EnumValidator.parseEnum;
 
@@ -33,7 +32,7 @@ public class TeamServiceImpl implements TeamService {
     @Transactional
     public Project createTeam(CreateTeamRequestDto dto, String userId) {
 
-        User owner = userRepository.findById(userId)
+        User owner = userRepository.findByUid(userId)
                 .orElseThrow(() -> new UserNotFoundException("해당 ID의 사용자를 찾을 수 없습니다: " + userId));
 
         Platform       platform       = parseEnum(Platform.class,       dto.getPlatform(),        "platform");

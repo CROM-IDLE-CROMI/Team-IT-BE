@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ssu.cromi.teamit.DTO.myproject.*;
+import ssu.cromi.teamit.entity.findproject.ProjectApplication;
 import ssu.cromi.teamit.security.JwtUtils;
 import ssu.cromi.teamit.service.MyProjectService;
 import ssu.cromi.teamit.service.ProjectReviewService;
@@ -152,5 +153,19 @@ public class MyProjectController {
         String reviewerId = jwtUtils.getUsernameFromJwt(token.replace("Bearer ", ""));
         List<ProjectReviewResponse> reviews = projectReviewService.getReviewsByReviewer(reviewerId);
         return ResponseEntity.ok(reviews);
+    }
+
+    @GetMapping("/{projectId}/applications")
+    public ResponseEntity<List<ProjectApplication>> getProjectApplications(@PathVariable Long projectId) {
+        List<ProjectApplication> applications = myProjectService.getProjectApplications(projectId);
+        return ResponseEntity.ok(applications);
+    }
+
+    @DeleteMapping("/{projectId}/applications/{applicationId}")
+    public ResponseEntity<Void> deleteProjectApplication(
+            @PathVariable Long projectId,
+            @PathVariable Long applicationId) {
+        myProjectService.deleteProjectApplication(projectId, applicationId);
+        return ResponseEntity.noContent().build();
     }
 }

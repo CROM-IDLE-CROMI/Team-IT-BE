@@ -7,10 +7,15 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import ssu.cromi.teamit.entity.postboard.Board;
 
+import java.util.List;
+
 @Repository
 public interface BoardRepository extends JpaRepository<Board, Long>, BoardSearchRepository {
     @Modifying
     @Query("UPDATE Board p SET p.viewCount = p.viewCount + 1 WHERE p.id = :postId")
     int incrementViewCount(@Param("postId") Long postId);
+
+    // 좋아요 수 높은 순으로 상위 4개를 조회
+    List<Board> findTop4ByOrderByScrapCountDesc();
 
 }

@@ -2,6 +2,7 @@ package ssu.cromi.teamit.service;
 
 import jakarta.validation.Valid;
 import ssu.cromi.teamit.DTO.myproject.*;
+import ssu.cromi.teamit.entity.findproject.ProjectApplication;
 
 import java.util.List;
 
@@ -112,4 +113,18 @@ public interface MyProjectService {
      * @param requestDto 변경할 상태 정보
      */
     void updateProjectStatus(Long projectId, String uid, ProjectStatusUpdateRequest requestDto);
+
+    /**
+     * 특정 프로젝트에 대한 지원서 목록 조회
+     * @param projectId 프로젝트 ID
+     * @return 해당 프로젝트의 지원서 목록
+     */
+    List<ProjectApplication> getProjectApplications(Long projectId);
+
+    /**
+     * 특정 프로젝트의 지원서 삭제
+     * @param projectId 프로젝트 ID
+     * @param applicationId 삭제할 지원서 ID
+     */
+    void deleteProjectApplication(Long projectId, Long applicationId);
 }

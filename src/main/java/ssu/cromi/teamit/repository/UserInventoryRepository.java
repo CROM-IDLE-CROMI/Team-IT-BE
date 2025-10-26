@@ -10,15 +10,15 @@ import java.util.List;
 
 public interface UserInventoryRepository extends JpaRepository<UserInventory, Long> {
     
-    List<UserInventory> findByUidAndStatus(String uid, UserInventory.InventoryStatus status);
-    
-    @Query("SELECT ui FROM UserInventory ui JOIN ui.item i WHERE ui.uid = :uid AND ui.status = :status AND i.itemType = :itemType")
+    List<UserInventory> findByUserUidAndStatus(String uid, UserInventory.InventoryStatus status);
+
+    @Query("SELECT ui FROM UserInventory ui JOIN ui.item i WHERE ui.user.uid = :uid AND ui.status = :status AND i.itemType = :itemType")
     List<UserInventory> findByUidAndStatusAndItemType(
-            @Param("uid") String uid, 
+            @Param("uid") String uid,
             @Param("status") UserInventory.InventoryStatus status,
             @Param("itemType") Item.ItemType itemType);
-    
-    @Query("SELECT ui FROM UserInventory ui JOIN ui.item i WHERE ui.uid = :uid AND ui.status = 'ACTIVE' AND i.itemType IN :itemTypes")
+
+    @Query("SELECT ui FROM UserInventory ui JOIN ui.item i WHERE ui.user.uid = :uid AND ui.status = 'ACTIVE' AND i.itemType IN :itemTypes")
     List<UserInventory> findByUidAndActiveStatusAndItemTypes(
             @Param("uid") String uid,
             @Param("itemTypes") List<Item.ItemType> itemTypes);

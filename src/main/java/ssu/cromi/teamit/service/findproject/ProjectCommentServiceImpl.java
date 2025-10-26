@@ -1,28 +1,32 @@
 package ssu.cromi.teamit.service.findproject;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ssu.cromi.teamit.domain.User;
+import ssu.cromi.teamit.DTO.findproject.CommentUpdateRequestDto;
 import ssu.cromi.teamit.DTO.findproject.ProjectCommentRequestDto;
 import ssu.cromi.teamit.DTO.findproject.ProjectCommentResponseDto;
+import ssu.cromi.teamit.domain.User;
 import ssu.cromi.teamit.entity.findproject.ProjectComment;
 import ssu.cromi.teamit.entity.teamup.Project;
+import ssu.cromi.teamit.event.ProjectCommentCreatedEvent;
 import ssu.cromi.teamit.exception.CommentNotFoundException;
 import ssu.cromi.teamit.exception.ProjectNotFoundException;
+import ssu.cromi.teamit.repository.UserRepository;
 import ssu.cromi.teamit.repository.findproject.ProjectCommentRepository;
 import ssu.cromi.teamit.repository.teamup.ProjectRepository;
-import ssu.cromi.teamit.repository.UserRepository;
-import ssu.cromi.teamit.DTO.findproject.CommentUpdateRequestDto;
 
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class ProjectCommentServiceImpl implements ProjectCommentService {
 
+    private final ApplicationEventPublisher eventPublisher;
     private final ProjectCommentRepository commentRepository;
     private final UserRepository userRepository;
     private final ProjectRepository projectRepository;
@@ -83,8 +87,13 @@ public class ProjectCommentServiceImpl implements ProjectCommentService {
                 .parentComment(parentComment)
                 .build();
 
-        // 4. 저장
-        return commentRepository.save(comment);
+        ProjectComment savedComment = commentRepository.save(comment);
+
+        if (savedComment.getParentComment() == null) {
+            eventPublisher.publishEvent(new ProjectCommentCreatedEvent(savedComment));
+        }
+
+        return savedComment;
     }
 
     @Override

@@ -21,18 +21,12 @@ public class UserInventory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @Column(name = "uid", nullable = false, length = 50)
-    private String uid;
-    
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "uid", insertable = false, updatable = false)
+    @JoinColumn(name = "uid", nullable = false)
     private User user;
     
-    @Column(name = "item_id", nullable = false)
-    private Long itemId;
-    
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "item_id", insertable = false, updatable = false)
+    @JoinColumn(name = "item_id", nullable = false)
     private Item item;
     
     @Builder.Default
