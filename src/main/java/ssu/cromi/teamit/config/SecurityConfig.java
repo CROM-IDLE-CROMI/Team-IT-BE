@@ -68,7 +68,7 @@ public class SecurityConfig {
                 "http://localhost:3001",
                 "http://localhost:5173",
                 "http://localhost:8080",
-                "https://team-it-fe.vercel.app/"
+                "https://team-it-fe.vercel.app"
         ));
 
         // 모든 HTTP 메소드 허용
